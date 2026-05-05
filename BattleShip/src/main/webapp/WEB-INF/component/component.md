@@ -1,0 +1,1 @@
+This is component package for JSP component classes
