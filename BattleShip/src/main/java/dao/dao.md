@@ -1,0 +1,1 @@
+This is dao package for DB query classes
