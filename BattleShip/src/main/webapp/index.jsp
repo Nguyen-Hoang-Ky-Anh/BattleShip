@@ -12,15 +12,22 @@
 
 <!-- HEADER -->
 <div class="header">
-    <button onclick="goLogin()">Login</button>
-    <button onclick="goRegister()">Register</button>
+    <form action="${pageContext.request.contextPath}/login" method="get">
+        <button type="submit">Login</button>
+    </form>
+
+    <form action="${pageContext.request.contextPath}/register" method="get">
+        <button type="submit">Register</button>
+    </form>
 
     <!-- HAMBURGER -->
     <div class="hamburger" onclick="toggleMenu()">☰</div>
 
     <!-- DROPDOWN MENU -->
     <div id="dropdown" class="dropdown">
-        <div onclick="goHistory()">📜 History</div>
+        <form action="${pageContext.request.contextPath}/history" method="get">
+            <button type="submit">📜 History</button>
+        </form>
     </div>
 </div>
 
@@ -29,9 +36,17 @@
     <div class="title">⚓ BATTLESHIP</div>
 
     <div class="menu">
-        <button onclick="goPVE()">🤖 PVE Mode</button>
-        <button onclick="goPVP()">🧑‍🤝‍🧑 PVP Mode</button>
-        <button onclick="goHowToPlay()">📘 How To Play</button>
+        <form action="${pageContext.request.contextPath}/pve" method="get">
+            <button type="submit">🤖 PVE Mode</button>
+        </form>
+
+        <form action="${pageContext.request.contextPath}/pvp" method="get">
+            <button type="submit">🧑‍🤝‍🧑 PVP Mode</button>
+        </form>
+
+        <form action="${pageContext.request.contextPath}/how-to-play" method="get">
+            <button type="submit">📘 How To Play</button>
+        </form>
     </div>
 </div>
 
@@ -55,6 +70,10 @@
 <audio id="bgMusic" loop>
     <source src="${pageContext.request.contextPath}/assets/audio/home.mp3" type="audio/mpeg">
 </audio>
+
+<script>
+    const ctx = "${pageContext.request.contextPath}";
+</script>
 
 <!-- JS -->
 <script src="${pageContext.request.contextPath}/assets/js/home.js"></script>

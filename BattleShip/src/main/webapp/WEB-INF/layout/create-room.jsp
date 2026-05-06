@@ -16,31 +16,17 @@
     <h1 class="title">⚓ CREATE ROOM</h1>
 
     <div class="card">
-        <input type="text" id="userId" placeholder="Enter your name">
-        <button onclick="createRoom()">Create Room</button>
+        <form action="${pageContext.request.contextPath}/create-room" method="post">
+            <input type="text" name="userId" placeholder="Enter your name" required>
+            <select name="boardSize">
+                <option value="10x10">10x10 (Classic)</option>
+                <option value="8x8">8x8 (Quick)</option>
+                <option value="12x12">12x12 (Hard)</option>
+            </select>
+            <button type="submit">Create Room</button>
+        </form>
     </div>
 </div>
-
-<script>
-    function createRoom() {
-        let userId = document.getElementById("userId").value;
-
-        if (!userId) {
-            alert("Please enter your name!");
-            return;
-        }
-
-        fetch("create-room", {
-            method: "POST",
-            headers: {"Content-Type": "application/x-www-form-urlencoded"},
-            body: "userId=" + userId
-        })
-            .then(res => res.text())
-            .then(roomId => {
-                window.location.href = "room.jsp?roomId=" + roomId + "&userId=" + userId;
-            });
-    }
-</script>
 
 </body>
 </html>

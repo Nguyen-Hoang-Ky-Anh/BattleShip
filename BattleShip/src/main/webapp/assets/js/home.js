@@ -13,23 +13,6 @@ function toggleMusic() {
     isPlaying = !isPlaying;
 }
 
-/* NAVIGATION */
-function goLogin() {
-    window.location.href = "login.jsp";
-}
-
-function goRegister() {
-    window.location.href = "register.jsp";
-}
-
-function goPVE() {
-    alert("PVE coming soon!");
-}
-
-function goPVP() {
-    window.location.href = "create-room.jsp";
-}
-
 function goHowToPlay() {
     alert("Show instructions here!");
 }

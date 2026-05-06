@@ -27,7 +27,16 @@ public class GameSocketServer {
 
                 if (!success) {
                     send(session, "ERROR|Room not found");
+                    return;
                 }
+
+                // 🔥 1. gửi toàn bộ state cho người vừa join
+                String players = RoomManager.getPlayers(roomId); // "A,B,C"
+                send(session, "ROOM_STATE|" + players);
+
+                // 🔥 2. broadcast cho các user khác
+                RoomManager.broadcast(roomId, "USER_JOINED|" + userId);
+
                 break;
         }
     }
