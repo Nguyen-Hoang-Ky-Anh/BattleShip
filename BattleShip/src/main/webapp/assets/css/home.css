@@ -13,6 +13,10 @@ body {
     right: 30px;
 }
 
+.header form {
+    display: inline-block;
+}
+
 .header button {
     margin-left: 10px;
     padding: 8px 16px;
@@ -123,7 +127,8 @@ body {
     display: none;
     position: absolute;
     right: 0;
-    top: 80px;
+    top: 100%;
+    margin-top: 10px;
     background: rgba(0,0,0,0.6);
     border-radius: 10px;
     overflow: hidden;
@@ -137,6 +142,24 @@ body {
 }
 
 .dropdown div:hover {
+    background: #007EA7;
+}
+
+.dropdown form {
+    display: block;
+}
+
+.dropdown button {
+    width: 100%;
+    padding: 10px 20px;
+    background: transparent;
+    border: none;
+    color: white;
+    text-align: left;
+    cursor: pointer;
+}
+
+.dropdown button:hover {
     background: #007EA7;
 }
 

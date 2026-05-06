@@ -25,9 +25,33 @@ public class CreateRoomController extends HttpServlet {
 
         String hostId = req.getParameter("userId");
 
-        String roomId = RoomManager.createRoom(hostId);
+        if (hostId == null || hostId.trim().isEmpty()) {
+            resp.sendRedirect("create-room");
+            return;
+        }
 
-        resp.setContentType("text/plain");
-        resp.getWriter().write(roomId);
+        String boardSize = req.getParameter("boardSize");
+        if (boardSize == null || !boardSize.matches("\\d+x\\d+")) {
+            boardSize = "10x10";
+        }
+
+        String[] parts = boardSize.split("x");
+        int rows = Integer.parseInt(parts[0]);
+        int cols = Integer.parseInt(parts[1]);
+
+        if (rows < 5 || cols < 5 || rows > 15 || cols > 15) {
+            rows = 10;
+            cols = 10;
+        }
+
+        req.setAttribute("rows", rows);
+        req.setAttribute("cols", cols);
+
+        String roomId = RoomManager.createRoom(hostId, rows, cols);
+
+        resp.sendRedirect(
+                req.getContextPath() +
+                        "/room?roomId=" + roomId + "&userId=" + hostId
+        );
     }
 }

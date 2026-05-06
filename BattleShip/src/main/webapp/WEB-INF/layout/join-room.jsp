@@ -14,27 +14,15 @@
 
 <div class="container">
     <h1 class="title">🌊 JOIN ROOM</h1>
-
+    <p style="color:red">${error}</p>
     <div class="card">
-        <input type="text" id="userId" placeholder="Enter your name">
-        <input type="text" id="roomId" placeholder="Enter Room ID">
-        <button onclick="joinRoom()">Join Room</button>
+        <form action="${pageContext.request.contextPath}/join-room" method="post">
+            <input type="text" name="userId" placeholder="Enter your name" required>
+            <input type="text" name="roomId" placeholder="Enter Room ID" required>
+            <button type="submit">Join Room</button>
+        </form>
     </div>
 </div>
-
-<script>
-    function joinRoom() {
-        let userId = document.getElementById("userId").value;
-        let roomId = document.getElementById("roomId").value;
-
-        if (!userId || !roomId) {
-            alert("Please fill all fields!");
-            return;
-        }
-
-        window.location.href = "room.jsp?roomId=" + roomId + "&userId=" + userId;
-    }
-</script>
 
 </body>
 </html>
