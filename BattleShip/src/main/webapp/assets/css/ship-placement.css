@@ -1,0 +1,223 @@
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background:
+            radial-gradient(circle at top,
+            #0a1a2f,
+            #000814);
+
+    color: white;
+}
+
+/* ================= LAYOUT ================= */
+
+.container {
+    display: flex;
+    height: 100vh;
+}
+
+/* ================= SIDEBAR ================= */
+
+.sidebar {
+
+    width: 320px;
+
+    background:
+            rgba(10,20,40,0.9);
+
+    padding: 20px;
+
+    border-right:
+            2px solid rgba(30,144,255,0.4);
+
+    box-sizing: border-box;
+}
+
+.title {
+
+    font-size: 28px;
+
+    font-weight: bold;
+
+    margin-bottom: 20px;
+
+    text-align: center;
+}
+
+.room-info {
+
+    background:
+            rgba(255,255,255,0.08);
+
+    padding: 12px;
+
+    border-radius: 10px;
+
+    margin-bottom: 20px;
+
+    line-height: 1.8;
+}
+
+/* ================= SHIPS ================= */
+
+.ship-panel h3 {
+
+    margin-bottom: 10px;
+}
+
+.ship-item {
+
+    padding: 12px;
+
+    margin-bottom: 10px;
+
+    background:
+            rgba(30,144,255,0.15);
+
+    border-left:
+            4px solid #1e90ff;
+
+    border-radius: 8px;
+
+    cursor: pointer;
+
+    transition: 0.2s;
+}
+
+.ship-item:hover {
+
+    transform: translateX(5px);
+
+    background:
+            rgba(30,144,255,0.3);
+}
+
+.ship-item.selected {
+
+    background:
+            rgba(0,255,150,0.2);
+
+    border-left:
+            4px solid #00ff99;
+}
+
+/* ================= BUTTONS ================= */
+
+.controls {
+
+    margin-top: 25px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 10px;
+}
+
+.controls button {
+
+    padding: 12px;
+
+    border: none;
+
+    border-radius: 10px;
+
+    background: #1e90ff;
+
+    color: white;
+
+    font-weight: bold;
+
+    cursor: pointer;
+
+    transition: 0.2s;
+}
+
+.controls button:hover {
+
+    background: #63b3ff;
+}
+
+/* ================= MAIN ================= */
+
+.main {
+
+    flex: 1;
+
+    display: flex;
+
+    flex-direction: column;
+
+    justify-content: center;
+
+    align-items: center;
+}
+
+/* ================= STATUS ================= */
+
+.status {
+
+    margin-bottom: 20px;
+
+    padding: 12px 20px;
+
+    border-radius: 20px;
+
+    background:
+            rgba(255,255,255,0.1);
+
+    font-size: 18px;
+}
+
+/* ================= BOARD ================= */
+
+.board {
+
+    display: grid;
+
+    gap: 3px;
+
+    background:
+            rgba(255,255,255,0.05);
+
+    padding: 15px;
+
+    border-radius: 15px;
+}
+
+/* ================= CELL ================= */
+
+.cell {
+
+    width: 42px;
+
+    height: 42px;
+
+    background:
+            linear-gradient(
+                    145deg,
+                    #0f3460,
+                    #16213e
+            );
+
+    border:
+            1px solid rgba(30,144,255,0.4);
+
+    border-radius: 5px;
+
+    transition: 0.15s;
+}
+
+.cell:hover {
+
+    background: #1e90ff;
+
+    cursor: pointer;
+}
+
+/* ship placed */
+
+.cell.ship {
+
+    background: #00c896;
+}

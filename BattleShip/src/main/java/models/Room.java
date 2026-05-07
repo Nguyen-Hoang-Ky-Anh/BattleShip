@@ -6,37 +6,23 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Room {
+
     private String roomId;
-    private String hostId;
-    private Map<String, Session> players = new HashMap<>();
+
+    private String hostUsername;
+
+    private Map<String, Player> players = new HashMap<>();
+
+    private Map<String, Session> sessions = new HashMap<>();
+
     private int rows;
-    private int cols;
+    private int columns;
 
-    public Room(String roomId, String hostId, int rows, int cols) {
+    public Room(String roomId, String hostUsername, int rows, int columns) {
         this.roomId = roomId;
-        this.hostId = hostId;
+        this.hostUsername = hostUsername;
         this.rows = rows;
-        this.cols = cols;
-    }
-
-    public String getRoomId() {
-        return roomId;
-    }
-
-    public String getHostId() {
-        return hostId;
-    }
-
-    public Map<String, Session> getPlayers() {
-        return players;
-    }
-
-    public void addPlayer(String userId, Session session) {
-        players.put(userId, session);
-    }
-
-    public void removePlayer(String userId) {
-        players.remove(userId);
+        this.columns = columns;
     }
 
     public int getRows() {
@@ -48,10 +34,32 @@ public class Room {
     }
 
     public int getCols() {
-        return cols;
+        return columns;
     }
 
-    public void setCols(int cols) {
-        this.cols = cols;
+    public void setColumns(int columns) {
+        this.columns = columns;
+    }
+
+    public String getRoomId() {
+        return roomId;
+    }
+
+    public Map<String, Player> getPlayers() {
+        return players;
+    }
+
+    public Map<String, Session> getSessions() {
+        return sessions;
+    }
+
+    public void addPlayer(Player player, Session session) {
+        players.put(player.getUsername(), player);
+        sessions.put(player.getUsername(), session);
+    }
+
+    public void removePlayer(String username) {
+        players.remove(username);
+        sessions.remove(username);
     }
 }
