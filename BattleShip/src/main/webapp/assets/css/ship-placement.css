@@ -221,3 +221,26 @@ body {
 
     background: #00c896;
 }
+/* Preview khi kéo thuyền qua board */
+.cell.preview-valid {
+    background-color: rgba(0, 255, 100, 0.4) !important;
+}
+
+.cell.preview-invalid {
+    background-color: rgba(255, 50, 50, 0.4) !important;
+}
+
+/* Ô đã đặt thuyền */
+.cell.occupied {
+    background-color: rgba(0, 150, 255, 0.15);
+}
+
+/* Ship panel item khi bị ẩn */
+.ship-item {
+    cursor: grab;
+    user-select: none;
+}
+
+.ship-item:active {
+    cursor: grabbing;
+}

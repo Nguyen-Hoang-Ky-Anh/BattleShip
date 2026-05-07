@@ -2,10 +2,16 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>BattleShip Game</title>
+    <title>Choose Difficult</title>
 
     <!-- CSS -->
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/home.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/select-difficult.css">
+
+<%--    BootStrap icon--%>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+<%--    BootStrap lib--%>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" >
 </head>
 
 <body>
@@ -36,17 +42,10 @@
     <div class="title">⚓ BATTLESHIP</div>
 
     <div class="menu">
-        <form action="${pageContext.request.contextPath}/pre-game" method="get">
-            <button type="submit">🤖 PVE Mode</button>
-        </form>
-
-        <form action="${pageContext.request.contextPath}/pvp" method="get">
-            <button type="submit">🧑‍🤝‍🧑 PVP Mode</button>
-        </form>
-
-        <form action="${pageContext.request.contextPath}/how-to-play" method="get">
-            <button type="submit">📘 How To Play</button>
-        </form>
+            <a href="${pageContext.request.contextPath}/pre-game/easy">🟢 Easy</a>
+            <a href="${pageContext.request.contextPath}/pre-game/normal">🟡 Normal</a>
+            <a href="${pageContext.request.contextPath}/pre-game/hard">🔴 Hard</a>
+            <a href="${pageContext.request.contextPath}/pre-game/back"> <i class="bi bi-arrow-return-left fs-4"></i> </a>
     </div>
 </div>
 
@@ -77,6 +76,7 @@
 
 <!-- JS -->
 <script src="${pageContext.request.contextPath}/assets/js/home.js"></script>
-
+<%--BootStrap --%>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" ></script>
 </body>
 </html>

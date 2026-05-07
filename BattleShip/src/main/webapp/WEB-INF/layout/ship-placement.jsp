@@ -4,8 +4,10 @@
 <head>
     <title>Ship Placement</title>
 
-    <link rel="stylesheet"
-          href="${pageContext.request.contextPath}/assets/css/ship-placement.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/ship-placement.css">
+    <%--    BootStrap lib--%>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
 </head>
 
 <body>
@@ -20,37 +22,37 @@
         </div>
 
         <div class="room-info">
-            <div>Room: <b>${roomId}</b></div>
             <div>Player: <b>${userId}</b></div>
         </div>
 
         <div class="ship-panel">
 
             <h3>🚢 Ships</h3>
-
-            <div class="ship-item selected"
+<%--            selected--%>
+            <div class="ship-item "
                  data-size="5">
-                Carrier (5)
+                <img id="ship-battle-4" src="${pageContext.request.contextPath}/assets/images/ship_4_ngang.png" width="150" height="50" alt="Đây là ship 4"/>
+                <div> Carrier (5)</div>
             </div>
 
             <div class="ship-item"
                  data-size="4">
-                Battleship (4)
+                <img src="${pageContext.request.contextPath}/assets/images/ship_3_ngang.png" width="150" height="50" alt="Đây là ship 4"/>
+                <div> Battleship (4)</div>
             </div>
 
             <div class="ship-item"
                  data-size="3">
-                Cruiser (3)
-            </div>
-
-            <div class="ship-item"
-                 data-size="3">
-                Submarine (3)
+                <img src="${pageContext.request.contextPath}/assets/images/ship_2_ngang.png" width="150" height="50" alt="Đây là ship 4"/>
+               <div> Submarine (3)</div>
             </div>
 
             <div class="ship-item"
                  data-size="2">
-                Destroyer (2)
+                <div class="img_ship" draggable="true">
+                <img src="${pageContext.request.contextPath}/assets/images/ship_1_ngang.png" width="150" height="50" alt="Đây là ship 4"/>
+                </div>
+                <div>Destroyer (2)</div>
             </div>
 
         </div>
@@ -68,7 +70,7 @@
             <button onclick="confirmPlacement()">
                 ✅ Confirm
             </button>
-
+            <button  onclick="window.history.back()"><i class="bi bi-arrow-return-left " style="font-size: 24px"></i></button>
         </div>
 
     </div>
@@ -93,14 +95,18 @@
 
 </div>
 
-<script>
+<%--<script>--%>
+<%--    const rows = ${rows};--%>
+<%--    const cols = ${cols};--%>
+<%--</script>--%>
 
-    const rows = ${rows};
-    const cols = ${cols};
+<script  src="${pageContext.request.contextPath}/assets/js/placement.js"></script>
+<script  src="${pageContext.request.contextPath}/assets/js/shipdraw.js"></script>
+
+<script>
+<%--    Khởi tạo lưới game--%>
+    createBoard(10, 10, "board");
 
 </script>
-
-<script src="${pageContext.request.contextPath}/assets/js/placement.js"></script>
-
 </body>
 </html>
