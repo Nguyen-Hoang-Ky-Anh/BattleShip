@@ -123,3 +123,30 @@ body {
     background: #1e90ff;
     cursor: pointer;
 }
+
+.room-actions {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.room-actions button {
+    padding: 10px;
+    border: none;
+    border-radius: 8px;
+    background: #1e90ff;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.room-actions button:hover {
+    background: #63b3ff;
+}
+
+.room-actions button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}

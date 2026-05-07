@@ -1,138 +1,392 @@
 package models;
 
+import enums.PlayerRole;
 import jakarta.websocket.Session;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class RoomManager {
 
-    private static final Map<String, Room> rooms = new HashMap<>();
-    private static final Map<Session, String> sessionUserMap = new HashMap<>();
-    private static final Map<Session, String> sessionRoomMap = new HashMap<>();
+    // ================= ROOM STORAGE =================
 
-    // ================= CREATE =================
-    public static synchronized String createRoom(String hostId, int rows, int cols) {
-        String roomId = "ROOM_" + System.currentTimeMillis();
+    private static final Map<String, Room> rooms =
+            new ConcurrentHashMap<>();
 
-        Room room = new Room(roomId, hostId, rows, cols);
+    // session -> username
+    private static final Map<Session, String> sessionUserMap =
+            new ConcurrentHashMap<>();
+
+    // session -> roomId
+    private static final Map<Session, String> sessionRoomMap =
+            new ConcurrentHashMap<>();
+
+
+    // =========================================================
+    // CREATE ROOM
+    // =========================================================
+
+    public static synchronized String createRoom(
+            String hostUsername,
+            int rows,
+            int cols
+    ) {
+
+        String roomId =
+                "ROOM_" + System.currentTimeMillis();
+
+        Room room =
+                new Room(roomId, hostUsername, rows, cols);
+
         rooms.put(roomId, room);
 
         return roomId;
     }
 
-    // ================= JOIN =================
-    public static synchronized boolean joinRoom(String roomId, String userId, Session session) {
+
+    // =========================================================
+    // JOIN ROOM
+    // =========================================================
+
+    public static synchronized boolean joinRoom(
+            String roomId,
+            String username,
+            Session session
+    ) {
+
         Room room = rooms.get(roomId);
 
+        // room not found
         if (room == null) {
-            send(session, "ERROR|Room not found");
+
+            send(session,
+                    "ERROR|Room not found");
+
             return false;
         }
 
+        // already joined
         if (sessionRoomMap.containsKey(session)) {
+
+            send(session,
+                    "ERROR|Already joined room");
+
             return false;
         }
 
-        userId = userId.trim();
+        username = username.trim();
 
-        if (userId.length() < 2 || userId.length() > 20) {
-            send(session, "ERROR|Invalid username");
+        // invalid username
+        if (username.length() < 2
+                || username.length() > 20) {
+
+            send(session,
+                    "ERROR|Invalid username");
+
             return false;
         }
 
-        if (room.getPlayers().containsKey(userId)) {
-            send(session, "ERROR|Username already taken");
+        // duplicate username
+        if (room.getPlayers().containsKey(username)) {
+
+            send(session,
+                    "ERROR|Username already taken");
+
             return false;
         }
 
+        // room full
         if (room.getPlayers().size() >= 2) {
-            send(session, "ERROR|Room is full");
+
+            send(session,
+                    "ERROR|Room is full");
+
             return false;
         }
 
-        room.addPlayer(userId, session);
+        // ================= ROLE =================
 
-        sessionUserMap.put(session, userId);
+        PlayerRole role =
+                room.getPlayers().isEmpty()
+                        ? PlayerRole.HOST
+                        : PlayerRole.PLAYER;
+
+        // ================= CREATE PLAYER =================
+
+        Player player =
+                new Player(
+                        username,
+                        role,
+                        false
+                );
+
+        // ================= ADD PLAYER =================
+
+        room.addPlayer(player, session);
+
+        // ================= STORE SESSION =================
+
+        sessionUserMap.put(session, username);
+
         sessionRoomMap.put(session, roomId);
 
-        broadcast(roomId, "ROOM_STATE|" + String.join(",", room.getPlayers().keySet()));
+        // ================= BROADCAST =================
+
+        broadcastRoomState(roomId);
 
         return true;
     }
 
-    // ================= GET =================
 
-    public static String getPlayers(String roomId) {
-        Room room = rooms.get(roomId);
-        if (room == null) return "";
+    // =========================================================
+    // TOGGLE READY
+    // =========================================================
 
-        return String.join(",", room.getPlayers().keySet());
-    }
-
-    public static Room getRoom(String roomId) {
-        return rooms.get(roomId);
-    }
-
-    // ================= REMOVE =================
-    public static synchronized void removeSession(Session session) {
-        String roomId = sessionRoomMap.get(session);
-        String userId = sessionUserMap.get(session);
-
-        if (roomId == null || userId == null) return;
+    public static synchronized void toggleReady(
+            String roomId,
+            String username
+    ) {
 
         Room room = rooms.get(roomId);
 
-        if (room != null) {
-            room.removePlayer(userId);
+        if (room == null) return;
 
-            broadcast(roomId, "USER_LEFT|" + userId);
+        Player player =
+                room.getPlayers().get(username);
 
-            if (room.getPlayers().isEmpty()) {
-                rooms.remove(roomId);
+        if (player == null) return;
+
+        // host cannot ready
+        if (player.getRole() == PlayerRole.HOST) {
+            return;
+        }
+
+        player.setReady(!player.isReady());
+
+        broadcastRoomState(roomId);
+    }
+
+
+    // =========================================================
+    // START GAME
+    // =========================================================
+
+    public static synchronized void startGame(
+            String roomId,
+            String username
+    ) {
+
+        Room room = rooms.get(roomId);
+
+        if (room == null) return;
+
+        Player host =
+                room.getPlayers().get(username);
+
+        // only host can start
+        if (host == null
+                || host.getRole() != PlayerRole.HOST) {
+
+            return;
+        }
+
+        // must have 2 players
+        if (room.getPlayers().size() < 2) {
+
+            send(
+                    room.getSessions().get(username),
+                    "ERROR|Need 2 players"
+            );
+
+            return;
+        }
+
+        // all non-host must ready
+        for (Player p : room.getPlayers().values()) {
+
+            if (p.getRole() != PlayerRole.HOST
+                    && !p.isReady()) {
+
+                send(
+                        room.getSessions().get(username),
+                        "ERROR|Opponent not ready"
+                );
+
+                return;
             }
         }
 
-        sessionRoomMap.remove(session);
-        sessionUserMap.remove(session);
+        broadcast(roomId, "GAME_STARTED");
     }
 
-    // ================= SEND =================
-    private static void send(Session session, String msg) {
-        try {
-            if (session != null && session.isOpen()) {
-                session.getBasicRemote().sendText(msg);
+
+    // =========================================================
+    // REMOVE SESSION
+    // =========================================================
+
+    public static synchronized void removeSession(
+            Session session
+    ) {
+
+        String roomId =
+                sessionRoomMap.get(session);
+
+        String username =
+                sessionUserMap.get(session);
+
+        if (roomId == null || username == null) {
+            return;
+        }
+
+        Room room = rooms.get(roomId);
+
+        if (room == null) {
+            return;
+        }
+
+        Player removedPlayer =
+                room.getPlayers().get(username);
+
+        room.removePlayer(username);
+
+        // ================= HOST TRANSFER =================
+
+        if (!room.getPlayers().isEmpty()) {
+
+            boolean hasHost = false;
+
+            for (Player p : room.getPlayers().values()) {
+
+                if (p.getRole() == PlayerRole.HOST) {
+
+                    hasHost = true;
+                    break;
+                }
             }
+
+            // transfer host
+            if (!hasHost) {
+
+                Player nextHost =
+                        room.getPlayers()
+                                .values()
+                                .iterator()
+                                .next();
+
+                nextHost.setRole(PlayerRole.HOST);
+            }
+        }
+
+        // ================= REMOVE EMPTY ROOM =================
+
+        if (room.getPlayers().isEmpty()) {
+
+            rooms.remove(roomId);
+
+        } else {
+
+            broadcastRoomState(roomId);
+        }
+
+        sessionRoomMap.remove(session);
+
+        sessionUserMap.remove(session);
+
+        System.out.println(
+                username + " left room " + roomId
+        );
+    }
+
+
+    // =========================================================
+    // BROADCAST ROOM STATE
+    // =========================================================
+
+    public static void broadcastRoomState(
+            String roomId
+    ) {
+
+        Room room = rooms.get(roomId);
+
+        if (room == null) return;
+
+        StringBuilder sb =
+                new StringBuilder();
+
+        sb.append("ROOM_STATE|");
+
+        for (Player p : room.getPlayers().values()) {
+
+            sb.append(p.getUsername())
+                    .append(",")
+                    .append(p.getRole())
+                    .append(",")
+                    .append(p.isReady())
+                    .append(";");
+        }
+
+        broadcast(roomId, sb.toString());
+    }
+
+
+    // =========================================================
+    // BROADCAST
+    // =========================================================
+
+    public static void broadcast(
+            String roomId,
+            String msg
+    ) {
+
+        Room room = rooms.get(roomId);
+
+        if (room == null) return;
+
+        for (Session session :
+                room.getSessions().values()) {
+
+            send(session, msg);
+        }
+    }
+
+
+    // =========================================================
+    // SEND
+    // =========================================================
+
+    private static void send(
+            Session session,
+            String msg
+    ) {
+
+        try {
+
+            if (session != null
+                    && session.isOpen()) {
+
+                session.getBasicRemote()
+                        .sendText(msg);
+            }
+
         } catch (IOException e) {
+
             e.printStackTrace();
         }
     }
 
-    // ================= BROADCAST =================
-    public static void broadcast(String roomId, String msg) {
-        Room room = rooms.get(roomId);
-        if (room == null) return;
 
-        for (Session s : room.getPlayers().values()) {
-            send(s, msg);
-        }
-    }
+    // =========================================================
+    // GETTERS
+    // =========================================================
 
-    public static void broadcastExcept(String roomId, Session exclude, String msg) {
-        Room room = rooms.get(roomId);
-        if (room == null) return;
-
-        for (Session s : room.getPlayers().values()) {
-            if (!s.equals(exclude)) {
-                send(s, msg);
-            }
-        }
-    }
-
-    // ================= CHECK =================
     public static boolean exists(String roomId) {
+
         return rooms.containsKey(roomId);
+    }
+
+    public static Room getRoom(String roomId) {
+
+        return rooms.get(roomId);
     }
 }

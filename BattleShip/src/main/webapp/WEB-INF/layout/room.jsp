@@ -21,6 +21,30 @@
 
         <h3>👥 Players</h3>
         <ul id="playerList"></ul>
+
+        <div class="room-actions">
+
+            <button id="readyBtn"
+                    onclick="toggleReady()">
+
+                READY
+            </button>
+
+            <button id="startBtn"
+                    onclick="startGame()"
+                    style="display:none">
+
+                START GAME
+            </button>
+
+            <button id="leaveBtn"
+                    onclick="leaveRoom()"
+                    style="display:none">
+
+                LEAVE ROOM
+            </button>
+
+        </div>
     </div>
 
     <div class="main">
