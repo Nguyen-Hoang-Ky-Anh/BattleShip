@@ -1,5 +1,7 @@
 package models;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -8,6 +10,8 @@ public class BattleState {
     private String currentTurn;
     private String winner;
     private Map<String, Board> playerBoards = new ConcurrentHashMap<>();
+    private List<String> shotHistory =
+            new ArrayList<>();
 
     public boolean isStarted() {
         return isStarted;
@@ -39,5 +43,13 @@ public class BattleState {
 
     public void setPlayerBoards(Map<String, Board> playerBoards) {
         this.playerBoards = playerBoards;
+    }
+
+    public List<String> getShotHistory() {
+        return shotHistory;
+    }
+
+    public void setShotHistory(List<String> shotHistory) {
+        this.shotHistory = shotHistory;
     }
 }

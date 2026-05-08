@@ -60,3 +60,27 @@ function createGrid(rows, cols) {
         grid.appendChild(cell);
     }
 }
+
+function createBoardForBattle(boardId) {
+
+    const board =
+        document.getElementById(boardId);
+
+    board.innerHTML = "";
+
+    for(let r = 0; r < 10; r++) {
+
+        for(let c = 0; c < 10; c++) {
+
+            const cell =
+                document.createElement("div");
+
+            cell.className = "cell";
+
+            cell.dataset.row = r;
+            cell.dataset.col = c;
+
+            board.appendChild(cell);
+        }
+    }
+}

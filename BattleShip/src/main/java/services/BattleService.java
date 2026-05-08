@@ -104,24 +104,34 @@ public class BattleService {
             String attacker,
             int row,
             int col
-    ) {
-
+    )
+    {
         Room room = RoomManager.getRoom(roomId);
+        System.out.println("roomId = " + roomId);
+        System.out.println("attacker = " + attacker);
+        System.out.println("row = " + row + ", col = " + col);
+        System.out.println("room = " + room);
+        System.out.println("phase = " + (room != null ? room.getPhase() : "null"));
 
         if (room == null) return;
+
+        Player player = room.getPlayers().get(attacker);
 
         if (room.getPhase() != GamePhase.BATTLE) {
             return;
         }
 
-        BattleState battle =
-                room.getBattleState();
+        BattleState battle = room.getBattleState();
+
+        System.out.println("battleState = " + battle);
+        System.out.println("currentTurn = " + (battle != null ? battle.getCurrentTurn() : "null"));
+        System.out.println("boards = " + (battle != null ? battle.getPlayerBoards().keySet() : "null"));
 
         if (!battle.getCurrentTurn()
                 .equals(attacker)) {
 
             send(
-                    room.getSessions().get(attacker),
+                    player.getSession(),
                     "ERROR|Not your turn"
             );
 
@@ -131,12 +141,27 @@ public class BattleService {
         String opponent =
                 getOpponent(room, attacker);
 
-        Board enemyBoard =
-                battle.getPlayerBoards()
-                        .get(opponent);
+        Board enemyBoard = battle.getPlayerBoards().get(opponent);
+
+        if(enemyBoard == null) {
+            System.out.println("ENEMY BOARD NULL");
+            return;
+        }
 
         String result =
                 enemyBoard.handleShot(row, col);
+
+        battle.getShotHistory().add(
+                attacker + "|" +
+                        row + "|" +
+                        col + "|" +
+                        result
+        );
+
+        if (result.equals("INVALID") || result.equals("ALREADY_SHOT")) {
+            send(player.getSession(), "ERROR|" + result);
+            return; // don't switch turn, don't broadcast SHOT_RESULT
+        }
 
         broadcast(
                 roomId,
@@ -165,12 +190,24 @@ public class BattleService {
 
         // ================= SWITCH TURN =================
 
-        battle.setCurrentTurn(opponent);
+        if(result.equals("MISS")) {
 
-        broadcast(
-                roomId,
-                "TURN_CHANGED|" + opponent
-        );
+            battle.setCurrentTurn(opponent);
+
+            broadcast(
+                    roomId,
+                    "TURN_CHANGED|" + opponent
+            );
+
+        } else {
+
+            battle.setCurrentTurn(attacker);
+
+            broadcast(
+                    roomId,
+                    "TURN_CHANGED|" + attacker
+            );
+        }
     }
 
     // =========================================================
@@ -239,6 +276,12 @@ public class BattleService {
 
     public static Board parseBoard(String json) {
 
+        if (json == null || json.isBlank()) {
+            Board empty = new Board();
+            empty.setShips(List.of());
+            return empty;
+        }
+
         Gson gson = new Gson();
 
         Type shipListType =
@@ -247,9 +290,24 @@ public class BattleService {
         List<Ship> ships =
                 gson.fromJson(json, shipListType);
 
+        if (ships == null) ships = List.of();
+
+        for (Ship ship : ships) {
+            ship.initializeHealth();
+        }
+
         Board board = new Board();
 
+        for (Ship ship : ships) {
+            for (Position pos : ship.getCells()) {
+                int row = pos.getR();
+                int col = pos.getC();
+                board.getGrid()[row][col].setShip(ship);
+            }
+        }
+
         board.setShips(ships);
+        board.rebuildGrid();
 
         return board;
     }

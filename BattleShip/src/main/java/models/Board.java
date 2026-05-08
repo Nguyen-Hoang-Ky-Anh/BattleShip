@@ -51,19 +51,20 @@ public class Board {
 			return "ALREADY_SHOT";
 
 		if (cell.hasShip()) {
-			cell.updateState(3); // HIT
+            cell.updateState(Cell.HIT); // HIT
 			Ship s = cell.getShip();
 			s.decreaseHealth();
 			return s.isSunk() ? "SUNK" : "HIT";
 		} else {
-			cell.updateState(2); // MISS
+			cell.updateState(Cell.MISS); // MISS
 			return "MISS";
 		}
 	}
 
-	public boolean isAllSunk() {
-		return ships.stream().allMatch(Ship::isSunk);
-	}
+    public boolean isAllSunk() {
+        if (ships == null || ships.isEmpty()) return false;
+        return ships.stream().allMatch(Ship::isSunk);
+    }
 
 	public Cell[][] getGrid() {
 		return grid;
@@ -75,5 +76,32 @@ public class Board {
 
     public void setShips(List<Ship> ships) {
         this.ships = ships;
+    }
+
+    public void rebuildGrid() {
+
+        // reset grid
+        grid = new Cell[SIZE][SIZE];
+
+        for(int r = 0; r < SIZE; r++) {
+
+            for(int c = 0; c < SIZE; c++) {
+
+                grid[r][c] =
+                        new Cell(r, c);
+            }
+        }
+
+        // place ships into grid
+        for(Ship ship : ships) {
+
+            for(Position pos : ship.getCells()) {
+
+                int r = pos.getR();
+                int c = pos.getC();
+
+                grid[r][c].setShip(ship);
+            }
+        }
     }
 }
