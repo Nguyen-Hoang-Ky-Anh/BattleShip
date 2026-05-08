@@ -1,30 +1,110 @@
 package models;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Ship {
-	private String id;
-	private int size;
-	private int health;
 
-	public Ship(String id, int size) {
-		this.id = id;
-		this.size = size;
-		this.health = size;
-	}
+    private String name;
 
-	public void decreaseHealth() {
-		if (health > 0)
-			health--;
-	}
+    private int size;
 
-	public boolean isSunk() {
-		return health <= 0;
-	}
+    private int health;
 
-	public int getSize() {
-		return size;
-	}
+    private String direction;
 
-	public String getId() {
-		return id;
-	}
+    private List<Position> cells =
+            new ArrayList<>();
+
+
+    // =====================================================
+    // CONSTRUCTORS
+    // =====================================================
+
+    public Ship() {
+    }
+
+    public Ship(
+            String name,
+            int size
+    ) {
+
+        this.name = name;
+        this.size = size;
+        this.health = size;
+    }
+
+
+    // =====================================================
+    // GAME LOGIC
+    // =====================================================
+
+    public void initializeHealth() {
+
+        this.health = this.size;
+    }
+
+    public void decreaseHealth() {
+
+        if (health > 0) {
+            health--;
+        }
+    }
+
+    public boolean isSunk() {
+
+        return health <= 0;
+    }
+
+
+    // =====================================================
+    // GETTERS / SETTERS
+    // =====================================================
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getSize() {
+        return size;
+    }
+
+    public void setSize(int size) {
+
+        this.size = size;
+
+        this.health = size;
+    }
+
+    public int getHealth() {
+        return health;
+    }
+
+    public void setHealth(int health) {
+        this.health = health;
+    }
+
+    public String getDirection() {
+        return direction;
+    }
+
+    public void setDirection(
+            String direction
+    ) {
+        this.direction = direction;
+    }
+
+    public List<Position> getCells() {
+        return cells;
+    }
+
+    public void setCells(
+            List<Position> cells
+    ) {
+        this.cells = cells;
+    }
 }

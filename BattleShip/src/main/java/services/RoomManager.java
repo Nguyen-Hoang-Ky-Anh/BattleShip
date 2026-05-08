@@ -8,6 +8,7 @@ import models.Player;
 import models.Room;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -223,7 +224,7 @@ public class RoomManager {
         if (room.getPlayers().size() < 2) {
 
             send(
-                    room.getSessions().get(username),
+                    host.getSession(),
                     "ERROR|Need 2 players"
             );
 
@@ -237,7 +238,7 @@ public class RoomManager {
                     && !p.isReady()) {
 
                 send(
-                        room.getSessions().get(username),
+                        host.getSession(),
                         "ERROR|Opponent not ready"
                 );
 
@@ -279,8 +280,6 @@ public class RoomManager {
         if(player != null) {
 
             player.setConnected(false);
-
-            player.setSession(null);
 
             System.out.println(
                     username +
@@ -341,13 +340,14 @@ public class RoomManager {
 
         if(room == null) return;
 
-        for(Player player :
-                room.getPlayers().values()) {
+        var players =
+                new ArrayList<>(
+                        room.getPlayers().values()
+                );
 
-            Session session =
-                    player.getSession();
+        for(Player player : players) {
 
-            send(session, msg);
+            send(player.getSession(), msg);
         }
     }
 
@@ -361,14 +361,26 @@ public class RoomManager {
             String msg
     ) {
 
+        if(session == null) {
+            return;
+        }
+
         try {
 
-            if (session != null
-                    && session.isOpen()) {
+            synchronized (session) {
 
-                session.getBasicRemote()
-                        .sendText(msg);
+                if(session.isOpen()) {
+
+                    session.getBasicRemote()
+                            .sendText(msg);
+                }
             }
+
+        } catch (IllegalStateException e) {
+
+            System.out.println(
+                    "Skip closed session"
+            );
 
         } catch (IOException e) {
 

@@ -77,3 +77,16 @@ body{
     overflow-y:auto;
     border-radius:10px;
 }
+
+.cell.ship {
+    background: #4caf50;
+    color: white;
+}
+
+.cell.hit {
+    background: red;
+}
+
+.cell.miss {
+    background: #ddd;
+}
