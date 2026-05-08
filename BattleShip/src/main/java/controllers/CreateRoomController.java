@@ -4,7 +4,7 @@ import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
-import models.RoomManager;
+import services.RoomManager;
 
 import java.io.IOException;
 

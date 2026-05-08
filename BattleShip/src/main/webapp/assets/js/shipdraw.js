@@ -8,7 +8,7 @@ const SHIP_CATALOG = [
         direction: "horizontal",
         images: {
             horizontal: "ship_4_ngang.png",
-            vertical:   "ship_4_doc.png"
+            vertical: "ship_4_doc.png"
         }
     },
     {
@@ -19,7 +19,7 @@ const SHIP_CATALOG = [
         direction: "horizontal",
         images: {
             horizontal: "ship_3_ngang.png",
-            vertical:   "ship_3_doc.png"
+            vertical: "ship_3_doc.png"
         }
     },
     {
@@ -30,7 +30,7 @@ const SHIP_CATALOG = [
         direction: "horizontal",
         images: {
             horizontal: "ship_2_ngang.png",
-            vertical:   "ship_2_doc.png"
+            vertical: "ship_2_doc.png"
         }
     },
     {
@@ -41,7 +41,7 @@ const SHIP_CATALOG = [
         direction: "horizontal",
         images: {
             horizontal: "ship_1_ngang.png",
-            vertical:   "ship_1_doc.png"
+            vertical: "ship_1_doc.png"
         }
     }
 ];
@@ -49,7 +49,7 @@ const SHIP_CATALOG = [
 // ========== STATE ==========
 let isLocked = false; // thêm dòng này
 let isHorizontal = true;
-let placedShips  = []; // ship objects đã đặt
+let placedShips = []; // ship objects đã đặt
 let occupiedCells = new Set(); // "r,c"
 let ghost = null;
 let draggingFromPanel = false;
@@ -65,7 +65,7 @@ function getContextPath() {
 
 function getImageUrl(ship) {
     const dir = ship.direction === "horizontal" ? "horizontal" : "vertical";
-    return `${getContextPath()}/assets/images/${ship.images[dir]}`;
+    return contextPath + `/assets/images/${ship.images[dir]}`;
 }
 
 function getCell(r, c) {
@@ -75,13 +75,13 @@ function getCell(r, c) {
 function getCells(r, c, size, horizontal) {
     const cells = [];
     for (let i = 0; i < size; i++) {
-        cells.push(horizontal ? { r, c: c + i } : { r: r + i, c });
+        cells.push(horizontal ? {r, c: c + i} : {r: r + i, c});
     }
     return cells;
 }
 
 function isValidPlacement(cells) {
-    return cells.every(({ r, c }) =>
+    return cells.every(({r, c}) =>
         r >= 0 && r < 10 && c >= 0 && c < 10 && !occupiedCells.has(`${r},${c}`)
     );
 }
@@ -107,7 +107,7 @@ function rotateShip() {
         // Cập nhật direction trên ship tạm thời
         draggingShip.direction = isHorizontal ? "horizontal" : "vertical";
 
-        ghost.style.width  = isHorizontal ? `${draggingShip.size * CELL_SIZE}px` : `${CELL_SIZE}px`;
+        ghost.style.width = isHorizontal ? `${draggingShip.size * CELL_SIZE}px` : `${CELL_SIZE}px`;
         ghost.style.height = isHorizontal ? `${CELL_SIZE}px` : `${draggingShip.size * CELL_SIZE}px`;
 
         const img = ghost.querySelector("img");
@@ -122,8 +122,8 @@ function resetBoard() {
     if (isLocked) return;
     // Reset tất cả ship trong catalog
     SHIP_CATALOG.forEach(ship => {
-        ship.placed    = false;
-        ship.cells     = [];
+        ship.placed = false;
+        ship.cells = [];
         ship.direction = "horizontal";
     });
 
@@ -142,59 +142,55 @@ function resetBoard() {
 
 // ========== CONFIRM ==========
 function confirmPlacement() {
-    function confirmPlacement() {
-        const allPlaced = SHIP_CATALOG.every(s => s.placed);
-        if (!allPlaced) {
-            document.getElementById("placementStatus").textContent = "⚠ Place all ships first!";
-            return;
-        }
 
-        isLocked = true;
+    const allPlaced =
+        SHIP_CATALOG.every(s => s.placed);
 
-        const shipData = placedShips.map(s => ({
-            name:      s.name,
-            size:      s.size,
-            direction: s.direction,
-            cells:     s.cells
-        }));
-        // Sửa lại URL kéo nó về controller
-        fetch(`${getContextPath()}/api/placement/confirm`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                userId: document.querySelector("b")?.innerText || "",
-                ships:  shipData
-            })
-        })
-            .then(res => {
-                if (!res.ok) throw new Error("Server error: " + res.status);
-                return res.json();
-            })
-            .then(data => {
-                console.log("Server response:", data);
-                document.getElementById("placementStatus").textContent = "✅ Confirmed!";
-                // TODO: chuyển sang màn hình game
-            })
-            .catch(err => {
-                console.error("Confirm failed:", err);
-                isLocked = false; // unlock nếu lỗi để thử lại
-                document.getElementById("placementStatus").textContent = "❌ Failed! Try again.";
-            });
+    if (!allPlaced) {
+
+        document.getElementById(
+            "placementStatus"
+        ).textContent =
+            "⚠ Place all ships first!";
+
+        return;
     }
+
+    isLocked = true;
+
+    const shipData = placedShips.map(s => ({
+        name: s.name,
+        size: s.size,
+        direction: s.direction,
+        cells: s.cells
+    }));
+
+    socket.send(
+        "CONFIRM_PLACEMENT|" +
+        roomId + "|" +
+        userId + "|" +
+        JSON.stringify(shipData)
+    );
+
+    document.getElementById(
+        "placementStatus"
+    ).textContent =
+        "⏳ Waiting opponent...";
 }
 
 // ========== DRAG FROM PANEL ==========
 function startDragFromPanel(e, ship, panelItem) {
     draggingFromPanel = true;
-    draggingShip = { ...ship }; // clone để không sửa catalog gốc khi đang kéo
+    draggingShip = {...ship}; // clone để không sửa catalog gốc khi đang kéo
     draggingShip.direction = isHorizontal ? "horizontal" : "vertical";
     if (isLocked) return;
     panelItem.style.visibility = "hidden";
     createGhost(e, draggingShip);
 
-    function onMouseMove(ev) { moveGhost(ev); highlightCells(ev); }
+    function onMouseMove(ev) {
+        moveGhost(ev);
+        highlightCells(ev);
+    }
 
     function onMouseUp(ev) {
         document.removeEventListener("mousemove", onMouseMove);
@@ -220,14 +216,17 @@ function startDragFromBoard(e, ship) {
     draggingShip = ship;
 
     // Snapshot vị trí và hướng CŨ trước khi làm gì
-    const oldCells     = [...ship.cells];
+    const oldCells = [...ship.cells];
     const oldDirection = ship.direction;
 
     isHorizontal = ship.direction === "horizontal";
     removePlacedShip(ship);
     createGhost(e, ship);
 
-    function onMouseMove(ev) { moveGhost(ev); highlightCells(ev); }
+    function onMouseMove(ev) {
+        moveGhost(ev);
+        highlightCells(ev);
+    }
 
     function onMouseUp(ev) {
         document.removeEventListener("mousemove", onMouseMove);
@@ -237,19 +236,19 @@ function startDragFromBoard(e, ship) {
         if (!dropped) {
             // Khôi phục đúng cells và direction cũ
             draggingShip.direction = oldDirection;
-            draggingShip.cells     = oldCells;
+            draggingShip.cells = oldCells;
             isHorizontal = oldDirection === "horizontal";
 
             // Cập nhật catalog gốc
             const original = SHIP_CATALOG.find(s => s.name === draggingShip.name);
             if (original) {
                 original.direction = oldDirection;
-                original.cells     = oldCells;
-                original.placed    = true;
+                original.cells = oldCells;
+                original.placed = true;
             }
 
             // Khôi phục occupiedCells
-            oldCells.forEach(({ r, c }) => occupiedCells.add(`${r},${c}`));
+            oldCells.forEach(({r, c}) => occupiedCells.add(`${r},${c}`));
             placedShips.push(draggingShip);
             placeShipOnBoard(draggingShip);
         }
@@ -270,16 +269,16 @@ function createGhost(e, ship) {
     ghost.dataset.size = ship.size;
 
     const h = ship.direction === "horizontal";
-    ghost.style.width    = h ? `${ship.size * CELL_SIZE}px` : `${CELL_SIZE}px`;
-    ghost.style.height   = h ? `${CELL_SIZE}px` : `${ship.size * CELL_SIZE}px`;
+    ghost.style.width = h ? `${ship.size * CELL_SIZE}px` : `${CELL_SIZE}px`;
+    ghost.style.height = h ? `${CELL_SIZE}px` : `${ship.size * CELL_SIZE}px`;
     ghost.style.position = "fixed";
     ghost.style.pointerEvents = "none";
-    ghost.style.zIndex   = "9999";
-    ghost.style.opacity  = "0.75";
+    ghost.style.zIndex = "9999";
+    ghost.style.opacity = "0.75";
 
     const img = document.createElement("img");
     img.src = getImageUrl(ship);
-    img.style.width  = "100%";
+    img.style.width = "100%";
     img.style.height = "100%";
     ghost.appendChild(img);
 
@@ -292,11 +291,14 @@ function moveGhost(e) {
     const w = parseInt(ghost.style.width);
     const h = parseInt(ghost.style.height);
     ghost.style.left = `${e.clientX - w / 2}px`;
-    ghost.style.top  = `${e.clientY - h / 2}px`;
+    ghost.style.top = `${e.clientY - h / 2}px`;
 }
 
 function removeGhost() {
-    if (ghost) { ghost.remove(); ghost = null; }
+    if (ghost) {
+        ghost.remove();
+        ghost = null;
+    }
 }
 
 // ========== PREVIEW HIGHLIGHT ==========
@@ -314,7 +316,7 @@ function highlightCells(e) {
 
     // Chỉ highlight những ô nằm trong board
     const valid = isValidPlacement(cells);
-    cells.forEach(({ r, c }) => {
+    cells.forEach(({r, c}) => {
         if (r < 0 || r >= 10 || c < 0 || c >= 10) return; // bỏ qua ô ngoài board
         const cell = getCell(r, c);
         if (cell) cell.classList.add(valid ? "preview-valid" : "preview-invalid");
@@ -343,20 +345,20 @@ function tryDrop(e, ship) {
     if (!isValidPlacement(cells)) return false;
 
     // Cập nhật ship object
-    ship.cells  = cells;
+    ship.cells = cells;
     ship.placed = true;
 
     // Cập nhật catalog gốc
     const original = SHIP_CATALOG.find(s => s.name === ship.name);
     if (original) {
-        original.placed    = true;
-        original.cells     = cells;
+        original.placed = true;
+        original.cells = cells;
         original.direction = ship.direction;
     }
 
     placeShipOnBoard(ship);
     placedShips.push(ship);
-    cells.forEach(({ r, c }) => occupiedCells.add(`${r},${c}`));
+    cells.forEach(({r, c}) => occupiedCells.add(`${r},${c}`));
 
     if (draggingFromPanel) {
         const panelItem = document.querySelector(`.ship-item[data-size="${ship.size}"]`);
@@ -368,9 +370,9 @@ function tryDrop(e, ship) {
 
 // ========== PLACE ON BOARD ==========
 function placeShipOnBoard(ship) {
-    const { cells, direction, size } = ship;
+    const {cells, direction, size} = ship;
 
-    cells.forEach(({ r, c }) => {
+    cells.forEach(({r, c}) => {
         const cell = getCell(r, c);
         if (cell) cell.classList.add("occupied");
     });
@@ -381,13 +383,13 @@ function placeShipOnBoard(ship) {
     const h = direction === "horizontal";
     const img = document.createElement("img");
     img.src = getImageUrl(ship);
-    img.style.position    = "absolute";
+    img.style.position = "absolute";
     img.style.pointerEvents = "none";
-    img.style.width       = h ? `${size * CELL_SIZE}px` : `${CELL_SIZE}px`;
-    img.style.height      = h ? `${CELL_SIZE}px` : `${size * CELL_SIZE}px`;
-    img.style.top         = "0";
-    img.style.left        = "0";
-    img.style.zIndex      = "10";
+    img.style.width = h ? `${size * CELL_SIZE}px` : `${CELL_SIZE}px`;
+    img.style.height = h ? `${CELL_SIZE}px` : `${size * CELL_SIZE}px`;
+    img.style.top = "0";
+    img.style.left = "0";
+    img.style.zIndex = "10";
 
     first.style.position = "relative";
     first.style.overflow = "visible";
@@ -396,12 +398,12 @@ function placeShipOnBoard(ship) {
     first.addEventListener("mousedown", (e) => {
         const found = placedShips.find(s => s.cells[0].r === cells[0].r && s.cells[0].c === cells[0].c);
         if (found) startDragFromBoard(e, found);
-    }, { once: true });
+    }, {once: true});
 }
 
 // ========== REMOVE FROM BOARD ==========
 function removePlacedShip(ship) {
-    ship.cells.forEach(({ r, c }) => {
+    ship.cells.forEach(({r, c}) => {
         occupiedCells.delete(`${r},${c}`);
         const cell = getCell(r, c);
         if (cell) {
@@ -412,8 +414,11 @@ function removePlacedShip(ship) {
 
     placedShips = placedShips.filter(s => s !== ship);
     ship.placed = false;
-    ship.cells  = [];
+    ship.cells = [];
 
     const original = SHIP_CATALOG.find(s => s.name === ship.name);
-    if (original) { original.placed = false; original.cells = []; }
+    if (original) {
+        original.placed = false;
+        original.cells = [];
+    }
 }

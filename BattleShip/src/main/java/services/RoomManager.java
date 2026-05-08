@@ -1,7 +1,11 @@
-package models;
+package services;
 
+import enums.GamePhase;
 import enums.PlayerRole;
 import jakarta.websocket.Session;
+import models.BattleState;
+import models.Player;
+import models.Room;
 
 import java.io.IOException;
 import java.util.Map;
@@ -38,6 +42,9 @@ public class RoomManager {
 
         Room room =
                 new Room(roomId, hostUsername, rows, cols);
+
+        room.setPhase(GamePhase.WAITING);
+        room.setBattleState(new BattleState());
 
         rooms.put(roomId, room);
 
@@ -87,13 +94,30 @@ public class RoomManager {
             return false;
         }
 
-        // duplicate username
-        if (room.getPlayers().containsKey(username)) {
+        Player existingPlayer =
+                room.getPlayers().get(username);
 
-            send(session,
-                    "ERROR|Username already taken");
+        // =====================================
+        // RECONNECT
+        // =====================================
 
-            return false;
+        if(existingPlayer != null) {
+
+            existingPlayer.setSession(session);
+
+            existingPlayer.setConnected(true);
+
+            sessionUserMap.put(session, username);
+
+            sessionRoomMap.put(session, roomId);
+
+            broadcastRoomState(roomId);
+
+            System.out.println(
+                    username + " reconnected"
+            );
+
+            return true;
         }
 
         // room full
@@ -120,6 +144,10 @@ public class RoomManager {
                         role,
                         false
                 );
+
+        player.setSession(session);
+
+        player.setConnected(true);
 
         // ================= ADD PLAYER =================
 
@@ -216,7 +244,7 @@ public class RoomManager {
                 return;
             }
         }
-
+        room.setPhase(GamePhase.PLACING);
         broadcast(roomId, "GAME_STARTED");
     }
 
@@ -235,67 +263,37 @@ public class RoomManager {
         String username =
                 sessionUserMap.get(session);
 
-        if (roomId == null || username == null) {
+        if(roomId == null || username == null) {
             return;
         }
 
         Room room = rooms.get(roomId);
 
-        if (room == null) {
+        if(room == null) {
             return;
         }
 
-        Player removedPlayer =
+        Player player =
                 room.getPlayers().get(username);
 
-        room.removePlayer(username);
+        if(player != null) {
 
-        // ================= HOST TRANSFER =================
+            player.setConnected(false);
 
-        if (!room.getPlayers().isEmpty()) {
+            player.setSession(null);
 
-            boolean hasHost = false;
-
-            for (Player p : room.getPlayers().values()) {
-
-                if (p.getRole() == PlayerRole.HOST) {
-
-                    hasHost = true;
-                    break;
-                }
-            }
-
-            // transfer host
-            if (!hasHost) {
-
-                Player nextHost =
-                        room.getPlayers()
-                                .values()
-                                .iterator()
-                                .next();
-
-                nextHost.setRole(PlayerRole.HOST);
-            }
-        }
-
-        // ================= REMOVE EMPTY ROOM =================
-
-        if (room.getPlayers().isEmpty()) {
-
-            rooms.remove(roomId);
-
-        } else {
-
-            broadcastRoomState(roomId);
+            System.out.println(
+                    username +
+                            " disconnected from " +
+                            roomId
+            );
         }
 
         sessionRoomMap.remove(session);
 
         sessionUserMap.remove(session);
 
-        System.out.println(
-                username + " left room " + roomId
-        );
+        broadcastRoomState(roomId);
     }
 
 
@@ -341,10 +339,13 @@ public class RoomManager {
 
         Room room = rooms.get(roomId);
 
-        if (room == null) return;
+        if(room == null) return;
 
-        for (Session session :
-                room.getSessions().values()) {
+        for(Player player :
+                room.getPlayers().values()) {
+
+            Session session =
+                    player.getSession();
 
             send(session, msg);
         }
@@ -388,5 +389,9 @@ public class RoomManager {
     public static Room getRoom(String roomId) {
 
         return rooms.get(roomId);
+    }
+
+    public static Map<String, Room> getRooms() {
+        return rooms;
     }
 }
