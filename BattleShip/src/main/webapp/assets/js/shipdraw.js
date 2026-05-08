@@ -172,6 +172,11 @@ function confirmPlacement() {
         JSON.stringify(shipData)
     );
 
+    localStorage.setItem(
+        "playerBoard",
+        JSON.stringify(shipData)
+    );
+
     document.getElementById(
         "placementStatus"
     ).textContent =

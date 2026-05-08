@@ -23,27 +23,35 @@
 
 <div class="page">
 
+    <!-- ================= TOP BAR ================= -->
+
     <div class="top-bar">
 
-        <h1>Battle</h1>
+        <h1>⚔ Battle</h1>
 
         <div>
             Room:
-            <span id="roomId"><%= roomId %></span>
+            <span><%= roomId %></span>
         </div>
 
         <div>
             User:
-            <span id="username"><%= userId %></span>
+            <span><%= userId %></span>
         </div>
-
-        <button id="confirmBtn">
-            Confirm Placement
-        </button>
 
     </div>
 
+    <!-- ================= STATUS ================= -->
+
+    <div id="battleStatus" class="battle-status">
+        Waiting battle...
+    </div>
+
+    <!-- ================= BOARDS ================= -->
+
     <div class="boards-container">
+
+        <!-- MY BOARD -->
 
         <div class="board-wrapper">
 
@@ -52,6 +60,8 @@
             <div id="myBoard" class="board"></div>
 
         </div>
+
+        <!-- ENEMY BOARD -->
 
         <div class="board-wrapper">
 
@@ -63,9 +73,29 @@
 
     </div>
 
+    <!-- ================= LOG ================= -->
+
     <div id="log" class="log"></div>
 
 </div>
+
+<script>
+    const roomId = "<%= roomId %>";
+    const userId = "<%= userId %>";
+    const contextPath = "${pageContext.request.contextPath}";
+</script>
+
+<script src="${pageContext.request.contextPath}/assets/js/board.js"></script>
+<script src="${pageContext.request.contextPath}/assets/js/ui.js"></script>
+<script src="${pageContext.request.contextPath}/assets/js/socket.js"></script>
+<script src="${pageContext.request.contextPath}/assets/js/battle.js"></script>
+
+<script>
+    createBattleBoards();
+    renderMyShips();
+    connectSocket();
+    initAttackBoard();
+</script>
 
 </body>
 </html>
