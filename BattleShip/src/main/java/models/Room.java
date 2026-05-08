@@ -1,5 +1,6 @@
 package models;
 
+import enums.GamePhase;
 import jakarta.websocket.Session;
 
 import java.util.HashMap;
@@ -18,11 +19,17 @@ public class Room {
     private int rows;
     private int columns;
 
+    private BattleState battleState;
+    private GamePhase phase;
+
     public Room(String roomId, String hostUsername, int rows, int columns) {
         this.roomId = roomId;
         this.hostUsername = hostUsername;
         this.rows = rows;
         this.columns = columns;
+
+        this.phase = GamePhase.WAITING;
+        this.battleState = new BattleState();
     }
 
     public int getRows() {
@@ -61,5 +68,21 @@ public class Room {
     public void removePlayer(String username) {
         players.remove(username);
         sessions.remove(username);
+    }
+
+    public BattleState getBattleState() {
+        return battleState;
+    }
+
+    public void setBattleState(BattleState battleState) {
+        this.battleState = battleState;
+    }
+
+    public GamePhase getPhase() {
+        return phase;
+    }
+
+    public void setPhase(GamePhase phase) {
+        this.phase = phase;
     }
 }

@@ -1,4 +1,5 @@
 let socket;
+let currentTurn = null;
 
 function connectSocket() {
 
@@ -57,6 +58,85 @@ function connectSocket() {
                         "&userId=" + userId;
 
                 }, 1000);
+
+                break;
+
+            // =====================================================
+            // PLAYER PLACED
+            // =====================================================
+
+            case "PLAYER_PLACED":
+
+                document.getElementById(
+                    "placementStatus"
+                ).textContent =
+                    parts[1] + " confirmed placement";
+
+                break;
+
+            // =====================================================
+            // BATTLE STARTED
+            // =====================================================
+
+            case "BATTLE_STARTED":
+
+                currentTurn = parts[1];
+
+                document.getElementById("battleStatus")
+                    .innerText =
+                    "Battle Started - Turn: " + currentTurn;
+
+                break;
+
+
+            case "BATTLE_READY":
+
+                document.getElementById(
+                    "placementStatus"
+                ).textContent =
+                    "🔥 Battle starting...";
+
+                setTimeout(() => {
+
+                    window.location.href =
+                        contextPath +
+                        "/battle" +
+                        "?roomId=" + roomId +
+                        "&userId=" + userId;
+
+                }, 1000);
+
+                break;
+
+            // =====================================================
+            // TURN CHANGED
+            // =====================================================
+
+            case "TURN_CHANGED":
+
+                currentTurn = parts[1];
+
+                updateTurnUI();
+
+                break;
+
+            // =====================================================
+            // SHOT RESULT
+            // =====================================================
+
+            case "SHOT_RESULT":
+
+                handleShotResult(parts);
+
+                break;
+
+            // =====================================================
+            // GAME OVER
+            // =====================================================
+
+            case "GAME_OVER":
+
+                alert("Winner: " + parts[1]);
 
                 break;
 

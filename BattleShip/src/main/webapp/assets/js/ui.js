@@ -101,27 +101,6 @@ function updateRoomStatus() {
     }
 }
 
-function createGrid(rows, cols) {
-
-    const grid =
-        document.getElementById("grid");
-
-    grid.innerHTML = "";
-
-    grid.style.gridTemplateColumns =
-        `repeat(${cols}, 40px)`;
-
-    for (let i = 0; i < rows * cols; i++) {
-
-        const cell =
-            document.createElement("div");
-
-        cell.className = "cell";
-
-        grid.appendChild(cell);
-    }
-}
-
 function copyRoomId() {
 
     const text =
