@@ -47,6 +47,7 @@ const SHIP_CATALOG = [
 ];
 
 // ========== STATE ==========
+let isLocked = false; // thêm dòng này
 let isHorizontal = true;
 let placedShips  = []; // ship objects đã đặt
 let occupiedCells = new Set(); // "r,c"
@@ -118,7 +119,7 @@ function rotateShip() {
 function resetBoard() {
     placedShips = [];
     occupiedCells.clear();
-
+    if (isLocked) return;
     // Reset tất cả ship trong catalog
     SHIP_CATALOG.forEach(ship => {
         ship.placed    = false;
@@ -141,22 +142,47 @@ function resetBoard() {
 
 // ========== CONFIRM ==========
 function confirmPlacement() {
-    const allPlaced = SHIP_CATALOG.every(s => s.placed);
-    if (!allPlaced) {
-        document.getElementById("placementStatus").textContent = "⚠ Place all ships first!";
-        return;
+    function confirmPlacement() {
+        const allPlaced = SHIP_CATALOG.every(s => s.placed);
+        if (!allPlaced) {
+            document.getElementById("placementStatus").textContent = "⚠ Place all ships first!";
+            return;
+        }
+
+        isLocked = true;
+
+        const shipData = placedShips.map(s => ({
+            name:      s.name,
+            size:      s.size,
+            direction: s.direction,
+            cells:     s.cells
+        }));
+        // Sửa lại URL kéo nó về controller
+        fetch(`${getContextPath()}/api/placement/confirm`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                userId: document.querySelector("b")?.innerText || "",
+                ships:  shipData
+            })
+        })
+            .then(res => {
+                if (!res.ok) throw new Error("Server error: " + res.status);
+                return res.json();
+            })
+            .then(data => {
+                console.log("Server response:", data);
+                document.getElementById("placementStatus").textContent = "✅ Confirmed!";
+                // TODO: chuyển sang màn hình game
+            })
+            .catch(err => {
+                console.error("Confirm failed:", err);
+                isLocked = false; // unlock nếu lỗi để thử lại
+                document.getElementById("placementStatus").textContent = "❌ Failed! Try again.";
+            });
     }
-
-    const shipData = placedShips.map(s => ({
-        name:      s.name,
-        size:      s.size,
-        direction: s.direction,
-        cells:     s.cells
-    }));
-
-    console.log("Confirmed:", shipData);
-    document.getElementById("placementStatus").textContent = "✅ Confirmed!";
-    // TODO: gửi lên server
 }
 
 // ========== DRAG FROM PANEL ==========
@@ -164,7 +190,7 @@ function startDragFromPanel(e, ship, panelItem) {
     draggingFromPanel = true;
     draggingShip = { ...ship }; // clone để không sửa catalog gốc khi đang kéo
     draggingShip.direction = isHorizontal ? "horizontal" : "vertical";
-
+    if (isLocked) return;
     panelItem.style.visibility = "hidden";
     createGhost(e, draggingShip);
 
@@ -188,13 +214,16 @@ function startDragFromPanel(e, ship, panelItem) {
 
 // ========== DRAG FROM BOARD ==========
 function startDragFromBoard(e, ship) {
+    if (isLocked) return;
     e.preventDefault();
     draggingFromPanel = false;
     draggingShip = ship;
 
-    // Sync isHorizontal theo hướng ship đang kéo
-    isHorizontal = ship.direction === "horizontal";
+    // Snapshot vị trí và hướng CŨ trước khi làm gì
+    const oldCells     = [...ship.cells];
+    const oldDirection = ship.direction;
 
+    isHorizontal = ship.direction === "horizontal";
     removePlacedShip(ship);
     createGhost(e, ship);
 
@@ -206,10 +235,23 @@ function startDragFromBoard(e, ship) {
 
         const dropped = tryDrop(ev, draggingShip);
         if (!dropped) {
-            // Trả về vị trí cũ với direction cũ
-            draggingShip.direction = ship.direction;
-            isHorizontal = ship.direction === "horizontal";
-            placeShipOnBoard(ship);
+            // Khôi phục đúng cells và direction cũ
+            draggingShip.direction = oldDirection;
+            draggingShip.cells     = oldCells;
+            isHorizontal = oldDirection === "horizontal";
+
+            // Cập nhật catalog gốc
+            const original = SHIP_CATALOG.find(s => s.name === draggingShip.name);
+            if (original) {
+                original.direction = oldDirection;
+                original.cells     = oldCells;
+                original.placed    = true;
+            }
+
+            // Khôi phục occupiedCells
+            oldCells.forEach(({ r, c }) => occupiedCells.add(`${r},${c}`));
+            placedShips.push(draggingShip);
+            placeShipOnBoard(draggingShip);
         }
 
         removeGhost();
@@ -269,9 +311,11 @@ function highlightCells(e) {
     const r = parseInt(target.dataset.row);
     const c = parseInt(target.dataset.col);
     const cells = getCells(r, c, size, h);
-    const valid = isValidPlacement(cells);
 
+    // Chỉ highlight những ô nằm trong board
+    const valid = isValidPlacement(cells);
     cells.forEach(({ r, c }) => {
+        if (r < 0 || r >= 10 || c < 0 || c >= 10) return; // bỏ qua ô ngoài board
         const cell = getCell(r, c);
         if (cell) cell.classList.add(valid ? "preview-valid" : "preview-invalid");
     });
@@ -285,6 +329,7 @@ function clearPreview() {
 
 // ========== DROP ==========
 function tryDrop(e, ship) {
+    // Dùng elementsFromPoint để xuyên qua ảnh ghost/ship
     const elements = document.elementsFromPoint(e.clientX, e.clientY);
     const target = elements.find(el => el.classList.contains("cell"));
     if (!target) return false;
@@ -294,6 +339,7 @@ function tryDrop(e, ship) {
     const c = parseInt(target.dataset.col);
     const cells = getCells(r, c, ship.size, h);
 
+    // Kiểm tra hợp lệ trước khi làm gì cả
     if (!isValidPlacement(cells)) return false;
 
     // Cập nhật ship object
