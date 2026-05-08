@@ -28,20 +28,19 @@ public class LoginController extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String action =
-                request.getParameter("action");
+        String username = request.getParameter("username");
+        String email = request.getParameter("email");
+
+        // login form của bạn đang là name="user"
+        if (email == null || email.isEmpty()) {
+            email = request.getParameter("user");
+        }
+
+        String password = request.getParameter("password");
 
         // ================= REGISTER =================
-        if(action.equals("register")){
-
-            String username =
-                    request.getParameter("username");
-
-            String email =
-                    request.getParameter("email");
-
-            String password =
-                    request.getParameter("password");
+        // nếu có username => form register
+        if (username != null && !username.isEmpty()) {
 
             User user = new User(
                     1,
@@ -50,55 +49,9 @@ public class LoginController extends HttpServlet {
                     password
             );
 
-            boolean success =
-                    userService.register(user);
+            boolean success = userService.register(user);
 
-            if(success){
-
-                request.setAttribute(
-                        "message",
-                        "Register success!"
-                );
-
-                request.setAttribute(
-                        "mode",
-                        "login"
-                );
-
-            }else{
-
-                request.setAttribute(
-                        "message",
-                        "Email already exists!"
-                );
-
-                request.setAttribute(
-                        "mode",
-                        "register"
-                );
-            }
-
-            request.getRequestDispatcher(
-                    "/WEB-INF/layout/login.jsp"
-            ).forward(request, response);
-        }
-
-        // ================= LOGIN =================
-        else if(action.equals("login")){
-
-            String email =
-                    request.getParameter("email");
-
-            String password =
-                    request.getParameter("password");
-
-            User user =
-                    userService.authenticate(
-                            email,
-                            password
-                    );
-
-            if(user != null){
+            if (success) {
 
                 HttpSession session =
                         request.getSession();
@@ -110,10 +63,52 @@ public class LoginController extends HttpServlet {
 
                 response.sendRedirect(
                         request.getContextPath()
-                                + "/home"
+                                + "/index.jsp"
                 );
 
-            }else{
+            } else {
+
+                request.setAttribute(
+                        "message",
+                        "Email already exists!"
+                );
+
+                request.setAttribute(
+                        "mode",
+                        "register"
+                );
+
+                request.getRequestDispatcher(
+                        "/WEB-INF/layout/login.jsp"
+                ).forward(request, response);
+            }
+        }
+
+        // ================= LOGIN =================
+        else {
+
+            User user =
+                    userService.authenticate(
+                            email,
+                            password
+                    );
+
+            if (user != null) {
+
+                HttpSession session =
+                        request.getSession();
+
+                session.setAttribute(
+                        "user",
+                        user
+                );
+
+                response.sendRedirect(
+                        request.getContextPath()
+                                + "/index.jsp"
+                );
+
+            } else {
 
                 request.setAttribute(
                         "message",
