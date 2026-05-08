@@ -65,6 +65,7 @@
 
 <script src="${pageContext.request.contextPath}/assets/js/ui.js"></script>
 <script src="${pageContext.request.contextPath}/assets/js/socket.js"></script>
+<script src="${pageContext.request.contextPath}/assets/js/board.js"></script>
 <script src="${pageContext.request.contextPath}/assets/js/main.js"></script>
 
 </body>

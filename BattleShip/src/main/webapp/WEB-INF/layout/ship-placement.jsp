@@ -100,13 +100,25 @@
 <%--    const cols = ${cols};--%>
 <%--</script>--%>
 
-<script  src="${pageContext.request.contextPath}/assets/js/placement.js"></script>
+<script>
+    const contextPath = "${pageContext.request.contextPath}"
+
+    const roomId =
+        "${roomId}";
+
+    const userId =
+        "${userId}";
+
+</script>
+
+<script src="${pageContext.request.contextPath}/assets/js/socket.js"></script>
+<script  src="${pageContext.request.contextPath}/assets/js/board.js"></script>
 <script  src="${pageContext.request.contextPath}/assets/js/shipdraw.js"></script>
 
 <script>
-<%--    Khởi tạo lưới game--%>
+    <%--    Khởi tạo lưới game--%>
     createBoard(10, 10, "board");
-
+    connectSocket()
 </script>
 </body>
 </html>

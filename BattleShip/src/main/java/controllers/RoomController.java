@@ -5,7 +5,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
 import models.Room;
-import models.RoomManager;
+import services.RoomManager;
 
 import java.io.IOException;
 
