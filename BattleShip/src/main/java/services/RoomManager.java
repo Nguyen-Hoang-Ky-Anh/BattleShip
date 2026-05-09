@@ -38,17 +38,27 @@ public class RoomManager {
             int cols
     ) {
 
+        // [UC-07 - Create Room][Step 1]
+        // System generate roomId
         String roomId =
                 "ROOM_" + System.currentTimeMillis();
 
+        // [UC-07][Step 2]
+        // Khởi tạo Room với host
         Room room =
                 new Room(roomId, hostUsername, rows, cols);
 
+        // [UC-07][Step 3]
+        // Set trạng thái ban đầu
         room.setPhase(GamePhase.WAITING);
         room.setBattleState(new BattleState());
 
+        // [UC-07][Step 4]
+        // Lưu room vào hệ thống
         rooms.put(roomId, room);
 
+        // [UC-07][Step 5]
+        // Trả roomId cho client (để share/invite)
         return roomId;
     }
 
@@ -63,9 +73,10 @@ public class RoomManager {
             Session session
     ) {
 
+        // [UC-08][Step 2]
         Room room = rooms.get(roomId);
 
-        // room not found
+        // [UC-08][Exception - Room Not Found]
         if (room == null) {
 
             send(session,
@@ -74,7 +85,7 @@ public class RoomManager {
             return false;
         }
 
-        // already joined
+        // [UC-08][Exception - Already Joined]
         if (sessionRoomMap.containsKey(session)) {
 
             send(session,
@@ -85,7 +96,7 @@ public class RoomManager {
 
         username = username.trim();
 
-        // invalid username
+        // [UC-08][Exception - Invalid Username]
         if (username.length() < 2
                 || username.length() > 20) {
 
@@ -98,30 +109,25 @@ public class RoomManager {
         Player existingPlayer =
                 room.getPlayers().get(username);
 
-        // =====================================
-        // RECONNECT
-        // =====================================
-
+        // =================================================
+        // [UC-08.4 - Reconnect] (EXTEND)
+        // =================================================
         if(existingPlayer != null) {
 
+            // [Extend Flow]
             existingPlayer.setSession(session);
-
             existingPlayer.setConnected(true);
 
             sessionUserMap.put(session, username);
-
             sessionRoomMap.put(session, roomId);
 
+            // [UC-08][Step - Sync state]
             broadcastRoomState(roomId);
-
-            System.out.println(
-                    username + " reconnected"
-            );
 
             return true;
         }
 
-        // room full
+        // [UC-08][Exception - Room Full]
         if (room.getPlayers().size() >= 2) {
 
             send(session,
@@ -130,15 +136,17 @@ public class RoomManager {
             return false;
         }
 
-        // ================= ROLE =================
-
+        // =================================================
+        // [UC-08][Step 3 - Assign Role]
+        // =================================================
         PlayerRole role =
                 room.getPlayers().isEmpty()
                         ? PlayerRole.HOST
                         : PlayerRole.PLAYER;
 
-        // ================= CREATE PLAYER =================
-
+        // =================================================
+        // [UC-08][Step 4 - Create Player]
+        // =================================================
         Player player =
                 new Player(
                         username,
@@ -147,21 +155,22 @@ public class RoomManager {
                 );
 
         player.setSession(session);
-
         player.setConnected(true);
 
-        // ================= ADD PLAYER =================
-
+        // =================================================
+        // [UC-08][Step 5 - Add Player]
+        // =================================================
         room.addPlayer(player, session);
 
-        // ================= STORE SESSION =================
-
+        // =================================================
+        // [UC-08][Step 6 - Map Session]
+        // =================================================
         sessionUserMap.put(session, username);
-
         sessionRoomMap.put(session, roomId);
 
-        // ================= BROADCAST =================
-
+        // =================================================
+        // [UC-08][Step 7 - Notify All Players]
+        // =================================================
         broadcastRoomState(roomId);
 
         return true;
@@ -176,7 +185,7 @@ public class RoomManager {
             String roomId,
             String username
     ) {
-
+        // [UC-08.1 - Toggle Ready][Step 1]
         Room room = rooms.get(roomId);
 
         if (room == null) return;
@@ -186,13 +195,18 @@ public class RoomManager {
 
         if (player == null) return;
 
-        // host cannot ready
+        // [UC-08.1][Business Rule]
+        // Host không được ready
         if (player.getRole() == PlayerRole.HOST) {
             return;
         }
 
+        // [UC-08.1][Step 2]
+        // Toggle trạng thái ready
         player.setReady(!player.isReady());
 
+        // [UC-08.1][Step 3]
+        // Broadcast trạng thái mới
         broadcastRoomState(roomId);
     }
 
@@ -206,6 +220,7 @@ public class RoomManager {
             String username
     ) {
 
+        // [UC-08.2 - Start Game][Step 1]
         Room room = rooms.get(roomId);
 
         if (room == null) return;
@@ -213,14 +228,14 @@ public class RoomManager {
         Player host =
                 room.getPlayers().get(username);
 
-        // only host can start
+        // [UC-08.2][Business Rule - Only Host]
         if (host == null
                 || host.getRole() != PlayerRole.HOST) {
 
             return;
         }
 
-        // must have 2 players
+        // [UC-08.2][Exception - Not Enough Players]
         if (room.getPlayers().size() < 2) {
 
             send(
@@ -231,7 +246,7 @@ public class RoomManager {
             return;
         }
 
-        // all non-host must ready
+        // [UC-08.2][Exception - Opponent Not Ready]
         for (Player p : room.getPlayers().values()) {
 
             if (p.getRole() != PlayerRole.HOST
@@ -245,7 +260,13 @@ public class RoomManager {
                 return;
             }
         }
+
+        // [UC-08.2][Step 2]
+        // Chuyển sang phase đặt tàu
         room.setPhase(GamePhase.PLACING);
+
+        // [UC-08.2][Step 3]
+        // Broadcast game started
         broadcast(roomId, "GAME_STARTED");
     }
 
@@ -258,6 +279,7 @@ public class RoomManager {
             Session session
     ) {
 
+        // [UC-08.3 - Leave Room][Step 1]
         String roomId =
                 sessionRoomMap.get(session);
 
@@ -274,6 +296,8 @@ public class RoomManager {
             return;
         }
 
+        // [UC-08.3][Step 2]
+        // Đánh dấu player disconnected
         Player player =
                 room.getPlayers().get(username);
 
@@ -288,10 +312,13 @@ public class RoomManager {
             );
         }
 
+        // [UC-08.3][Step 3]
+        // Remove mapping
         sessionRoomMap.remove(session);
-
         sessionUserMap.remove(session);
 
+        // [UC-08.3][Step 4]
+        // Broadcast update
         broadcastRoomState(roomId);
     }
 
@@ -300,6 +327,7 @@ public class RoomManager {
     // BROADCAST ROOM STATE
     // =========================================================
 
+    // [INCLUDED USE CASE - Notify Players]
     public static void broadcastRoomState(
             String roomId
     ) {
@@ -356,6 +384,7 @@ public class RoomManager {
     // SEND
     // =========================================================
 
+    // [INCLUDED USE CASE - Send Message]
     private static void send(
             Session session,
             String msg

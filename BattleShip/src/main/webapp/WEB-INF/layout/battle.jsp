@@ -49,25 +49,25 @@
 
     <!-- ================= BOARDS ================= -->
 
-    <div class="boards-container">
+    <div class="battle-layout">
 
-        <!-- MY BOARD -->
+        <!-- MAIN ENEMY BOARD -->
 
-        <div class="board-wrapper">
+        <div class="enemy-section">
 
-            <h2>Your Board</h2>
+            <h2>🎯 Enemy Board</h2>
 
-            <div id="myBoard" class="board"></div>
+            <div id="enemyBoard" class="board enemy-board"></div>
 
         </div>
 
-        <!-- ENEMY BOARD -->
+        <!-- MINI PLAYER BOARD -->
 
-        <div class="board-wrapper">
+        <div class="my-board-mini">
 
-            <h2>Enemy Board</h2>
+            <h3>🚢 Your Board</h3>
 
-            <div id="enemyBoard" class="board"></div>
+            <div id="myBoard" class="mini-board"></div>
 
         </div>
 

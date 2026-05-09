@@ -10,6 +10,7 @@ let canAttack = false;
 
 function connectSocket() {
 
+    // [UC-08 - Join Room][Step 0 - Establish Connection]
     socket = new WebSocket(
         "ws://" +
         window.location.host +
@@ -22,13 +23,12 @@ function connectSocket() {
     // =====================================================
 
     socket.onopen = () => {
-
+        // [UC-08][Step 1 - Connect thành công]
         console.log("Connected");
 
         // ================================================
-        // JOIN ROOM
+        // [UC-08][Step 2 - Send JOIN_ROOM]
         // ================================================
-
         socket.send(
             "JOIN_ROOM|" +
             userId + "|" +
@@ -36,7 +36,7 @@ function connectSocket() {
         );
 
         // ================================================
-        // INIT BATTLE STATE
+        // [UC-08.4 - Reconnect / UC-09 Sync]
         // ================================================
 
         if (
@@ -59,6 +59,7 @@ function connectSocket() {
     // MESSAGE
     // =====================================================
 
+    // [SYSTEM - Receive Event from Server]
     socket.onmessage = (event) => {
 
         console.log(
@@ -78,9 +79,7 @@ function connectSocket() {
 
         switch (action) {
 
-            // =============================================
-            // ROOM STATE
-            // =============================================
+            // [UC-08][Update Room State]
 
             case "ROOM_STATE":
 
@@ -88,9 +87,7 @@ function connectSocket() {
 
                 break;
 
-            // =============================================
-            // GAME STARTED
-            // =============================================
+            // [UC-08.2][Game Started]
 
             case "GAME_STARTED":
 
@@ -98,9 +95,7 @@ function connectSocket() {
 
                 break;
 
-            // =============================================
-            // PLAYER PLACED
-            // =============================================
+            // [UC-09][Placement Confirm]
 
             case "PLAYER_PLACED":
 
@@ -108,9 +103,7 @@ function connectSocket() {
 
                 break;
 
-            // =============================================
-            // BATTLE READY
-            // =============================================
+            // [UC-09][All ready → Battle]
 
             case "BATTLE_READY":
 
@@ -118,9 +111,7 @@ function connectSocket() {
 
                 break;
 
-            // =============================================
-            // BATTLE STARTED
-            // =============================================
+            // [UC-10][Init Turn]
 
             case "BATTLE_STARTED":
 
@@ -128,19 +119,14 @@ function connectSocket() {
 
                 break;
 
-            // =============================================
-            // TURN CHANGED
-            // =============================================
-
+            // [UC-10][Turn Switch]
             case "TURN_CHANGED":
 
                 handleTurnChanged(parts);
 
                 break;
 
-            // =============================================
-            // SHOT RESULT
-            // =============================================
+            // [UC-10][Attack Result]
 
             case "SHOT_RESULT":
 
@@ -148,19 +134,14 @@ function connectSocket() {
 
                 break;
 
-            // =============================================
-            // GAME OVER
-            // =============================================
-
+            // [UC-10][End Game]
             case "GAME_OVER":
 
                 handleGameOver(parts);
 
                 break;
 
-            // =============================================
-            // INIT BATTLE STATE
-            // =============================================
+            // [UC-09][Sync Board - Reconnect]
 
             case "INIT_BATTLE_STATE":
 
@@ -168,10 +149,7 @@ function connectSocket() {
 
                 break;
 
-            // =============================================
-            // ERROR
-            // =============================================
-
+            // [Exception Flow]
             case "ERROR":
 
                 handleError(parts);
@@ -218,7 +196,7 @@ function connectSocket() {
 // =========================================================
 
 function handleRoomState(parts) {
-
+    // [UC-08][Step - Sync UI player list]
     parseRoomState(parts[1]);
 
     if (
@@ -234,12 +212,12 @@ function handleRoomState(parts) {
 // =========================================================
 
 function handleGameStarted() {
-
+    // [UC-08.2][Step - Notify UI]
     safeSetText(
         "roomStatus",
         "🔥 Game Started"
     );
-
+    // [UC-09][Transition - Navigate to Placement]
     setTimeout(() => {
 
         window.location.href =
@@ -258,7 +236,7 @@ function handleGameStarted() {
 // =========================================================
 
 function handlePlayerPlaced(parts) {
-
+    // [UC-09][Step - Notify placement]
     safeSetText(
         "placementStatus",
         parts[1] +
@@ -271,12 +249,12 @@ function handlePlayerPlaced(parts) {
 // =========================================================
 
 function handleBattleReady() {
-
+    // [UC-09][All players placed ships]
     safeSetText(
         "placementStatus",
         "🔥 Battle starting..."
     );
-
+    // [UC-10][Transition - Enter battle screen]
     setTimeout(() => {
 
         window.location.href =
@@ -295,7 +273,7 @@ function handleBattleReady() {
 // =========================================================
 
 function handleBattleStarted(parts) {
-
+    // [UC-10][Step 1 - Set current turn]
     currentTurn = parts[1];
 
     console.log(
@@ -311,7 +289,7 @@ function handleBattleStarted(parts) {
 // =========================================================
 
 function handleTurnChanged(parts) {
-
+    // [UC-10][Loop - Turn Switching]
     currentTurn = parts[1];
 
     updateTurnUI();
@@ -322,7 +300,7 @@ function handleTurnChanged(parts) {
 // =========================================================
 
 function handleShotResult(parts) {
-
+    // [UC-10][Step 2 - Receive attack result]
     const attacker = parts[1];
 
     const row =
@@ -352,6 +330,10 @@ function handleShotResult(parts) {
 
     if (!cell) return;
 
+    // =========================================
+    // [UC-10][alt - HIT / MISS / SUNK]
+    // =========================================
+
     if (
         result === "HIT" ||
         result === "SUNK"
@@ -378,6 +360,7 @@ function handleShotResult(parts) {
         cell.textContent = "•";
     }
 
+    // [UC-10][Step 3 - Log action]
     addLog(
         attacker +
         " attacked [" +
@@ -395,6 +378,7 @@ function handleShotResult(parts) {
 
 function handleGameOver(parts) {
 
+    // [UC-10][End Condition]
     const winner = parts[1];
 
     if (winner === userId) {
@@ -406,6 +390,7 @@ function handleGameOver(parts) {
         alert("💀 You lose!");
     }
 
+    // [UC-10][Exit Flow]
     window.location.href =
         contextPath + "/pvp";
 }
@@ -416,6 +401,7 @@ function handleGameOver(parts) {
 
 function handleError(parts) {
 
+    // [Exception Flow]
     canAttack = true;
 
     alert(parts[1]);
@@ -427,6 +413,7 @@ function handleError(parts) {
 
 function updateTurnUI() {
 
+    // [UC-10][Business Rule - Turn Control]
     const el =
         document.getElementById(
             "battleStatus"
@@ -438,12 +425,12 @@ function updateTurnUI() {
         currentTurn === userId;
 
     if (canAttack) {
-
+        // [Player Turn]
         el.textContent =
             "🔥 Your turn";
 
     } else {
-
+        // [Opponent Turn]
         el.textContent =
             "⏳ Opponent turn";
     }
@@ -517,6 +504,7 @@ function safeSetText(id, text) {
 
 function handleInitBattleState(parts) {
 
+    // [UC-09][Reconnect - Restore board]
     const boardJson = parts[3];
 
     if(!boardJson) {

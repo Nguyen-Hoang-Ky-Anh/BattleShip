@@ -104,4 +104,12 @@ public class Board {
             }
         }
     }
+
+    public boolean wasShot(int row, int col) {
+
+        Cell cell = grid[row][col];
+
+        return cell.getState() == Cell.HIT
+                || cell.getState() == Cell.MISS;
+    }
 }

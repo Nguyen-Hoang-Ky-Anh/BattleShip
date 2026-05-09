@@ -427,3 +427,20 @@ function removePlacedShip(ship) {
         original.cells = [];
     }
 }
+
+function getPlacementData() {
+
+    return placedShips.map(s => ({
+        name: s.name,
+        size: s.size,
+        direction: s.direction,
+        cells: s.cells
+    }));
+}
+
+function allShipsPlaced() {
+
+    return SHIP_CATALOG.every(
+        s => s.placed
+    );
+}
