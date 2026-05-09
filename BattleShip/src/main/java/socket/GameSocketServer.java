@@ -24,6 +24,8 @@ public class GameSocketServer {
     @OnOpen
     public void onOpen(Session session) {
 
+        // [UC-08 - Join Room][Pre-Step]
+        // Client establish WebSocket connection
         System.out.println(
                 "Connected: " + session.getId()
         );
@@ -42,6 +44,8 @@ public class GameSocketServer {
 
         try {
 
+            // [SYSTEM - Dispatcher]
+            // Nhận message từ client (protocol dạng: ACTION|param1|param2...)
             System.out.println(
                     "RAW MESSAGE: " + message
             );
@@ -56,7 +60,7 @@ public class GameSocketServer {
                 // =================================================
                 // JOIN ROOM
                 // =================================================
-
+                // [UC-08]
                 case "JOIN_ROOM":
 
                     handleJoinRoom(parts, session);
@@ -67,7 +71,7 @@ public class GameSocketServer {
                 // =================================================
                 // TOGGLE READY
                 // =================================================
-
+                // [UC-08.1]
                 case "TOGGLE_READY":
 
                     handleToggleReady(parts);
@@ -78,7 +82,7 @@ public class GameSocketServer {
                 // =================================================
                 // START GAME
                 // =================================================
-
+                // [UC-08.2]
                 case "START_GAME":
 
                     handleStartGame(parts);
@@ -88,7 +92,7 @@ public class GameSocketServer {
                 // =================================================
                 // CONFIRM PLACEMENT
                 // =================================================
-
+                // [UC-09 - Place Ships]
                 case "CONFIRM_PLACEMENT":
                     handleConfirmPlacement(parts);
                     break;
@@ -96,7 +100,7 @@ public class GameSocketServer {
                 // =================================================
                 // INIT BATTLE STATE
                 // =================================================
-
+                // [UC-09][Reconnect / Sync]
                 case "INIT_BATTLE_STATE":
                     handleInitBattleState(parts, session);
                     break;
@@ -104,7 +108,7 @@ public class GameSocketServer {
                 // =================================================
                 // START GAME
                 // =================================================
-
+                // [UC-10 - Attack Turn-Based]
                 case "ATTACK":
                     handleAttack(parts);
                     break;
@@ -141,7 +145,7 @@ public class GameSocketServer {
             String[] parts,
             Session session
     ) {
-
+        // [UC-08][Step 1 - Validate Packet]
         if (parts.length < 3) {
 
             send(
@@ -163,6 +167,7 @@ public class GameSocketServer {
                         RoomManager.getRooms().keySet()
         );
 
+        // [UC-08][Step 2 - Call Service Layer]
         boolean success =
                 RoomManager.joinRoom(
                         roomId,
@@ -170,10 +175,12 @@ public class GameSocketServer {
                         session
                 );
 
+        // [UC-08][Exception Flow handled in RoomManager]
         if (!success) {
             return;
         }
 
+        // [UC-08][Step 3 - Join Success]
         System.out.println(
                 username +
                         " joined room " +
@@ -190,6 +197,7 @@ public class GameSocketServer {
             String[] parts
     ) {
 
+        // [UC-08.1][Step 1 - Validate]
         if (parts.length < 3) {
             return;
         }
@@ -197,11 +205,13 @@ public class GameSocketServer {
         String roomId = parts[1];
         String username = parts[2];
 
+        // [UC-08.1][Step 2 - Toggle]
         RoomManager.toggleReady(
                 roomId,
                 username
         );
 
+        // [UC-08.1][Step 3 - Broadcast handled in service]
         System.out.println(
                 username +
                         " toggled ready"
@@ -217,6 +227,7 @@ public class GameSocketServer {
             String[] parts
     ) {
 
+        // [UC-08.2][Step 1 - Validate]
         if (parts.length < 3) {
             return;
         }
@@ -224,11 +235,13 @@ public class GameSocketServer {
         String roomId = parts[1];
         String username = parts[2];
 
+        // [UC-08.2][Step 2 - Start]
         RoomManager.startGame(
                 roomId,
                 username
         );
 
+        // [UC-08.2][Step 3 - Broadcast GAME_STARTED]
         System.out.println(
                 username +
                         " started game"
@@ -243,6 +256,7 @@ public class GameSocketServer {
             String[] parts
     ) {
 
+        // [UC-09 - Place Ships][Step 1 - Validate]
         if(parts.length < 4) {
             return;
         }
@@ -252,14 +266,19 @@ public class GameSocketServer {
 
         String boardJson = parts[3];
 
+        // [UC-09][Step 2 - Parse Board]
         Board board =
                 BattleService.parseBoard(boardJson);
 
+        // [UC-09][Step 3 - Confirm Placement]
         BattleService.confirmPlacement(
                 roomId,
                 username,
                 board
         );
+
+        // System sẽ chuyển state:
+        // WAITING → PLACING → (ready) → BATTLE
     }
 
     // =========================================================
@@ -418,6 +437,7 @@ public class GameSocketServer {
     @OnClose
     public void onClose(Session session) {
 
+        // [UC-08.3 - Leave Room]
         System.out.println(
                 "Disconnected: " +
                         session.getId()
@@ -452,7 +472,7 @@ public class GameSocketServer {
     }
 
     private void syncBattleState(String roomId) {
-
+        // [INCLUDED USE CASE - Sync Game State]
         Room room =
                 RoomManager.getRoom(roomId);
 
@@ -469,7 +489,9 @@ public class GameSocketServer {
 
         Gson gson = new Gson();
 
-        // sync từng player
+        // =====================================
+        // [Loop - Send state to each player]
+        // =====================================
         for(Player player :
                 room.getPlayers().values()) {
 
@@ -492,6 +514,7 @@ public class GameSocketServer {
                 if(session != null
                         && session.isOpen()) {
 
+                    // [UC-10][Step - Update client state]
                     session.getBasicRemote()
                             .sendText(
                                     "INIT_BATTLE_STATE|"
