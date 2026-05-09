@@ -12,13 +12,34 @@
 
 <!-- HEADER -->
 <div class="header">
+    <% if(session.getAttribute("user") == null){ %>
+
+    <!-- CHƯA LOGIN -->
     <form action="${pageContext.request.contextPath}/login" method="get">
+        <input type="hidden" name="mode" value="login">
         <button type="submit">Login</button>
     </form>
 
-    <form action="${pageContext.request.contextPath}/register" method="get">
+    <form action="${pageContext.request.contextPath}/login" method="get">
+        <input type="hidden" name="mode" value="register">
         <button type="submit">Register</button>
     </form>
+
+    <% } else { %>
+
+    <!-- ĐÃ LOGIN -->
+    <% models.User user =
+            (models.User) session.getAttribute("user"); %>
+
+    <button>
+        <%= user.getUsername() %>
+    </button>
+
+    <form action="${pageContext.request.contextPath}/logout" method="post">
+        <button type="submit">Logout</button>
+    </form>
+
+    <% } %>
 
     <!-- HAMBURGER -->
     <div class="hamburger" onclick="toggleMenu()">☰</div>
