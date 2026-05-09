@@ -9,10 +9,11 @@ let canAttack = false;
 // =========================================================
 
 function connectSocket() {
+    const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
 
     // [UC-08 - Join Room][Step 0 - Establish Connection]
     socket = new WebSocket(
-        "ws://" +
+        protocol + "//" +
         window.location.host +
         contextPath +
         "/game"
