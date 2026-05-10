@@ -1,68 +1,36 @@
 let players = [];
 
-function renderPlayers() {
+// =========================================================
+// RENDER UI
+// =========================================================
 
-    const list =
-        document.getElementById("playerList");
+function renderPlayers() {
+    const list = document.getElementById("playerList");
+    if (!list) return;
 
     list.innerHTML = "";
 
     let allReady = true;
-    let totalPlayers = players.length;
     let isHost = false;
 
     players.forEach(p => {
-
-        const li =
-            document.createElement("li");
-
+        const li = document.createElement("li");
         li.className = "player";
 
-        // =====================================================
-        // ROLE ICON
-        // =====================================================
+        // Logic UI Role & Trạng thái
+        const roleIcon = p.role === "HOST" ? "👑" : "🚢";
+        const readyText = p.role === "HOST" ? "(HOST)" : (p.ready ? "✅ READY" : "❌ NOT READY");
 
-        let roleIcon =
-            p.role === "HOST"
-                ? "👑"
-                : "🚢";
+        li.innerText = `${roleIcon} ${p.username} ${readyText}`;
 
-        // =====================================================
-        // READY TEXT
-        // =====================================================
-
-        let readyText =
-            p.role === "HOST"
-                ? "(HOST)"
-                : (p.ready ? "✅ READY" : "❌ NOT READY");
-
-        li.innerText =
-            roleIcon +
-            " " +
-            p.username +
-            " " +
-            readyText;
-
-        // highlight current user
+        // Highlight User hiện tại
         if (p.username === userId) {
-
-            li.style.borderLeft =
-                "4px solid #00ffcc";
+            li.style.borderLeft = "4px solid #00ffcc";
+            if (p.role === "HOST") isHost = true;
         }
 
-        // detect host
-        if (
-            p.username === userId &&
-            p.role === "HOST"
-        ) {
-            isHost = true;
-        }
-
-        // check ready
-        if (
-            p.role !== "HOST" &&
-            !p.ready
-        ) {
+        // Kiểm tra xem tất cả player (trừ HOST) đã ready chưa
+        if (p.role !== "HOST" && !p.ready) {
             allReady = false;
         }
 
@@ -70,144 +38,77 @@ function renderPlayers() {
     });
 
     updateRoomStatus();
-
-    setupRoomButtons(
-        isHost,
-        allReady,
-        totalPlayers
-    );
+    setupRoomButtons(isHost, allReady, players.length);
 }
 
 function updateRoomStatus() {
-
-    const status =
-        document.getElementById("roomStatus");
+    const status = document.getElementById("roomStatus");
+    if (!status) return;
 
     if (players.length <= 1) {
-
-        status.innerText =
-            "⏳ Waiting for opponent...";
-
-        status.style.background =
-            "rgba(255,255,255,0.1)";
-
+        status.innerText = "⏳ Waiting for opponent...";
+        status.style.background = "rgba(255,255,255,0.1)";
     } else {
-
-        status.innerText =
-            "🔥 Lobby Ready";
-
-        status.style.background =
-            "rgba(0,255,150,0.2)";
+        status.innerText = "🔥 Lobby Ready";
+        status.style.background = "rgba(0,255,150,0.2)";
     }
 }
 
-function copyRoomId() {
-
-    const text =
-        document.getElementById("roomIdText")
-            .innerText;
-
-    navigator.clipboard.writeText(text)
-        .then(() => {
-
-            const btn =
-                document.querySelector(
-                    ".room-id-box button"
-                );
-
-            btn.innerText = "✔";
-
-            setTimeout(() => {
-
-                btn.innerText = "📋";
-
-            }, 1500);
-        });
-}
-
 // =========================================================
-// ROOM BUTTONS
+// SETUP BUTTONS
 // =========================================================
 
-function setupRoomButtons(
-    isHost,
-    allReady,
-    totalPlayers
-) {
-
-    const startBtn =
-        document.getElementById("startBtn");
-
-    const readyBtn =
-        document.getElementById("readyBtn");
-
-    const leaveBtn =
-        document.getElementById("leaveBtn");
-
-    // ================= HOST =================
+function setupRoomButtons(isHost, allReady, totalPlayers) {
+    const startBtn = document.getElementById("startBtn");
+    const readyBtn = document.getElementById("readyBtn");
+    const leaveBtn = document.getElementById("leaveBtn");
 
     if (isHost) {
-
-        readyBtn.style.display = "none";
-
-        leaveBtn.style.display = "none";
-
-        startBtn.style.display = "block";
-
-        startBtn.disabled =
-            !(allReady && totalPlayers >= 2);
-
-    }
-
-    // ================= PLAYER =================
-
-    else {
-
-        readyBtn.style.display = "block";
-
-        leaveBtn.style.display = "block";
-
-        startBtn.style.display = "none";
+        if (readyBtn) readyBtn.style.display = "none";
+        if (leaveBtn) leaveBtn.style.display = "none";
+        if (startBtn) {
+            startBtn.style.display = "block";
+            startBtn.disabled = !(allReady && totalPlayers >= 2);
+        }
+    } else {
+        if (readyBtn) readyBtn.style.display = "block";
+        if (leaveBtn) leaveBtn.style.display = "block";
+        if (startBtn) startBtn.style.display = "none";
     }
 }
 
+// =========================================================
+// USER ACTIONS (Kết nối với GameState.socket)
+// =========================================================
 
-// =========================================================
-// TOGGLE READY
-// =========================================================
+function copyRoomId() {
+    const text = document.getElementById("roomIdText")?.innerText;
+    if (!text) return;
+
+    navigator.clipboard.writeText(text).then(() => {
+        const btn = document.querySelector(".room-id-box button");
+        if (btn) {
+            btn.innerText = "✔";
+            setTimeout(() => btn.innerText = "📋", 1500);
+        }
+    });
+}
 
 function toggleReady() {
-
-    socket.send(
-        "TOGGLE_READY|" +
-        roomId + "|" +
-        userId
-    );
+    if (GameState.socket && GameState.socket.readyState === WebSocket.OPEN) {
+        GameState.socket.send(`${ACTIONS.TOGGLE_READY}|${roomId}|${userId}`);
+    }
 }
-
-
-// =========================================================
-// START GAME
-// =========================================================
 
 function startGame() {
-
-    socket.send(
-        "START_GAME|" +
-        roomId + "|" +
-        userId
-    );
+    if (GameState.socket && GameState.socket.readyState === WebSocket.OPEN) {
+        GameState.socket.send(`${ACTIONS.START_GAME}|${roomId}|${userId}`);
+    }
 }
 
-
-// =========================================================
-// LEAVE ROOM
-// =========================================================
-
 function leaveRoom() {
-
-    socket.close();
-
-    window.location.href =
-        contextPath + "/pvp";
+    if (GameState.socket) {
+        GameState.socket.close();
+    }
+    window.location.href = `${contextPath}/pvp`;
 }

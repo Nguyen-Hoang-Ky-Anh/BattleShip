@@ -114,6 +114,10 @@ public class RoomManager {
         // =================================================
         if(existingPlayer != null) {
 
+            System.out.println("RECONNECT: " + username
+                    + " old session: " + existingPlayer.getSession().getId()
+                    + " new session: " + session.getId());
+
             // [Extend Flow]
             existingPlayer.setSession(session);
             existingPlayer.setConnected(true);
@@ -374,7 +378,9 @@ public class RoomManager {
                 );
 
         for(Player player : players) {
-
+            System.out.println("BROADCAST to: " + player.getUsername()
+                    + " session: " + player.getSession().getId()
+                    + " isOpen: " + player.getSession().isOpen());
             send(player.getSession(), msg);
         }
     }
