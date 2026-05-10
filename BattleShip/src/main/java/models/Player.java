@@ -4,6 +4,8 @@ import enums.PlayerRole;
 import jakarta.websocket.Session;
 import models.ai.AIStrategy;
 
+import java.util.List;
+
 public class Player {
     private String username;
     private PlayerRole role;
@@ -102,5 +104,43 @@ public class Player {
 
     public boolean isHuman() {
         return role == PlayerRole.HUMAN;
+    }
+
+    public String getBoardJson() {
+        if (board == null || board.getShips() == null) {
+            return "[]";
+        }
+
+        StringBuilder sb = new StringBuilder("[");
+
+        List<Ship> ships = board.getShips();
+
+        for (int i = 0; i < ships.size(); i++) {
+            Ship ship = ships.get(i);
+
+            sb.append("{\"cells\":[");
+
+            List<Position> cells = ship.getCells();
+
+            for (int j = 0; j < cells.size(); j++) {
+                Position cell = cells.get(j);
+
+                sb.append("{\"r\":")
+                        .append(cell.getR())
+                        .append(",\"c\":")
+                        .append(cell.getC())
+                        .append("}");
+
+                if (j < cells.size() - 1) sb.append(",");
+            }
+
+            sb.append("]}");
+
+            if (i < ships.size() - 1) sb.append(",");
+        }
+
+        sb.append("]");
+
+        return sb.toString();
     }
 }
