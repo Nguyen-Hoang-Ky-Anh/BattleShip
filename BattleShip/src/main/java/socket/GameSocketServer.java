@@ -14,6 +14,8 @@ import models.Room;
 import services.BattleService;
 import services.RoomManager;
 
+import java.util.List;
+
 @ServerEndpoint("/game")
 public class GameSocketServer {
 
@@ -24,6 +26,8 @@ public class GameSocketServer {
     @OnOpen
     public void onOpen(Session session) {
 
+        // [UC-08 - Join Room][Pre-Step]
+        // Client establish WebSocket connection
         System.out.println(
                 "Connected: " + session.getId()
         );
@@ -42,6 +46,8 @@ public class GameSocketServer {
 
         try {
 
+            // [SYSTEM - Dispatcher]
+            // Nhận message từ client (protocol dạng: ACTION|param1|param2...)
             System.out.println(
                     "RAW MESSAGE: " + message
             );
@@ -56,7 +62,7 @@ public class GameSocketServer {
                 // =================================================
                 // JOIN ROOM
                 // =================================================
-
+                // [UC-08]
                 case "JOIN_ROOM":
 
                     handleJoinRoom(parts, session);
@@ -67,7 +73,7 @@ public class GameSocketServer {
                 // =================================================
                 // TOGGLE READY
                 // =================================================
-
+                // [UC-08.1]
                 case "TOGGLE_READY":
 
                     handleToggleReady(parts);
@@ -78,7 +84,7 @@ public class GameSocketServer {
                 // =================================================
                 // START GAME
                 // =================================================
-
+                // [UC-08.2]
                 case "START_GAME":
 
                     handleStartGame(parts);
@@ -88,7 +94,7 @@ public class GameSocketServer {
                 // =================================================
                 // CONFIRM PLACEMENT
                 // =================================================
-
+                // [UC-09 - Place Ships]
                 case "CONFIRM_PLACEMENT":
                     handleConfirmPlacement(parts);
                     break;
@@ -96,7 +102,7 @@ public class GameSocketServer {
                 // =================================================
                 // INIT BATTLE STATE
                 // =================================================
-
+                // [UC-09][Reconnect / Sync]
                 case "INIT_BATTLE_STATE":
                     handleInitBattleState(parts, session);
                     break;
@@ -104,7 +110,7 @@ public class GameSocketServer {
                 // =================================================
                 // START GAME
                 // =================================================
-
+                // [UC-10 - Attack Turn-Based]
                 case "ATTACK":
                     handleAttack(parts);
                     break;
@@ -141,7 +147,7 @@ public class GameSocketServer {
             String[] parts,
             Session session
     ) {
-
+        // [UC-08][Step 1 - Validate Packet]
         if (parts.length < 3) {
 
             send(
@@ -163,6 +169,7 @@ public class GameSocketServer {
                         RoomManager.getRooms().keySet()
         );
 
+        // [UC-08][Step 2 - Call Service Layer]
         boolean success =
                 RoomManager.joinRoom(
                         roomId,
@@ -170,10 +177,12 @@ public class GameSocketServer {
                         session
                 );
 
+        // [UC-08][Exception Flow handled in RoomManager]
         if (!success) {
             return;
         }
 
+        // [UC-08][Step 3 - Join Success]
         System.out.println(
                 username +
                         " joined room " +
@@ -190,6 +199,7 @@ public class GameSocketServer {
             String[] parts
     ) {
 
+        // [UC-08.1][Step 1 - Validate]
         if (parts.length < 3) {
             return;
         }
@@ -197,11 +207,13 @@ public class GameSocketServer {
         String roomId = parts[1];
         String username = parts[2];
 
+        // [UC-08.1][Step 2 - Toggle]
         RoomManager.toggleReady(
                 roomId,
                 username
         );
 
+        // [UC-08.1][Step 3 - Broadcast handled in service]
         System.out.println(
                 username +
                         " toggled ready"
@@ -217,6 +229,7 @@ public class GameSocketServer {
             String[] parts
     ) {
 
+        // [UC-08.2][Step 1 - Validate]
         if (parts.length < 3) {
             return;
         }
@@ -224,11 +237,13 @@ public class GameSocketServer {
         String roomId = parts[1];
         String username = parts[2];
 
+        // [UC-08.2][Step 2 - Start]
         RoomManager.startGame(
                 roomId,
                 username
         );
 
+        // [UC-08.2][Step 3 - Broadcast GAME_STARTED]
         System.out.println(
                 username +
                         " started game"
@@ -243,6 +258,7 @@ public class GameSocketServer {
             String[] parts
     ) {
 
+        // [UC-09 - Place Ships][Step 1 - Validate]
         if(parts.length < 4) {
             return;
         }
@@ -252,14 +268,19 @@ public class GameSocketServer {
 
         String boardJson = parts[3];
 
+        // [UC-09][Step 2 - Parse Board]
         Board board =
                 BattleService.parseBoard(boardJson);
 
+        // [UC-09][Step 3 - Confirm Placement]
         BattleService.confirmPlacement(
                 roomId,
                 username,
                 board
         );
+
+        // System sẽ chuyển state:
+        // WAITING → PLACING → (ready) → BATTLE
     }
 
     // =========================================================
@@ -304,6 +325,12 @@ public class GameSocketServer {
             return;
         }
 
+        String shipsJson = player.getBoardJson();
+
+        if (shipsJson == null) {
+            shipsJson = "[]";
+        }
+
         // =========================================
         // RESTORE SESSION
         // =========================================
@@ -329,20 +356,15 @@ public class GameSocketServer {
             return;
         }
 
+        send(session, "INIT_BATTLE_STATE|" + roomId + "|" + username
+                + "|" + shipsJson
+                + "|" + toShotsJson(battleState.getShotHistory()));
+
         send(
                 session,
                 "BATTLE_STARTED|"
                         + battleState.getCurrentTurn()
         );
-
-        for(String shot :
-                battleState.getShotHistory()) {
-
-            send(
-                    session,
-                    "SHOT_RESULT|" + shot
-            );
-        }
     }
 
     // =========================================================
@@ -399,12 +421,6 @@ public class GameSocketServer {
                     col
             );
 
-            // =====================================
-            // AUTO SYNC STATE
-            // =====================================
-
-            syncBattleState(roomId);
-
         } catch (Exception e) {
 
             e.printStackTrace();
@@ -418,6 +434,7 @@ public class GameSocketServer {
     @OnClose
     public void onClose(Session session) {
 
+        // [UC-08.3 - Leave Room]
         System.out.println(
                 "Disconnected: " +
                         session.getId()
@@ -451,61 +468,92 @@ public class GameSocketServer {
         }
     }
 
-    private void syncBattleState(String roomId) {
+//    private void syncBattleState(String roomId) {
+//        // [INCLUDED USE CASE - Sync Game State]
+//        Room room =
+//                RoomManager.getRoom(roomId);
+//
+//        if(room == null) {
+//            return;
+//        }
+//
+//        BattleState battle =
+//                room.getBattleState();
+//
+//        if(battle == null) {
+//            return;
+//        }
+//
+//        Gson gson = new Gson();
+//
+//        // =====================================
+//        // [Loop - Send state to each player]
+//        // =====================================
+//        for(Player player :
+//                room.getPlayers().values()) {
+//
+//            Board board =
+//                    battle.getPlayerBoards()
+//                            .get(player.getUsername());
+//
+//            if(board == null) {
+//                continue;
+//            }
+//
+//            String boardJson =
+//                    gson.toJson(board.getShips());
+//
+//            try {
+//
+//                Session session =
+//                        player.getSession();
+//
+//                if(session != null
+//                        && session.isOpen()) {
+//
+//                    // [UC-10][Step - Update client state]
+//                    session.getBasicRemote()
+//                            .sendText(
+//                                    "INIT_BATTLE_STATE|"
+//                                            + roomId + "|"
+//                                            + player.getUsername()
+//                                            + "|"
+//                                            + boardJson
+//                            );
+//                }
+//
+//            } catch (Exception e) {
+//
+//                e.printStackTrace();
+//            }
+//        }
+//    }
 
-        Room room =
-                RoomManager.getRoom(roomId);
-
-        if(room == null) {
-            return;
+    private String toShotsJson(List<String> shotHistory) {
+        if (shotHistory == null || shotHistory.isEmpty()) {
+            return "[]";
         }
 
-        BattleState battle =
-                room.getBattleState();
+        StringBuilder sb = new StringBuilder("[");
 
-        if(battle == null) {
-            return;
+        for (int i = 0; i < shotHistory.size(); i++) {
+            // Mỗi shot có dạng: "userA|2|3|HIT"
+            String[] p = shotHistory.get(i).split("\\|");
+
+            if (p.length < 4) continue;
+
+            sb.append("{")
+                    .append("\"attacker\":\"").append(p[0]).append("\",")
+                    .append("\"row\":").append(p[1]).append(",")
+                    .append("\"col\":").append(p[2]).append(",")
+                    .append("\"result\":\"").append(p[3]).append("\"")
+                    .append("}");
+
+            if (i < shotHistory.size() - 1) sb.append(",");
         }
 
-        Gson gson = new Gson();
+        sb.append("]");
 
-        // sync từng player
-        for(Player player :
-                room.getPlayers().values()) {
-
-            Board board =
-                    battle.getPlayerBoards()
-                            .get(player.getUsername());
-
-            if(board == null) {
-                continue;
-            }
-
-            String boardJson =
-                    gson.toJson(board.getShips());
-
-            try {
-
-                Session session =
-                        player.getSession();
-
-                if(session != null
-                        && session.isOpen()) {
-
-                    session.getBasicRemote()
-                            .sendText(
-                                    "INIT_BATTLE_STATE|"
-                                            + roomId + "|"
-                                            + player.getUsername()
-                                            + "|"
-                                            + boardJson
-                            );
-                }
-
-            } catch (Exception e) {
-
-                e.printStackTrace();
-            }
-        }
+        return sb.toString();
     }
 }
