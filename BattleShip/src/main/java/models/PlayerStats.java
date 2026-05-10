@@ -9,6 +9,10 @@ public class PlayerStats {
     private int totalShots;
     private LocalDateTime updatedAt;
 
+    public PlayerStats(){
+
+    }
+
     public PlayerStats(String username){
         this.username=username;
         this.wins=0;
