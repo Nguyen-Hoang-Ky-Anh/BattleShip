@@ -19,7 +19,6 @@ let currentTurn = "PLAYER";
 // =========================
 
 window.addEventListener("DOMContentLoaded", () => {
-
     log("DOM loaded");
 
     if (typeof createBoardForBattle !== "function") {
@@ -31,17 +30,15 @@ window.addEventListener("DOMContentLoaded", () => {
     renderPlayerBoard();
     initEnemyBoard();
 
-    setStatus("🎯 Your turn");
+    setStatus("🎯 Lượt của bạn");
 });
 
 // =========================
-// BOARD INIT
+// BOARD INIT & RENDER
 // =========================
 
 function createBattleBoards() {
-
     log("Creating battle boards...");
-
     const my = document.getElementById("myBoard");
     const enemy = document.getElementById("enemyBoard");
 
@@ -52,18 +49,11 @@ function createBattleBoards() {
 
     createBoardForBattle("myBoard");
     createBoardForBattle("enemyBoard");
-
     log("Boards created");
 }
 
-// =========================
-// PLAYER BOARD RENDER
-// =========================
-
 function renderPlayerBoard() {
-
     log("Rendering player board");
-
     const data = localStorage.getItem("playerBoard");
 
     if (!data) {
@@ -75,285 +65,188 @@ function renderPlayerBoard() {
 
     ships.forEach(ship => {
         ship.cells.forEach(cell => {
-
             const el = document.querySelector(
                 `#myBoard .cell[data-row="${cell.r}"][data-col="${cell.c}"]`
             );
-
-            if (el) {
-                el.classList.add("ship");
-            } else {
-                log(`Missing cell r=${cell.r}, c=${cell.c}`);
-            }
+            if (el) el.classList.add("ship");
         });
     });
 
     log("Player board rendered");
 }
 
-// =========================
-// ENEMY BOARD
-// =========================
-
 function initEnemyBoard() {
-
-    log("Init enemy board clicks");
-
     const cells = document.querySelectorAll("#enemyBoard .cell");
-
-    if (!cells.length) {
-        console.error("❌ Enemy board has no cells");
-        return;
-    }
-
-    log(`Enemy cells found: ${cells.length}`);
+    if (!cells.length) return;
 
     cells.forEach(cell => {
-
         cell.addEventListener("click", async () => {
+            if (gameFinished || currentTurn !== "PLAYER") return;
 
-            log("Enemy cell clicked");
-
-            if (gameFinished) {
-                log("Game already finished");
-                return;
-            }
-
-            if (!playerTurn) {
-                log("Not player turn");
-                return;
-            }
-
-            if (cell.classList.contains("hit") || cell.classList.contains("miss")) {
+            if (cell.classList.contains("hit") || cell.classList.contains("miss") || cell.classList.contains("sunk")) {
                 log("Cell already attacked");
                 return;
             }
 
             const row = Number(cell.dataset.row);
             const col = Number(cell.dataset.col);
-
-            log(`Attack -> (${row}, ${col})`);
-
             await attack(row, col);
         });
     });
 }
 
 // =========================
-// ATTACK
+// ATTACK LOGIC
 // =========================
 
 async function attack(row, col) {
-
-    if (currentTurn !== "PLAYER") {
-        log("Not player turn");
-        return;
-    }
+    if (currentTurn !== "PLAYER") return;
 
     try {
-
-        setStatus("🚀 Attacking...");
-        log("Player attack:", row, col);
-
+        setStatus("🚀 Đang bắn...");
         const response = await fetch(contextPath + "/battle-pve", {
             method: "POST",
             headers: {"Content-Type": "application/json"},
-            body: JSON.stringify({
-                action: "attack",
-                gameId,
-                row,
-                col
-            })
+            body: JSON.stringify({ action: "attack", gameId, row, col })
         });
 
         const data = await response.json();
+        console.log("[SERVER RESPONSE]", data);
 
-        handleAttackResult(row, col, data.playerResult);
+        // 1. Xử lý cú bắn của người chơi (Truyền thêm tên tàu bị chìm)
+        handleAttackResult(row, col, data.playerResult, data.sunkShipName);
 
-        // =========================
-        // 🔥 TURN RULE FIX HERE
-        // =========================
+        const isGameFinished = data.gameOver === true || data.isGameOver === true;
 
-        if (data.gameOver) {
-            finishGame(data.winner);
+        // 2. Kiểm tra xem Người Chơi có thắng ngay lập tức không
+        if (isGameFinished && data.winner === "PLAYER") {
+            finishGame("PLAYER");
             return;
         }
 
+        // 3. Nếu bắn TRÚNG hoặc CHÌM -> Tiếp tục lượt
         if (data.playerResult === "HIT" || data.playerResult === "SUNK") {
-
-            log("🎯 HIT → Player plays again");
-            setStatus("🎯 Hit! Play again");
-
-            currentTurn = "PLAYER"; // keep turn
+            setStatus("🎯 Bắn chuẩn lắm! Được bắn tiếp.");
+            currentTurn = "PLAYER";
             return;
         }
 
-        // MISS → AI turn
+        // 4. Nếu bắn TRƯỢT -> Lượt của AI
         log("💨 MISS → AI turn");
-
         currentTurn = "AI";
-        setStatus("🤖 AI thinking...");
+        setStatus("🤖 Địch đang nã pháo...");
 
-        await aiTurn(data.aiMove);
+        // Xử lý một loạt các combo hành động của AI (Do backend gộp trả về 1 lần)
+        if (data.aiMoves && data.aiMoves.length > 0) {
+            await processAIMoves(data.aiMoves);
+        }
+
+        // 5. Sau khi AI bắn xong combo, kiểm tra xem AI có thắng không
+        if (isGameFinished && data.winner === "AI") {
+            finishGame("AI");
+            return;
+        }
+
+        // 6. Nếu game chưa kết thúc, trả lại lượt cho người chơi
+        if (!gameFinished) {
+            currentTurn = "PLAYER";
+            setStatus("🎯 Lượt của bạn");
+        }
 
     } catch (e) {
         console.error(e);
-        setStatus("❌ Error");
+        setStatus("❌ Lỗi kết nối server");
     }
 }
 
-async function aiTurn(initialMove) {
+// Xử lý mảng hành động của AI với độ trễ (delay)
+async function processAIMoves(moves) {
+    for (let move of moves) {
+        if (gameFinished) break;
 
-    let move = initialMove;
+        // Nghỉ 1 giây giữa các phát đạn để Player kịp nhìn
+        await new Promise(resolve => setTimeout(resolve, 1000));
 
-    while (currentTurn === "AI" && !gameFinished) {
-
-        if (move) {
-            handleAIShot(move);
-        }
-
-        if (!move) break;
-
-        if (move.result === "HIT" || move.result === "SUNK") {
-
-            log("🤖 AI HIT → AI plays again");
-
-            move = await requestAIMove(); // backend call
-            continue;
-        }
-
-        // MISS → back to player
-        log("🤖 AI MISS → Player turn");
-
-        currentTurn = "PLAYER";
-        setStatus("🎯 Your turn");
-
-        break;
+        handleAIShot(move);
     }
-}
-
-async function requestAIMove() {
-
-    const res = await fetch(contextPath + "/battle-pve", {
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({
-            action: "ai-move",
-            gameId
-        })
-    });
-
-    const data = await res.json();
-
-    return data.aiMove;
 }
 
 // =========================
 // UI UPDATE
 // =========================
 
-function handleAttackResult(row, col, result) {
+function handleAttackResult(row, col, result, sunkShipName) {
+    const cell = document.querySelector(`#enemyBoard .cell[data-row="${row}"][data-col="${col}"]`);
+    if (!cell) return;
 
-    const cell = document.querySelector(
-        `#enemyBoard .cell[data-row="${row}"][data-col="${col}"]`
-    );
-
-    if (!cell) {
-        log("Enemy cell not found");
-        return;
-    }
-
-    if (result === "HIT" || result === "SUNK") {
+    if (result === "SUNK") {
+        cell.classList.add("hit", "sunk");
+        addLog(`💥 BẮN CHÌM! Bạn đã tiêu diệt tàu [${sunkShipName}] của địch!`);
+    } else if (result === "HIT") {
         cell.classList.add("hit");
-        addLog(`🎯 HIT at (${row}, ${col})`);
+        addLog(`🎯 TRÚNG ĐÍCH tại (${row}, ${col})`);
     } else {
         cell.classList.add("miss");
-        addLog(`💨 MISS at (${row}, ${col})`);
+        addLog(`💨 TRƯỢT tại (${row}, ${col})`);
     }
 }
-
-function setTurnUI() {
-    document.body.dataset.turn = currentTurn;
-}
-
-// =========================
-// AI MOVE
-// =========================
 
 function handleAIShot(aiMove) {
+    if (!aiMove) return;
+    const cell = document.querySelector(`#myBoard .cell[data-row="${aiMove.row}"][data-col="${aiMove.col}"]`);
+    if (!cell) return;
 
-    if (!aiMove) {
-        log("No AI move");
-        return;
-    }
-
-    const cell = document.querySelector(
-        `#myBoard .cell[data-row="${aiMove.row}"][data-col="${aiMove.col}"]`
-    );
-
-    if (!cell) {
-        log("AI target cell not found");
-        return;
-    }
-
-    if (aiMove.result === "HIT" || aiMove.result === "SUNK") {
+    if (aiMove.result === "SUNK") {
+        cell.classList.add("hit", "sunk");
+        addLog(`💀 CẢNH BÁO: Tàu [${aiMove.sunkShipName}] của bạn đã bị địch bắn chìm!`);
+    } else if (aiMove.result === "HIT") {
         cell.classList.add("hit");
-        addLog(`🤖 AI HIT (${aiMove.row}, ${aiMove.col})`);
+        addLog(`🤖 Địch TRÚNG ĐÍCH tại (${aiMove.row}, ${aiMove.col})`);
     } else {
         cell.classList.add("miss");
-        addLog(`🤖 AI MISS (${aiMove.row}, ${aiMove.col})`);
+        addLog(`🤖 Địch TRƯỢT tại (${aiMove.row}, ${aiMove.col})`);
     }
 }
 
 // =========================
-// GAME OVER
+// GAME OVER & UTILS
 // =========================
 
 function finishGame(winner) {
-
     gameFinished = true;
 
     if (winner === "PLAYER") {
-        setStatus("🏆 You Win!");
-        addLog("GAME OVER: PLAYER WIN");
-        window.location.href = contextPath + "/home";
+        setStatus("🏆 CHIẾN THẮNG! Trò chơi kết thúc.");
+        addLog("GAME OVER: YOU WIN");
     } else {
-        setStatus("💀 AI Wins!");
+        setStatus("💀 THẤT BẠI! AI đã chiến thắng.");
         addLog("GAME OVER: AI WIN");
-        window.location.href = contextPath + "/home";
     }
-}
 
-// =========================
-// STATUS
-// =========================
+    // Đợi 3.5 giây để người chơi đọc thông báo rồi mới về trang chủ
+    setTimeout(() => {
+        window.location.href = contextPath + "/home";
+    }, 3500);
+}
 
 function setStatus(message) {
-
     const el = document.getElementById("battleStatus");
-
     if (el) el.textContent = message;
-
-    log("STATUS: " + message);
 }
 
-// =========================
-// LOG SYSTEM (IMPORTANT)
-// =========================
-
 function addLog(msg) {
-
     const logBox = document.getElementById("log");
-
-    console.log("[LOG]", msg);
-
     if (!logBox) return;
 
     const div = document.createElement("div");
     div.textContent = msg;
 
+    // Highlight các log quan trọng
+    if (msg.includes("BẮN CHÌM") || msg.includes("CHIẾN THẮNG")) div.style.color = "lime";
+    if (msg.includes("CẢNH BÁO") || msg.includes("THẤT BẠI")) div.style.color = "red";
+
     logBox.appendChild(div);
-    logBox.scrollTop = logBox.scrollHeight;
+    logBox.scrollTop = logBox.scrollHeight; // Tự động cuộn xuống dưới cùng
 }
 
 function log(msg, obj) {

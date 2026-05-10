@@ -112,4 +112,24 @@ public class Board {
         return cell.getState() == Cell.HIT
                 || cell.getState() == Cell.MISS;
     }
+
+    public String getShipNameAt(int r, int c) {
+        Ship ship = this.getShipAt(r, c);
+        if (ship != null) {
+            return ship.getName();
+        }
+        return "Unknown Ship";
+    }
+
+    private Ship getShipAt(int r, int c) {
+        for(Ship ship : ships) {
+            List<Position> positions = ship.getCells();
+            for (Position pos : positions) {
+                if (pos.getR() == r && pos.getC() == c) {
+                    return ship;
+                }
+            }
+        }
+        return null;
+    }
 }

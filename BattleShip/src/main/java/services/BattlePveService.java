@@ -8,6 +8,9 @@ import models.Player;
 import models.Position;
 import models.ai.AIStrategy;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class BattlePveService {
     public AttackResponse playerAttack(GameSession game, int row, int col) {
 
@@ -22,10 +25,21 @@ public class BattlePveService {
         // ======================
         String playerResult = aiBoard.handleShot(row, col);
 
+        if (playerResult.equals("ALREADY_SHOT") || playerResult.equals("INVALID")) {
+            throw new IllegalArgumentException("Invalid shot: " + playerResult);
+        }
+
+        // Lấy tên tàu nếu Player bắn chìm tàu địch
+        String playerSunkShipName = null;
+        if ("SUNK".equals(playerResult)) {
+            playerSunkShipName = aiBoard.getShipNameAt(row, col);
+        }
+
         // WIN CHECK
         if (aiBoard.isAllSunk()) {
             return new AttackResponse(
                     playerResult,
+                    playerSunkShipName, // Truyền tên tàu bị chìm
                     null,
                     true,
                     "PLAYER",
@@ -37,10 +51,10 @@ public class BattlePveService {
         // TURN LOGIC
         // ======================
 
-        // HIT → player plays again
-        if (!playerResult.equals("MISS")) {
+        if (playerResult.equals("HIT") || playerResult.equals("SUNK")) {
             return new AttackResponse(
                     playerResult,
+                    playerSunkShipName, // Truyền tên tàu bị chìm
                     null,
                     false,
                     null,
@@ -51,12 +65,14 @@ public class BattlePveService {
         // ======================
         // AI TURN (ONLY IF MISS)
         // ======================
-        AiMoveDTO aiMove = executeAITurn(game);
+
+        List<AiMoveDTO> aiMoves = executeAITurn(game);
 
         if (humanBoard.isAllSunk()) {
             return new AttackResponse(
                     playerResult,
-                    aiMove,
+                    playerSunkShipName,
+                    aiMoves,
                     true,
                     "AI",
                     "NONE"
@@ -65,14 +81,15 @@ public class BattlePveService {
 
         return new AttackResponse(
                 playerResult,
-                aiMove,
+                playerSunkShipName,
+                aiMoves,
                 false,
                 null,
                 "PLAYER"
         );
     }
 
-    private AiMoveDTO executeAITurn(GameSession game) {
+    private List<AiMoveDTO> executeAITurn(GameSession game) {
 
         Player human = game.getPlayer1();
         Player ai = game.getPlayer2();
@@ -80,38 +97,39 @@ public class BattlePveService {
         Board humanBoard = human.getBoard();
         AIStrategy strategy = ai.getAiStrategy();
 
-        AiMoveDTO lastMove = null;
+        List<AiMoveDTO> movesHistory = new ArrayList<>();
 
         while (true) {
 
             Position pos = strategy.nextMove(humanBoard);
-
             String result = humanBoard.handleShot(pos.getR(), pos.getC());
-
             strategy.onShotResult(pos, result);
 
-            lastMove = new AiMoveDTO();
-            lastMove.row = pos.getR();
-            lastMove.col = pos.getC();
-            lastMove.result = result;
+            AiMoveDTO currentMove = new AiMoveDTO();
+            currentMove.row = pos.getR();
+            currentMove.col = pos.getC();
+            currentMove.result = result;
+
+            // Nếu AI bắn chìm tàu của người chơi, lấy tên tàu đó
+            if ("SUNK".equals(result)) {
+                currentMove.sunkShipName = humanBoard.getShipNameAt(pos.getR(), pos.getC());
+            }
+
+            movesHistory.add(currentMove);
 
             // ======================
             // STOP CONDITION
             // ======================
 
-            // MISS → end AI turn
             if ("MISS".equals(result)) {
                 break;
             }
 
-            // AI WON → stop immediately
             if (humanBoard.isAllSunk()) {
                 break;
             }
-
-            // else HIT/SUNK → continue loop
         }
 
-        return lastMove;
+        return movesHistory;
     }
 }
