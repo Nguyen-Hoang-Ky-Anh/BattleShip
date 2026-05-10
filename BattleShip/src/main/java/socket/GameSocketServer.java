@@ -14,6 +14,8 @@ import models.Room;
 import services.BattleService;
 import services.RoomManager;
 
+import java.util.List;
+
 @ServerEndpoint("/game")
 public class GameSocketServer {
 
@@ -323,6 +325,12 @@ public class GameSocketServer {
             return;
         }
 
+        String shipsJson = player.getBoardJson();
+
+        if (shipsJson == null) {
+            shipsJson = "[]";
+        }
+
         // =========================================
         // RESTORE SESSION
         // =========================================
@@ -348,20 +356,15 @@ public class GameSocketServer {
             return;
         }
 
+        send(session, "INIT_BATTLE_STATE|" + roomId + "|" + username
+                + "|" + shipsJson
+                + "|" + toShotsJson(battleState.getShotHistory()));
+
         send(
                 session,
                 "BATTLE_STARTED|"
                         + battleState.getCurrentTurn()
         );
-
-        for(String shot :
-                battleState.getShotHistory()) {
-
-            send(
-                    session,
-                    "SHOT_RESULT|" + shot
-            );
-        }
     }
 
     // =========================================================
@@ -418,12 +421,6 @@ public class GameSocketServer {
                     col
             );
 
-            // =====================================
-            // AUTO SYNC STATE
-            // =====================================
-
-            syncBattleState(roomId);
-
         } catch (Exception e) {
 
             e.printStackTrace();
@@ -471,64 +468,92 @@ public class GameSocketServer {
         }
     }
 
-    private void syncBattleState(String roomId) {
-        // [INCLUDED USE CASE - Sync Game State]
-        Room room =
-                RoomManager.getRoom(roomId);
+//    private void syncBattleState(String roomId) {
+//        // [INCLUDED USE CASE - Sync Game State]
+//        Room room =
+//                RoomManager.getRoom(roomId);
+//
+//        if(room == null) {
+//            return;
+//        }
+//
+//        BattleState battle =
+//                room.getBattleState();
+//
+//        if(battle == null) {
+//            return;
+//        }
+//
+//        Gson gson = new Gson();
+//
+//        // =====================================
+//        // [Loop - Send state to each player]
+//        // =====================================
+//        for(Player player :
+//                room.getPlayers().values()) {
+//
+//            Board board =
+//                    battle.getPlayerBoards()
+//                            .get(player.getUsername());
+//
+//            if(board == null) {
+//                continue;
+//            }
+//
+//            String boardJson =
+//                    gson.toJson(board.getShips());
+//
+//            try {
+//
+//                Session session =
+//                        player.getSession();
+//
+//                if(session != null
+//                        && session.isOpen()) {
+//
+//                    // [UC-10][Step - Update client state]
+//                    session.getBasicRemote()
+//                            .sendText(
+//                                    "INIT_BATTLE_STATE|"
+//                                            + roomId + "|"
+//                                            + player.getUsername()
+//                                            + "|"
+//                                            + boardJson
+//                            );
+//                }
+//
+//            } catch (Exception e) {
+//
+//                e.printStackTrace();
+//            }
+//        }
+//    }
 
-        if(room == null) {
-            return;
+    private String toShotsJson(List<String> shotHistory) {
+        if (shotHistory == null || shotHistory.isEmpty()) {
+            return "[]";
         }
 
-        BattleState battle =
-                room.getBattleState();
+        StringBuilder sb = new StringBuilder("[");
 
-        if(battle == null) {
-            return;
+        for (int i = 0; i < shotHistory.size(); i++) {
+            // Mỗi shot có dạng: "userA|2|3|HIT"
+            String[] p = shotHistory.get(i).split("\\|");
+
+            if (p.length < 4) continue;
+
+            sb.append("{")
+                    .append("\"attacker\":\"").append(p[0]).append("\",")
+                    .append("\"row\":").append(p[1]).append(",")
+                    .append("\"col\":").append(p[2]).append(",")
+                    .append("\"result\":\"").append(p[3]).append("\"")
+                    .append("}");
+
+            if (i < shotHistory.size() - 1) sb.append(",");
         }
 
-        Gson gson = new Gson();
+        sb.append("]");
 
-        // =====================================
-        // [Loop - Send state to each player]
-        // =====================================
-        for(Player player :
-                room.getPlayers().values()) {
-
-            Board board =
-                    battle.getPlayerBoards()
-                            .get(player.getUsername());
-
-            if(board == null) {
-                continue;
-            }
-
-            String boardJson =
-                    gson.toJson(board.getShips());
-
-            try {
-
-                Session session =
-                        player.getSession();
-
-                if(session != null
-                        && session.isOpen()) {
-
-                    // [UC-10][Step - Update client state]
-                    session.getBasicRemote()
-                            .sendText(
-                                    "INIT_BATTLE_STATE|"
-                                            + roomId + "|"
-                                            + player.getUsername()
-                                            + "|"
-                                            + boardJson
-                            );
-                }
-
-            } catch (Exception e) {
-
-                e.printStackTrace();
-            }
-        }
+        return sb.toString();
     }
 }

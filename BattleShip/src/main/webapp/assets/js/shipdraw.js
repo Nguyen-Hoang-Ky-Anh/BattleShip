@@ -142,22 +142,17 @@ function resetBoard() {
 
 // ========== CONFIRM ==========
 function confirmPlacement() {
-
-    const allPlaced =
-        SHIP_CATALOG.every(s => s.placed);
+    const allPlaced = SHIP_CATALOG.every(s => s.placed);
 
     if (!allPlaced) {
-
-        document.getElementById(
-            "placementStatus"
-        ).textContent =
-            "⚠ Place all ships first!";
-
+        document.getElementById("placementStatus").textContent = "⚠ Place all ships first!";
         return;
     }
 
+    // Khóa board không cho kéo thả nữa
     isLocked = true;
 
+    // Chuẩn bị dữ liệu
     const shipData = placedShips.map(s => ({
         name: s.name,
         size: s.size,
@@ -165,22 +160,22 @@ function confirmPlacement() {
         cells: s.cells
     }));
 
-    socket.send(
-        "CONFIRM_PLACEMENT|" +
-        roomId + "|" +
-        userId + "|" +
-        JSON.stringify(shipData)
-    );
+    // Kiểm tra an toàn trước khi gửi qua Socket
+    if (typeof GameState !== "undefined" && GameState.socket && GameState.socket.readyState === WebSocket.OPEN) {
 
-    localStorage.setItem(
-        "playerBoard",
-        JSON.stringify(shipData)
-    );
+        GameState.socket.send(`${ACTIONS.CONFIRM_PLACEMENT}|${roomId}|${userId}|${JSON.stringify(shipData)}`);
 
-    document.getElementById(
-        "placementStatus"
-    ).textContent =
-        "⏳ Waiting opponent...";
+        // Lưu local để dự phòng
+        localStorage.setItem("playerBoard", JSON.stringify(shipData));
+
+        // Cập nhật UI
+        document.getElementById("placementStatus").textContent = "⏳ Waiting opponent...";
+
+    } else {
+        console.error("Socket is not connected. Cannot confirm placement.");
+        document.getElementById("placementStatus").textContent = "⚠ Connection error! Try again.";
+        isLocked = false;
+    }
 }
 
 // ========== DRAG FROM PANEL ==========

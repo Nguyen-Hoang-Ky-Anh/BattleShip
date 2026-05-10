@@ -104,110 +104,57 @@ public class BattleService {
             String attacker,
             int row,
             int col
-    )
-    {
+    ) {
         Room room = RoomManager.getRoom(roomId);
-        System.out.println("roomId = " + roomId);
-        System.out.println("attacker = " + attacker);
-        System.out.println("row = " + row + ", col = " + col);
-        System.out.println("room = " + room);
-        System.out.println("phase = " + (room != null ? room.getPhase() : "null"));
-
-        if (room == null) return;
+        if (room == null || room.getPhase() != GamePhase.BATTLE) return;
 
         Player player = room.getPlayers().get(attacker);
-
-        if (room.getPhase() != GamePhase.BATTLE) {
-            return;
-        }
+        if (player == null) return;
 
         BattleState battle = room.getBattleState();
 
-        System.out.println("battleState = " + battle);
-        System.out.println("currentTurn = " + (battle != null ? battle.getCurrentTurn() : "null"));
-        System.out.println("boards = " + (battle != null ? battle.getPlayerBoards().keySet() : "null"));
-
-        if (!battle.getCurrentTurn()
-                .equals(attacker)) {
-
-            send(
-                    player.getSession(),
-                    "ERROR|Not your turn"
-            );
-
+        // 1. Kiểm tra lượt
+        if (!battle.getCurrentTurn().equals(attacker)) {
+            send(player.getSession(), "ERROR|Not your turn");
             return;
         }
 
-        String opponent =
-                getOpponent(room, attacker);
-
+        String opponent = getOpponent(room, attacker);
         Board enemyBoard = battle.getPlayerBoards().get(opponent);
 
-        if(enemyBoard == null) {
-            System.out.println("ENEMY BOARD NULL");
-            return;
-        }
+        if(enemyBoard == null) return;
 
-        String result =
-                enemyBoard.handleShot(row, col);
-
-        battle.getShotHistory().add(
-                attacker + "|" +
-                        row + "|" +
-                        col + "|" +
-                        result
-        );
+        // 2. Lấy kết quả bắn
+        String result = enemyBoard.handleShot(row, col);
 
         if (result.equals("INVALID") || result.equals("ALREADY_SHOT")) {
             send(player.getSession(), "ERROR|" + result);
-            return; // don't switch turn, don't broadcast SHOT_RESULT
-        }
-
-        broadcast(
-                roomId,
-                "SHOT_RESULT|"
-                        + attacker + "|"
-                        + row + "|"
-                        + col + "|"
-                        + result
-        );
-
-        // ================= GAME OVER =================
-
-        if (enemyBoard.isAllSunk()) {
-
-            battle.setWinner(attacker);
-
-            room.setPhase(GamePhase.FINISHED);
-
-            broadcast(
-                    roomId,
-                    "GAME_OVER|" + attacker
-            );
-
             return;
         }
 
-        // ================= SWITCH TURN =================
+        //2: Lưu lịch sử.
+        battle.getShotHistory().add(attacker + "|" + row + "|" + col + "|" + result);
 
-        if(result.equals("MISS")) {
-
-            battle.setCurrentTurn(opponent);
-
-            broadcast(
-                    roomId,
-                    "TURN_CHANGED|" + opponent
-            );
-
+        // 3. Xử lý Game Over & Đổi lượt
+        boolean isGameOver = enemyBoard.isAllSunk();
+        if (isGameOver) {
+            battle.setWinner(attacker);
+            room.setPhase(GamePhase.FINISHED);
         } else {
-
-            battle.setCurrentTurn(attacker);
-
-            broadcast(
-                    roomId,
-                    "TURN_CHANGED|" + attacker
-            );
+            if (result.equals("MISS")) {
+                battle.setCurrentTurn(opponent);
+            } else {
+                battle.setCurrentTurn(attacker);
+            }
         }
+
+        String nextTurn = battle.getCurrentTurn();
+
+        // 4. BROADCAST
+        String updateMsg = String.format("BATTLE_UPDATE|%s|%d|%d|%s|%s|%b",
+                attacker, row, col, result, nextTurn, isGameOver);
+
+        broadcast(roomId, updateMsg);
     }
 
     // =========================================================
