@@ -1,0 +1,95 @@
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: Arial, sans-serif;
+    background: #1a1a2e;
+    color: #e0e0e0;
+    min-height: 100vh;
+    padding: 24px;
+}
+
+h1 {
+    font-size: 1.6rem;
+    color: #fff;
+    margin-bottom: 4px;
+}
+
+.subtitle {
+    color: #888;
+    font-size: 0.9rem;
+    margin-bottom: 20px;
+}
+
+/* Nav */
+.nav {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 24px;
+}
+
+.nav a {
+    padding: 7px 16px;
+    background: #16213e;
+    color: #aaa;
+    text-decoration: none;
+    border-radius: 6px;
+    font-size: 0.88rem;
+    border: 1px solid #2a2a4a;
+}
+
+.nav a:hover { background: #0f3460; color: #fff; }
+
+/* Table */
+.table-wrap {
+    background: #16213e;
+    border: 1px solid #2a2a4a;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+table { width: 100%; border-collapse: collapse; }
+
+thead th {
+    background: #0f3460;
+    padding: 12px 16px;
+    font-size: 0.8rem;
+    text-align: left;
+    color: #aaa;
+    text-transform: uppercase;
+    border-bottom: 1px solid #2a2a4a;
+}
+
+tbody tr { border-bottom: 1px solid #1e1e3a; }
+tbody tr:last-child { border-bottom: none; }
+tbody tr:hover { background: #1e2a4a; }
+
+tbody td { padding: 11px 16px; font-size: 0.9rem; }
+
+/* Rank badges */
+.rank {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    font-size: 0.82rem;
+    font-weight: bold;
+}
+.r1 { background: rgba(255,215,0,.15);   color: #ffd700; border: 1px solid rgba(255,215,0,.4); }
+.r2 { background: rgba(192,200,216,.1);  color: #c0c8d8; border: 1px solid rgba(192,200,216,.35); }
+.r3 { background: rgba(205,127,50,.1);   color: #cd7f32; border: 1px solid rgba(205,127,50,.35); }
+.rn { background: rgba(255,255,255,.04); color: #666;    border: 1px solid rgba(255,255,255,.08); }
+
+.win   { color: #4dff88; font-weight: 600; }
+.loss  { color: #ff4d6a; }
+.muted { color: #666; font-size: 0.82rem; }
+
+/* Win rate bar */
+.bar-wrap { display: flex; align-items: center; gap: 8px; }
+.bar-bg   { flex: 1; height: 5px; background: #2a2a4a; border-radius: 3px; overflow: hidden; min-width: 60px; }
+.bar-fill { height: 100%; background: #4dff88; border-radius: 3px; }
+.bar-pct  { font-size: 0.8rem; color: #4dff88; min-width: 42px; text-align: right; }
+
+/* Empty */
+.empty { text-align: center; padding: 50px; color: #555; }

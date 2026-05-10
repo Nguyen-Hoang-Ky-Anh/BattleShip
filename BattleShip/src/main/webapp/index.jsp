@@ -65,9 +65,14 @@
             <button type="submit">🧑‍🤝‍🧑 PVP Mode</button>
         </form>
 
+        <form action="${pageContext.request.contextPath}/leaderboard" method="get">
+            <button type="submit">🏆 LeaderBoard</button>
+        </form>
+
         <form action="${pageContext.request.contextPath}/how-to-play" method="get">
             <button type="submit">📘 How To Play</button>
         </form>
+
     </div>
 </div>
 
