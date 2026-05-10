@@ -132,32 +132,23 @@ public class BattleService {
             return;
         }
 
-        broadcast(
-                roomId,
-                "SHOT_RESULT|"
-                        + attacker + "|"
-                        + row + "|"
-                        + col + "|"
-                        + result
-        );
+        //2: Lưu lịch sử.
+        battle.getShotHistory().add(attacker + "|" + row + "|" + col + "|" + result);
 
-        // ================= GAME OVER =================
-
-        if (enemyBoard.isAllSunk()) {
+        // 3. Xử lý Game Over & Đổi lượt
+        boolean isGameOver = enemyBoard.isAllSunk();
+        if (isGameOver) {
             battle.setWinner(attacker);
             room.setPhase(GamePhase.FINISHED);
-
-            // ✅ THÊM: Lưu lịch sử vào DB
-            MatchHistoryService.saveMatchResult(room, attacker, opponent);
-
-            broadcast(roomId, "GAME_OVER|" + attacker);
-            return;
+        } else {
+            if (result.equals("MISS")) {
+                battle.setCurrentTurn(opponent);
+            } else {
+                battle.setCurrentTurn(attacker);
+            }
         }
 
-
-        // ================= SWITCH TURN =================
-
-        if(result.equals("MISS")) {
+        String nextTurn = battle.getCurrentTurn();
 
         // 4. BROADCAST
         String updateMsg = String.format("BATTLE_UPDATE|%s|%d|%d|%s|%s|%b",
