@@ -175,18 +175,16 @@ public class BattleService {
         // ================= GAME OVER =================
 
         if (enemyBoard.isAllSunk()) {
-
             battle.setWinner(attacker);
-
             room.setPhase(GamePhase.FINISHED);
 
-            broadcast(
-                    roomId,
-                    "GAME_OVER|" + attacker
-            );
+            // ✅ THÊM: Lưu lịch sử vào DB
+            MatchHistoryService.saveMatchResult(room, attacker, opponent);
 
+            broadcast(roomId, "GAME_OVER|" + attacker);
             return;
         }
+
 
         // ================= SWITCH TURN =================
 

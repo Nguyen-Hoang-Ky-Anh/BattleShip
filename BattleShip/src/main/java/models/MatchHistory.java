@@ -10,6 +10,16 @@ public class MatchHistory {
     private int totalShots;
     private java.time.LocalDateTime playedAt;
 
+    public MatchHistory() {}
+
+    public MatchHistory(String roomId, String winner, String loser, int totalShots) {
+        this.roomId= roomId;
+        this.winner= winner;
+        this.loser= loser;
+        this.totalShots= totalShots;
+        this.playedAt= LocalDateTime.now();
+    }
+
 
     public int getId() {
         return id;
