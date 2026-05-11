@@ -95,6 +95,8 @@
     renderMyShips();
     connectSocket();
     initAttackBoard();
+
+    startSyncPolling();
 </script>
 
 </body>

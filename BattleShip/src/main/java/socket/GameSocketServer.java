@@ -365,6 +365,8 @@ public class GameSocketServer {
                 "BATTLE_STARTED|"
                         + battleState.getCurrentTurn()
         );
+
+        sendFullState(roomId);
     }
 
     // =========================================================
@@ -407,6 +409,8 @@ public class GameSocketServer {
                         "ERROR|Game is not in battle phase"
                 );
 
+                sendFullState(roomId);
+
                 return;
             }
 
@@ -420,6 +424,8 @@ public class GameSocketServer {
                     row,
                     col
             );
+
+            sendFullState(roomId);
 
         } catch (Exception e) {
 
@@ -443,12 +449,41 @@ public class GameSocketServer {
         RoomManager.removeSession(session);
     }
 
+    public static void sendFullState(String roomId) {
+        Room room = RoomManager.getRoom(roomId);
+        if (room == null) return;
+
+        BattleState battle = room.getBattleState();
+        Gson gson = new Gson();
+
+        for (Player p : room.getPlayers().values()) {
+
+            String myBoard = gson.toJson(
+                    battle.getPlayerBoards().get(p.getUsername()).toSimpleGrid()
+            );
+
+            String enemy = BattleService.getOpponent(room, p.getUsername());
+
+            String enemyBoard = gson.toJson(
+                    battle.getPlayerBoards().get(enemy).toFogGrid()
+            );
+
+            String message = "SYNC|"
+                    + battle.getCurrentTurn() + "|"
+                    + myBoard
+                    + "|"
+                    + enemyBoard;
+
+            send(p.getSession(), message);
+        }
+    }
+
 
     // =========================================================
     // SEND
     // =========================================================
 
-    private void send(
+    private static void send(
             Session session,
             String msg
     ) {
@@ -467,67 +502,6 @@ public class GameSocketServer {
             e.printStackTrace();
         }
     }
-
-//    private void syncBattleState(String roomId) {
-//        // [INCLUDED USE CASE - Sync Game State]
-//        Room room =
-//                RoomManager.getRoom(roomId);
-//
-//        if(room == null) {
-//            return;
-//        }
-//
-//        BattleState battle =
-//                room.getBattleState();
-//
-//        if(battle == null) {
-//            return;
-//        }
-//
-//        Gson gson = new Gson();
-//
-//        // =====================================
-//        // [Loop - Send state to each player]
-//        // =====================================
-//        for(Player player :
-//                room.getPlayers().values()) {
-//
-//            Board board =
-//                    battle.getPlayerBoards()
-//                            .get(player.getUsername());
-//
-//            if(board == null) {
-//                continue;
-//            }
-//
-//            String boardJson =
-//                    gson.toJson(board.getShips());
-//
-//            try {
-//
-//                Session session =
-//                        player.getSession();
-//
-//                if(session != null
-//                        && session.isOpen()) {
-//
-//                    // [UC-10][Step - Update client state]
-//                    session.getBasicRemote()
-//                            .sendText(
-//                                    "INIT_BATTLE_STATE|"
-//                                            + roomId + "|"
-//                                            + player.getUsername()
-//                                            + "|"
-//                                            + boardJson
-//                            );
-//                }
-//
-//            } catch (Exception e) {
-//
-//                e.printStackTrace();
-//            }
-//        }
-//    }
 
     private String toShotsJson(List<String> shotHistory) {
         if (shotHistory == null || shotHistory.isEmpty()) {
