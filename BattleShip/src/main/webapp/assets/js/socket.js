@@ -6,6 +6,9 @@ const GameState = {
     currentTurn: null,
     canAttack: false,
     isSyncing: false,
+
+    prevMyBoard: null,
+    prevEnemyBoard: null
 };
 
 const ACTIONS = {
@@ -158,7 +161,23 @@ function handleBattleUpdate(parts) {
         cell.textContent = result === "SUNK" ? "💀" : (result === "HIT" ? "💥" : "•");
     }
 
-    addLog(`${attacker} attacked [${row},${col}] => ${result}`);
+    const isMe = attacker === userId;
+    const pos = `${String.fromCharCode(65 + row)}${col + 1}`; // A1, B5...
+
+// attack log
+    addLog(
+        `${isMe ? "🟢 You" : "🔴 Enemy"} attacked <b>${pos}</b>`,
+        "turn"
+    );
+
+// result log
+    if (result === "HIT") {
+        addLog(`💥 ${isMe ? "You hit a ship!" : "Your ship was hit!"}`, "hit");
+    } else if (result === "MISS") {
+        addLog(`💨 Missed shot`, "miss");
+    } else if (result === "SUNK") {
+        addLog(`🔥 ${isMe ? "You sunk a ship!" : "Your ship was sunk!"}`, "sunk");
+    }
 
     // 2. Cập nhật trạng thái lượt
     GameState.currentTurn = nextTurn;
@@ -280,13 +299,29 @@ function parseRoomState(data) {
     });
 }
 
-function addLog(message) {
+function addLog(message, type = "info") {
     const log = document.getElementById("log");
     if (!log) return;
 
-    const div = document.createElement("div");
-    div.textContent = message;
-    log.prepend(div);
+    const entry = document.createElement("div");
+    entry.classList.add("log-entry");
+
+    // type: hit | miss | sunk | turn | info
+    entry.classList.add(`log-${type}`);
+
+    const time = new Date().toLocaleTimeString();
+
+    entry.innerHTML = `<span class="log-time">[${time}]</span> ${message}`;
+
+    log.appendChild(entry);
+
+    // auto scroll xuống dưới
+    log.scrollTop = log.scrollHeight;
+
+    // giới hạn 50 dòng
+    if (log.children.length > 50) {
+        log.removeChild(log.firstChild);
+    }
 }
 
 function safeSetText(id, text) {
@@ -295,22 +330,18 @@ function safeSetText(id, text) {
 }
 
 function handleSync(parts) {
-    if (parts.length < 4) {
-        console.warn("SYNC lỗi:", parts);
-        return;
-    }
+    if (parts.length < 4) return;
 
     const turn = parts[1];
 
-    let myBoard, enemyBoard;
+    let myBoard = JSON.parse(parts[2]);
+    let enemyBoard = JSON.parse(parts[3]);
 
-    try {
-        myBoard = JSON.parse(parts[2]);
-        enemyBoard = JSON.parse(parts[3]);
-    } catch (e) {
-        console.error("Parse lỗi:", e);
-        return;
-    }
+    detectBoardChanges("myBoard", GameState.prevMyBoard, myBoard, false);
+    detectBoardChanges("enemyBoard", GameState.prevEnemyBoard, enemyBoard, true);
+
+    GameState.prevMyBoard = myBoard;
+    GameState.prevEnemyBoard = enemyBoard;
 
     GameState.currentTurn = turn;
     updateTurnUI();
@@ -418,12 +449,8 @@ function applyBattleState(data) {
     }
 
     // ===== LOG =====
-    if (data.log) {
-        const log = document.getElementById("log");
-        if (log) {
-            log.innerHTML = "";
-            data.log.forEach(m => addLog(m));
-        }
+    if (data.log && data.log.length > 0) {
+        data.log.forEach(m => addLog(m));
     }
 
     // ===== GAME OVER =====
@@ -442,11 +469,37 @@ function startSyncPolling() {
         // chỉ sync khi socket lỗi hoặc chưa có turn
         if (
             !GameState.socket ||
-            GameState.socket.readyState !== WebSocket.OPEN ||
-            GameState.currentTurn === null
+            GameState.socket.readyState !== WebSocket.OPEN
         ) {
             syncBattleState();
         }
 
     }, 2000);
+}
+
+function detectBoardChanges(boardId, oldBoard, newBoard, isEnemyBoard) {
+    if (!oldBoard) return; // lần đầu
+
+    newBoard.forEach((row, r) => {
+        row.forEach((cell, c) => {
+            const prev = oldBoard[r][c];
+
+            if (prev === cell) return;
+
+            const pos = `${String.fromCharCode(65 + r)}${c + 1}`;
+
+            // 🔥 detect event
+            if (cell === "HIT") {
+                addLog(
+                    `${isEnemyBoard ? "🟢 You hit enemy" : "🔴 Enemy hit you"} at <b>${pos}</b> 💥`,
+                    "hit"
+                );
+            } else if (cell === "MISS") {
+                addLog(
+                    `${isEnemyBoard ? "🟢 You missed" : "🔴 Enemy missed"} at <b>${pos}</b> 💨`,
+                    "miss"
+                );
+            }
+        });
+    });
 }
