@@ -9,8 +9,8 @@ public class PlayerStats {
     private int totalShots;
     private LocalDateTime updatedAt;
 
-    // Constructor rỗng
-    public PlayerStats() {
+    public PlayerStats(){
+
     }
 
     public PlayerStats(String username){

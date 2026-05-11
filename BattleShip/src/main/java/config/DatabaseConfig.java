@@ -9,7 +9,7 @@ public class DatabaseConfig {
     private static final String DB_PASS = "";
 
     public static Connection getConnection() throws Exception{
-        Class.forName(".com.mysql.cj.jdbc.Driver");
+        Class.forName("com.mysql.cj.jdbc.Driver");
         return DriverManager.getConnection(DB_URL,DB_USER,DB_PASS);
     }
 }

@@ -44,7 +44,7 @@ public class LeaderboardServlet extends HttpServlet {
         request.setAttribute("limit", limit);
 
         request.getRequestDispatcher(
-                "/WEB-INF/component/leaderboard.jsp"
+                "/WEB-INF/layout/leaderboard.jsp"
         ).forward(request, response);
     }
 }

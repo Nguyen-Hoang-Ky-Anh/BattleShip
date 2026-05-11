@@ -42,7 +42,7 @@ public class HistoryServlet extends HttpServlet {
         request.setAttribute("matches", matches);
 
         request.getRequestDispatcher(
-                "/WEB-INF/component/history.jsp"
+                "/WEB-INF/layout/history.jsp"
         ).forward(request, response);
     }
 }
