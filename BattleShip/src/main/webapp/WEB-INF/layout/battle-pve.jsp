@@ -14,7 +14,7 @@
     <title>Battle PvE</title>
 
     <link rel="stylesheet"
-          href="${pageContext.request.contextPath}/assets/css/battle.css">
+          href="${pageContext.request.contextPath}/assets/css/battle-pve.css">
 
 </head>
 

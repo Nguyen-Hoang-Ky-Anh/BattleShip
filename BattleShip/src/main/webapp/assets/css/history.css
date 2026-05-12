@@ -1,0 +1,106 @@
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: Arial, sans-serif;
+    background: #1a1a2e;
+    color: #e0e0e0;
+    min-height: 100vh;
+    padding: 24px;
+}
+
+h1 {
+    font-size: 1.6rem;
+    color: #fff;
+    margin-bottom: 4px;
+}
+
+.subtitle {
+    color: #888;
+    font-size: 0.9rem;
+    margin-bottom: 20px;
+}
+
+/* Nav */
+.nav {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 24px;
+}
+
+.nav a {
+    padding: 7px 16px;
+    background: #16213e;
+    color: #aaa;
+    text-decoration: none;
+    border-radius: 6px;
+    font-size: 0.88rem;
+    border: 1px solid #2a2a4a;
+}
+
+.nav a:hover { background: #0f3460; color: #fff; }
+
+/* Stats */
+.stats {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.stat {
+    background: #16213e;
+    border: 1px solid #2a2a4a;
+    border-radius: 8px;
+    padding: 14px 20px;
+    text-align: center;
+    min-width: 100px;
+}
+
+.stat .num { font-size: 1.6rem; font-weight: bold; }
+.stat .lbl { font-size: 0.78rem; color: #888; margin-top: 2px; }
+.num-total { color: #4da6ff; }
+.num-win   { color: #4dff88; }
+.num-loss  { color: #ff4d6a; }
+
+/* Table */
+.table-wrap {
+    background: #16213e;
+    border: 1px solid #2a2a4a;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+table { width: 100%; border-collapse: collapse; }
+
+thead th {
+    background: #0f3460;
+    padding: 12px 16px;
+    font-size: 0.8rem;
+    text-align: left;
+    color: #aaa;
+    text-transform: uppercase;
+    border-bottom: 1px solid #2a2a4a;
+}
+
+tbody tr { border-bottom: 1px solid #1e1e3a; }
+tbody tr:last-child { border-bottom: none; }
+tbody tr:hover { background: #1e2a4a; }
+
+tbody td { padding: 11px 16px; font-size: 0.9rem; }
+
+.win  { color: #4dff88; font-weight: 600; }
+.loss { color: #ff4d6a; }
+.muted { color: #666; font-size: 0.82rem; }
+
+/* Badges */
+.badge {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 12px;
+    font-size: 0.78rem;
+    font-weight: 600;
+}
+.badge-win  { background: rgba(77,255,136,.12); color: #4dff88; border: 1px solid rgba(77,255,136,.3); }
+.badge-loss { background: rgba(255,77,106,.12); color: #ff4d6a; border: 1px solid rgba(255,77,106,.3); }
+
+/* Empty */
+.empty { text-align: center; padding: 50px; color: #555; }
