@@ -140,6 +140,7 @@ public class BattleService {
         if (isGameOver) {
             battle.setWinner(attacker);
             room.setPhase(GamePhase.FINISHED);
+            MatchHistoryService.saveMatchResult(room,attacker,opponent);
         } else {
             if (result.equals("MISS")) {
                 battle.setCurrentTurn(opponent);

@@ -68,4 +68,10 @@ public class MatchHistory {
     public void setPlayedAt(LocalDateTime playedAt) {
         this.playedAt = playedAt;
     }
+
+    public String getFormattedTime() {
+        if (playedAt == null) return "";
+        java.time.format.DateTimeFormatter formatter = java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+        return playedAt.format(formatter);
+    }
 }

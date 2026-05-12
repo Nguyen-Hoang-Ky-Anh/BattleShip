@@ -20,7 +20,7 @@ public class PlayerStats {
         this.totalShots=0;
     }
 
-    public int getTotalGame(){
+    public int getTotalGames(){
         return wins+losses;
     }
 
@@ -29,7 +29,7 @@ public class PlayerStats {
     *
     */
     public double getWinRate(){
-        int total=getTotalGame();
+        int total=getTotalGames();
         if(total==0) return 0.0;
         return (double) wins/total*100.0;
     }
