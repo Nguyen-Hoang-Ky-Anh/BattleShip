@@ -136,3 +136,28 @@ body[data-turn="AI"] .enemy-board {
     border-color: var(--accent-cyan) !important;
     box-shadow: 0 0 8px var(--accent-cyan);
 }
+
+.deployment-sidebar {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    max-height: 100%;
+    overflow: hidden;
+}
+
+/* Chỉ cho phép vùng danh sách tàu được cuộn nội dung */
+.deployment-ship-list {
+    flex: 1;
+    overflow-y: auto;
+    padding-right: 4px; /* Tạo khoảng trống nhỏ tránh đè thanh scrollbar */
+    margin-bottom: 14px; /* Khoảng cách với cụm nút bên dưới */
+}
+
+/* Định dạng lại lưới hiển thị nút bấm để ổn định vị trí */
+.deployment-control-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* Chia 2 cột cho 4 nút */
+    gap: 8px;
+    flex-shrink: 0; /* Tuyệt đối không cho cụm nút này bị bóp nghẹt chiều cao */
+    margin-top: auto; /* Đẩy sát xuống đáy panel */
+}

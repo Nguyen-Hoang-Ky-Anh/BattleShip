@@ -277,3 +277,7 @@ button:active {
 .room-action-btn {
     justify-content: center;
 }
+
+.btn-command-large {
+    text-decoration: none;
+}
