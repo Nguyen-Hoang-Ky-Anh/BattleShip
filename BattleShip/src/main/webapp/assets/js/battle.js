@@ -29,30 +29,22 @@ function initAttackBoard() {
 
 function createBattleBoards() {
     if (typeof createBoardForBattle === "function") {
-        createBoardForBattle("myBoard");
+        // Tạo bàn cờ địch trước
         createBoardForBattle("enemyBoard");
+
+        // Tạo bàn cờ của ta, sau khi tạo xong xuôi thì kích hoạt render tàu luôn
+        createBoardForBattle("myBoard", () => {
+            console.log("⚓ Bàn cờ phòng thủ đã sẵn sàng. Bắt đầu đặt tàu...");
+            renderMyShips(); // Gọi hàm render trực tiếp tại đây!
+        });
     } else {
         console.warn("createBoardForBattle function not found!");
     }
 }
 
 function renderMyShips() {
-    const data = localStorage.getItem("playerBoard");
-    if (!data) return;
-
-    try {
-        const ships = JSON.parse(data);
-
-        ships.forEach(ship => {
-            ship.cells.forEach(pos => {
-                const cell = document.querySelector(`#myBoard .cell[data-row="${pos.r}"][data-col="${pos.c}"]`);
-                if (cell) {
-                    cell.classList.add("ship");
-                    cell.textContent = "🚢";
-                }
-            });
-        });
-    } catch (e) {
-        console.error("Error parsing playerBoard data from localStorage:", e);
-    }
+    renderPlayerBoard();
+    document.querySelectorAll("#myBoard .cell.ship").forEach(el => {
+        el.textContent = "🚢";
+    });
 }

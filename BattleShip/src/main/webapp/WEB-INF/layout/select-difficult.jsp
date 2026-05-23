@@ -16,80 +16,150 @@
 <body>
 
 <!-- ================= SYSTEM TOP NAVIGATION HEADER ================= -->
-<header class="tactical-top-header">
-    <div class="auth-action-group">
-        <form action="${pageContext.request.contextPath}/login" method="get">
-            <button type="submit" class="auth-btn btn-login-tech">⚡ LOGIN</button>
+<!-- TOP COMMAND BAR -->
+<div class="top-command-bar">
+
+    <!-- LEFT AUTH ZONE -->
+    <div class="auth-telemetry-zone">
+
+        <form action="${pageContext.request.contextPath}/login"
+              method="get"
+              class="inline-form">
+
+            <button type="submit"
+                    class="btn-terminal-sm">
+
+                LOG IN
+
+            </button>
+
         </form>
 
-        <form action="${pageContext.request.contextPath}/register" method="get">
-            <button type="submit" class="auth-btn btn-register-tech">🔑 REGISTER</button>
+        <form action="${pageContext.request.contextPath}/register"
+              method="get"
+              class="inline-form">
+
+            <button type="submit"
+                    class="btn-terminal-sm accent-mint-border">
+
+                REGISTER
+
+            </button>
+
         </form>
+
     </div>
 
-    <!-- HAMBURGER CONTROL AND DROPDOWN FOR TELEMETRY HISTORY -->
-    <div class="hud-dropdown-wrapper">
-        <div class="hamburger-menu-btn" onclick="toggleMenu()" aria-label="Toggle Tactical Menu">☰</div>
-        <div id="dropdown" class="dropdown-tech-panel">
-            <form action="${pageContext.request.contextPath}/history" method="get">
-                <button type="submit" class="dropdown-item-btn monospace-data">📜 COMBAT LOGS</button>
-            </form>
+    <!-- RIGHT CONTROL ZONE -->
+    <div class="control-telemetry-zone">
+
+        <!-- MUSIC -->
+        <button class="btn-utility"
+                onclick="toggleMusic()"
+                id="musicToggleBtn">
+
+            🔊
+
+        </button>
+
+        <!-- DROPDOWN -->
+        <div class="navigation-dropdown-wrapper">
+
+            <div class="hamburger-menu-trigger"
+                 onclick="toggleMenu()">
+
+                SYSTEM MENU ☰
+
+            </div>
+
+            <div id="dropdown"
+                 class="dropdown-content-panel">
+
+                <form action="${pageContext.request.contextPath}/history"
+                      method="get">
+
+                    <button type="submit"
+                            class="btn-dropdown-item">
+
+                        📜 COMBAT LOGS
+
+                    </button>
+
+                </form>
+
+            </div>
+
         </div>
+
     </div>
-</header>
+
+</div>
 
 <!-- ================= MAIN CORE DIFFICULTY SELECTION ================= -->
-<main class="difficulty-selection-container">
+<div class="main-hub-container">
 
-    <!-- CENTRAL CORE TITLE -->
-    <div class="system-brand-panel">
-        <h1 class="main-cyber-title">⚓ BATTLESHIP</h1>
-        <p class="system-status-indicator monospace-data alert-blink">// CHOOSE_AI_THREAT_LEVEL</p>
+    <!-- CENTRAL GLASS PANEL -->
+    <div class="tactical-glass-panel">
+
+        <!-- BRAND / TITLE -->
+        <h1 class="main-tactical-title">⚓ BATTLESHIP</h1>
+        <div class="title-sub-text monospace-data alert-blink">CHOOSE_AI_THREAT_LEVEL</div>
+        <div class="terminal-separator"></div>
+
+        <!-- TACTICAL MENU OPTIONS -->
+        <div class="tactical-menu-grid">
+
+            <!-- Cấp độ Dễ (Easy) -->
+            <a href="${pageContext.request.contextPath}/pre-game/easy"
+               class="btn-command-large difficulty-easy">
+                <span class="btn-icon">🟢</span>
+                EASY CORE
+                <span class="btn-sub-label">Low detection matrix</span>
+            </a>
+
+            <!-- Cấp độ Thường (Normal) -->
+            <a href="${pageContext.request.contextPath}/pre-game/normal"
+               class="btn-command-large difficulty-normal">
+                <span class="btn-icon">🟡</span>
+                NORMAL CORE
+                <span class="btn-sub-label">Standard predictive radar</span>
+            </a>
+
+            <!-- Cấp độ Khó (Hard) -->
+            <a href="${pageContext.request.contextPath}/pre-game/hard"
+               class="btn-command-large difficulty-hard">
+                <span class="btn-icon">🔴</span>
+                HARD CORE
+                <span class="btn-sub-label">Advanced tactical targeting</span>
+            </a>
+
+            <!-- Nút quay lại (Back Button) -->
+            <a href="${pageContext.request.contextPath}/home"
+               class="btn-command-large accent-crimson-border btn-back-control">
+                <span class="btn-icon">↩</span>
+                RETURN TO BASE
+                <span class="btn-sub-label">Return to command sector</span>
+            </a>
+
+        </div>
+
     </div>
 
-    <!-- TACTICAL MENU OPTIONS -->
-    <nav class="tactical-vertical-menu">
-        <!-- Cấp độ Dễ (Easy) -->
-        <a href="${pageContext.request.contextPath}/pre-game/easy" class="menu-item-link difficulty-easy monospace-data">
-            <span class="status-dot dot-green"></span>
-            <span class="link-text">EASY_CORE</span>
-            <span class="sub-text">// Low detection matrix</span>
-        </a>
-
-        <!-- Cấp độ Thường (Normal) -->
-        <a href="${pageContext.request.contextPath}/pre-game/normal" class="menu-item-link difficulty-normal monospace-data">
-            <span class="status-dot dot-yellow"></span>
-            <span class="link-text">NORMAL_CORE</span>
-            <span class="sub-text">// Standard predictive radar</span>
-        </a>
-
-        <!-- Cấp độ Khó (Hard) -->
-        <a href="${pageContext.request.contextPath}/pre-game/hard" class="menu-item-link difficulty-hard monospace-data">
-            <span class="status-dot dot-red"></span>
-            <span class="link-text">HARD_CORE</span>
-            <span class="sub-text">// Advanced tactical targeting</span>
-        </a>
-
-        <!-- Nút quay lại (Back Button) -->
-        <a href="${pageContext.request.contextPath}/pre-game/back" class="menu-item-link btn-back-control" title="Quay lại phân khu chính">
-            <i class="bi bi-arrow-return-left fs-4"></i>
-            <span class="monospace-data text-uppercase ms-2" style="font-size: 12px; letter-spacing: 1px;">Return to base</span>
-        </a>
-    </nav>
-</main>
+</div>
 
 <!-- ================= INTERACTIVE FOOTER HUD CONTROLS ================= -->
-<footer class="hud-footer-controls">
-    <!-- MUSIC INTERACTION -->
-    <div class="music-controller-node">
-        <button onclick="toggleMusic()" class="music-toggle-btn" aria-label="Toggle Audio Streams">🔊</button>
+<!-- SYSTEM METRICS FOOTER -->
+<div class="system-footer">
+
+    <div class="system-status-indicator monospace-data">
+        SECURE CONNECTION // STATUS: ACTIVE
     </div>
 
-    <!-- TELEMETRY SYSTEM VERSION -->
-    <div class="system-version-tag monospace-data">
+    <div class="version-badge monospace-data">
         SYS_VER: v1.0.0
     </div>
-</footer>
+
+</div>
 
 <!-- DYNAMIC OCEAN BACKGROUND COMPONENT -->
 <div class="ocean">
