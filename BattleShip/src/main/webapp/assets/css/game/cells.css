@@ -134,9 +134,11 @@
     font-size: 14px;
 }
 
-.board-matrix--enemy .cell {
-
-    cursor: crosshair;
+.board-matrix--mini .cell {
+    width: var(--cell-size);
+    height: var(--cell-size);
+    border-radius: 4px;
+    font-size: calc(var(--cell-size) * 0.6);
 }
 
 .board-matrix--enemy .cell:hover {

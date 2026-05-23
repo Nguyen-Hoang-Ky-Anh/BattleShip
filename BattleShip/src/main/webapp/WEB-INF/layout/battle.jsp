@@ -242,8 +242,6 @@
 
     createBattleBoards();
 
-    renderMyShips();
-
     connectSocket();
 
     initAttackBoard();

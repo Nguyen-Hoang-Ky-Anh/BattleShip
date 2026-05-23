@@ -120,10 +120,11 @@
 }
 
 .enemy-board-shell {
-
     display: flex;
     justify-content: center;
     align-items: center;
+    max-width: 100%;
+    max-height: 100%;
 }
 
 .enemy-board-frame {
@@ -150,39 +151,39 @@
 ========================================================= */
 
 .radar-board-shell {
-
     display: flex;
     justify-content: center;
+    align-items: center;
 
-    padding: 18px;
+    padding: 10px;
+    border-radius: 12px;
 
-    border-radius: 20px;
+    background: linear-gradient(180deg, rgba(15,23,42,0.95), rgba(2,6,23,0.98));
+    border: 1px solid rgba(74,222,128,0.14);
 
-    background:
-            linear-gradient(
-                    180deg,
-                    rgba(15,23,42,0.95),
-                    rgba(2,6,23,0.98)
-            );
-
-    border:
-            1px solid rgba(74,222,128,0.14);
-
-    box-shadow:
-            0 0 30px rgba(0,0,0,0.4);
+    min-height: 0;
+    flex-shrink: 0;
 }
 
 .board-matrix--mini {
+    /*
+       Sử dụng clamp() để co giãn thông minh:
+       - Tối thiểu (Min): 16px (để không bao giờ bị quá bé)
+       - Lý tưởng: 2.3vh (tự co giãn dựa trên chiều cao thực tế của màn hình)
+       - Tối đa (Max): 26px (để không bị phình to quá mức trên màn hình TV/4K)
+    */
+    --cell-size: clamp(16px, 2.3vh, 26px);
 
-    --cell-size: 22px;
+    display: grid;
+    grid-template-columns: repeat(10, var(--cell-size));
+    grid-template-rows: repeat(10, var(--cell-size));
 
-    grid-template-columns:
-            repeat(10, var(--cell-size));
+    /* Thu nhỏ gap lại một chút để các ô khít nhau đẹp hơn */
+    gap: 1px;
 
-    grid-template-rows:
-            repeat(10, var(--cell-size));
-
-    gap: 2px;
+    width: max-content;
+    height: max-content;
+    margin: 0 auto;
 }
 
 .board-grid-frame {
