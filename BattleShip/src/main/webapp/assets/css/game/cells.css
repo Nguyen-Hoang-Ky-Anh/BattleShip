@@ -1,0 +1,153 @@
+/* Thiết lập cốt lõi cho một ô lưới tiêu chuẩn */
+.cell {
+    background: var(--panel-bg);
+
+    border: 1px solid rgba(56, 189, 248, 0.08);
+
+    position: relative;
+
+    transition: all 0.2s ease;
+
+    cursor: crosshair;
+
+    aspect-ratio: 1 / 1;
+
+    min-width: 0;
+    min-height: 0;
+}
+
+/* Hiệu ứng rê chuột qua ô lưới cơ bản */
+.cell:hover {
+    background: rgba(6, 182, 212, 0.1);
+    border-color: var(--accent-cyan);
+}
+
+/* --- TRẠNG THÁI XEM TRƯỚC KHI BỐ TRÍ HẠM ĐỘI --- */
+
+/* Ô hợp lệ để đặt tàu (Xanh mint) */
+.preview-valid {
+    background: rgba(0, 255, 153, 0.1) !important;
+    border-color: var(--accent-mint) !important;
+    box-shadow: inset 0 0 10px rgba(0, 255, 153, 0.2);
+}
+
+/* Ô không hợp lệ / bị đè chèn (Đỏ alert + Nhấp nháy) */
+.preview-invalid {
+    background: rgba(239, 68, 68, 0.1) !important;
+    border-color: var(--accent-crimson) !important;
+    animation: flash-red 0.5s infinite;
+}
+
+/* --- TRẠNG THÁI PHÁO KÍCH (BATTLE LOGIC) --- */
+
+/* Bắn Trúng mục tiêu (Cam lửa + Pulse) */
+.hit {
+    background: var(--accent-orange) !important;
+    box-shadow: 0 0 15px var(--accent-orange);
+    animation: radar-pulse-hit 1.5s infinite;
+}
+
+/* Bắn Trượt (Xám radar + Giảm độ mờ) */
+.miss {
+    background: var(--accent-radar-gray) !important;
+    opacity: 0.6;
+}
+
+/* Tàu bị Bắn Chìm hoàn toàn (Đỏ crimson + Pulse mạnh) */
+.sunk {
+    background: var(--accent-crimson) !important;
+    box-shadow: 0 0 20px var(--accent-crimson);
+    animation: radar-pulse-sunk 1s infinite;
+}
+
+/* --- TỐI ƯU CẤU HÌNH THEO TỪNG LOẠI BÀN CỜ --- */
+
+/* Cấu hình ô kích thước chuẩn của bàn cờ địch chính */
+.enemy-board-matrix .cell {
+    width: 100%;
+    height: 100%;
+}
+
+.enemy-board-matrix .cell:hover {
+    background: rgba(6, 182, 212, 0.2);
+    cursor: crosshair; /* Biến con trỏ chuột thành tâm ngắm bắn */
+    box-shadow: 0 0 8px var(--accent-cyan);
+}
+
+/* Cấu hình ô thu nhỏ cho bàn cờ vệ tinh mini của ta */
+.mini-board-matrix .cell {
+    width: 100%;
+    height: 100%;
+
+    min-width: 18px;
+    min-height: 18px;
+
+    font-size: 9px;
+}
+
+/* Trạng thái cơ bản của ô tọa độ */
+.enemy-board-matrix .cell {
+    background: rgba(6, 182, 212, 0.05);
+    border: 1px solid rgba(6, 182, 212, 0.15);
+    aspect-ratio: 1 / 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: crosshair; /* Đổi con trỏ chuột thành dạng hồng tâm ngắm bắn */
+    position: relative;
+    transition: all 0.2s ease;
+}
+
+/* Hiệu ứng rê chuột quét mục tiêu cấp cao (Hover) */
+.enemy-board-matrix .cell:hover {
+    background: rgba(6, 182, 212, 0.2);
+    border-color: var(--accent-cyan);
+    box-shadow: 0 0 8px rgba(6, 182, 212, 0.4);
+}
+
+/* Trạng thái ô đã bắn trúng tàu địch (HIT) */
+.enemy-board-matrix .cell.hit {
+    background: rgba(239, 68, 68, 0.2) !important;
+    border-color: var(--accent-crimson) !important;
+    animation: critical-alarm-glow 1s infinite alternate;
+}
+
+/* Ký hiệu tâm bắn hủy diệt đè lên ô trúng đạn */
+.enemy-board-matrix .cell.hit::after {
+    content: "×";
+    color: var(--accent-crimson);
+    font-family: var(--font-mono);
+    font-size: 18px;
+    font-weight: bold;
+}
+
+/* Trạng thái ô bắn trượt xuống biển (MISS) */
+.enemy-board-matrix .cell.miss {
+    background: rgba(255, 255, 255, 0.05) !important;
+    border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Ký hiệu điểm đạn rơi trượt đè lên ô hụt */
+.enemy-board-matrix .cell.miss::after {
+    content: "•";
+    color: var(--accent-radar-gray);
+    font-size: 14px;
+}
+
+.board-matrix--enemy .cell {
+
+    cursor: crosshair;
+}
+
+.board-matrix--enemy .cell:hover {
+
+    transform: scale(1.08);
+
+    background:
+            #1e293b;
+
+    box-shadow:
+            0 0 12px rgba(255,255,255,0.2);
+
+    z-index: 5;
+}

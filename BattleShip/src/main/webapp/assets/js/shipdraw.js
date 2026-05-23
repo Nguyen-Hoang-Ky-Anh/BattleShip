@@ -46,26 +46,30 @@ const SHIP_CATALOG = [
     }
 ];
 
-// ========== STATE ==========
-let isLocked = false; // thêm dòng này
+// ========== STATE SYSTEM ==========
+let isLocked = false;
 let isHorizontal = true;
-let placedShips = []; // ship objects đã đặt
-let occupiedCells = new Set(); // "r,c"
+let placedShips = [];          // Chứa các đối tượng tàu đã nằm trên bảng
+let occupiedCells = new Set();  // Quản lý chuỗi tọa độ định dạng "r,c"
 let ghost = null;
 let draggingFromPanel = false;
-let draggingShip = null; // ship object đang kéo
+let draggingShip = null;        // Thực thể tàu đang trong trạng thái di chuyển
 
+// Hằng số kích thước ô cơ sở (Khớp với gridTemplate của board.js)
 const CELL_SIZE = 45;
 
-// ========== HELPERS ==========
+// ========== SYSTEM HELPERS ==========
 function getContextPath() {
-    return document.querySelector("script[src*='placement.js']")
+    // Sửa lỗi tìm sai file: Quét cả shipdraw.js hoặc fallback về biến contextPath toàn cục từ JSP
+    if (typeof contextPath !== "undefined" && contextPath !== "") return contextPath;
+    return document.querySelector("script[src*='shipdraw.js']")
         ?.src.split("/assets")[0] || "";
 }
 
 function getImageUrl(ship) {
     const dir = ship.direction === "horizontal" ? "horizontal" : "vertical";
-    return contextPath + `/assets/images/${ship.images[dir]}`;
+    const base = getContextPath();
+    return base + `/assets/images/${ship.images[dir]}`;
 }
 
 function getCell(r, c) {
@@ -86,25 +90,38 @@ function isValidPlacement(cells) {
     );
 }
 
-// ========== INIT PANEL ==========
-document.querySelectorAll(".ship-item").forEach(item => {
-    item.addEventListener("mousedown", (e) => {
-        e.preventDefault();
-        const size = parseInt(item.dataset.size);
-        const ship = SHIP_CATALOG.find(s => s.size === size && !s.placed);
-        if (!ship) return;
-        startDragFromPanel(e, ship, item);
-    });
-});
+// ========== INITIALIZE INTERACTIVE FLEET PANEL ==========
+// Đổi từ bộ chọn cũ '.ship-item' thành '.ship-item-card' để khớp DOM Cyberpunk
+function initFleetPanel() {
+    document.querySelectorAll(".ship-item-card").forEach(item => {
+        // Gỡ bỏ sự kiện cũ nếu có để tránh lặp trùng lặp lắng nghe
+        item.removeAttribute("draggable");
 
-// ========== ROTATE ==========
+        item.addEventListener("mousedown", (e) => {
+            if (isLocked) return;
+            // Chỉ bắt chuột trái (button == 0)
+            if (e.button !== 0) return;
+
+            e.preventDefault();
+            const size = parseInt(item.dataset.size);
+            const ship = SHIP_CATALOG.find(s => s.size === size && !s.placed);
+            if (!ship) return;
+
+            startDragFromPanel(e, ship, item);
+        });
+    });
+}
+
+// ========== STRATEGIC ROTATE ==========
 function rotateShip() {
+    if (isLocked) return;
     isHorizontal = !isHorizontal;
+
     document.getElementById("placementStatus").textContent =
-        `Direction: ${isHorizontal ? "Horizontal →" : "Vertical ↓"}`;
+        `📡 DIRECTION: ${isHorizontal ? "HORIZONTAL [→]" : "VERTICAL [↓]"}`;
 
     if (ghost && draggingShip) {
-        // Cập nhật direction trên ship tạm thời
+        // Cập nhật ngay lập tức hướng xoay của bóng ma đang kéo
         draggingShip.direction = isHorizontal ? "horizontal" : "vertical";
 
         ghost.style.width = isHorizontal ? `${draggingShip.size * CELL_SIZE}px` : `${CELL_SIZE}px`;
@@ -115,75 +132,74 @@ function rotateShip() {
     }
 }
 
-// ========== RESET ==========
+// ========== EMERGENCY RESET ==========
 function resetBoard() {
+    isLocked = false;
     placedShips = [];
     occupiedCells.clear();
-    if (isLocked) return;
-    // Reset tất cả ship trong catalog
+
+    // Khôi phục mảng gốc
     SHIP_CATALOG.forEach(ship => {
         ship.placed = false;
         ship.cells = [];
         ship.direction = "horizontal";
     });
 
+    // Xóa sạch trạng thái ô cờ
     document.querySelectorAll(".cell").forEach(cell => {
         cell.classList.remove("occupied", "preview-valid", "preview-invalid");
         cell.innerHTML = "";
+        cell.style.position = "";
+        cell.style.overflow = "";
     });
 
-    document.querySelectorAll(".ship-item").forEach(item => {
+    // Hiển thị lại toàn bộ các thẻ chọn tàu trong panel (.ship-item-card)
+    document.querySelectorAll(".ship-item-card").forEach(item => {
         item.style.visibility = "visible";
+        item.style.opacity = "1";
     });
 
     isHorizontal = true;
-    document.getElementById("placementStatus").textContent = "Place your ships";
+    document.getElementById("placementStatus").textContent = "📡 SYSTEM_READY: PLACE YOUR SHIPS ON THE MATRIX";
 }
 
-// ========== CONFIRM ==========
+// ========== NETWORK CONFIRMATION ==========
 function confirmPlacement() {
     const allPlaced = SHIP_CATALOG.every(s => s.placed);
 
     if (!allPlaced) {
-        document.getElementById("placementStatus").textContent = "⚠ Place all ships first!";
+        document.getElementById("placementStatus").textContent = "⚠️ DEPLOYMENT_INCOMPLETE: PLACE ALL SHIPS FIRST!";
         return;
     }
 
-    // Khóa board không cho kéo thả nữa
     isLocked = true;
+    const shipData = getPlacementData();
 
-    // Chuẩn bị dữ liệu
-    const shipData = placedShips.map(s => ({
-        name: s.name,
-        size: s.size,
-        direction: s.direction,
-        cells: s.cells
-    }));
-
-    // Kiểm tra an toàn trước khi gửi qua Socket
+    // Kiểm tra tính sẵn sàng của biến GameState từ file socket.js
     if (typeof GameState !== "undefined" && GameState.socket && GameState.socket.readyState === WebSocket.OPEN) {
-
-        GameState.socket.send(`${ACTIONS.CONFIRM_PLACEMENT}|${roomId}|${userId}|${JSON.stringify(shipData)}`);
-
-        // Lưu local để dự phòng
+        const payload = `${ACTIONS.CONFIRM_PLACEMENT}|${roomId}|${userId}|${JSON.stringify(shipData)}`;
+        GameState.socket.send(payload);
         localStorage.setItem("playerBoard", JSON.stringify(shipData));
-
-        // Cập nhật UI
-        document.getElementById("placementStatus").textContent = "⏳ Waiting opponent...";
-
+        document.getElementById("placementStatus").textContent = "⏳ TRANSMITTING TELEMETRY... WAITING FOR OPPONENT.";
     } else {
-        console.error("Socket is not connected. Cannot confirm placement.");
-        document.getElementById("placementStatus").textContent = "⚠ Connection error! Try again.";
-        isLocked = false;
+        // Chế độ dự phòng tự động (Fallback cho chế độ PvE không sử dụng WebSocket mạng)
+        console.warn("Socket offline or PvE routing environment detected.");
+        localStorage.setItem("playerBoard", JSON.stringify(shipData));
+        document.getElementById("placementStatus").textContent = "🚀 FLEET DEPLOYED SUCCESSFULLY. READY TO ENGAGE!";
+
+        // Nếu có hàm callback xác nhận của PvE, hệ thống sẽ kích hoạt tự động tại đây
+        if (typeof window.confirmPlacementPvE === "function") {
+            window.confirmPlacementPvE(shipData);
+        }
     }
 }
 
-// ========== DRAG FROM PANEL ==========
+// ========== DRAG ENGINE: FROM PANEL ==========
 function startDragFromPanel(e, ship, panelItem) {
     draggingFromPanel = true;
-    draggingShip = {...ship}; // clone để không sửa catalog gốc khi đang kéo
+    draggingShip = {...ship};
     draggingShip.direction = isHorizontal ? "horizontal" : "vertical";
-    if (isLocked) return;
+
     panelItem.style.visibility = "hidden";
     createGhost(e, draggingShip);
 
@@ -197,7 +213,9 @@ function startDragFromPanel(e, ship, panelItem) {
         document.removeEventListener("mouseup", onMouseUp);
 
         const dropped = tryDrop(ev, draggingShip);
-        if (!dropped) panelItem.style.visibility = "visible";
+        if (!dropped) {
+            panelItem.style.visibility = "visible";
+        }
 
         removeGhost();
         clearPreview();
@@ -208,14 +226,17 @@ function startDragFromPanel(e, ship, panelItem) {
     document.addEventListener("mouseup", onMouseUp);
 }
 
-// ========== DRAG FROM BOARD ==========
+// ========== DRAG ENGINE: FROM BOARD DIRECTLY ==========
 function startDragFromBoard(e, ship) {
     if (isLocked) return;
+    if (e.button !== 0) return; // Chỉ cho phép chuột trái
+
     e.preventDefault();
+    e.stopPropagation(); // Ngăn chặn sự kiện nổi bọt gây kích hoạt click ô cờ bên dưới
+
     draggingFromPanel = false;
     draggingShip = ship;
 
-    // Snapshot vị trí và hướng CŨ trước khi làm gì
     const oldCells = [...ship.cells];
     const oldDirection = ship.direction;
 
@@ -234,12 +255,11 @@ function startDragFromBoard(e, ship) {
 
         const dropped = tryDrop(ev, draggingShip);
         if (!dropped) {
-            // Khôi phục đúng cells và direction cũ
+            // Rollback trạng thái nguyên bản của hạm đội nếu thả sai vùng nước cực
             draggingShip.direction = oldDirection;
             draggingShip.cells = oldCells;
             isHorizontal = oldDirection === "horizontal";
 
-            // Cập nhật catalog gốc
             const original = SHIP_CATALOG.find(s => s.name === draggingShip.name);
             if (original) {
                 original.direction = oldDirection;
@@ -247,7 +267,6 @@ function startDragFromBoard(e, ship) {
                 original.placed = true;
             }
 
-            // Khôi phục occupiedCells
             oldCells.forEach(({r, c}) => occupiedCells.add(`${r},${c}`));
             placedShips.push(draggingShip);
             placeShipOnBoard(draggingShip);
@@ -262,19 +281,21 @@ function startDragFromBoard(e, ship) {
     document.addEventListener("mouseup", onMouseUp);
 }
 
-// ========== GHOST ==========
+// ========== RADAR GHOST RENDERING ==========
 function createGhost(e, ship) {
+    removeGhost(); // Dọn dẹp rác bộ nhớ trước khi tạo mới
+
     ghost = document.createElement("div");
     ghost.className = "ship-ghost";
-    ghost.dataset.size = ship.size;
+    ghost.style.position = "fixed";
+    ghost.style.pointerEvents = "none";
+    ghost.style.zIndex = "9999";
+    ghost.style.opacity = "0.65";
+    ghost.style.filter = "drop-shadow(0 0 8px var(--accent-cyan))";
 
     const h = ship.direction === "horizontal";
     ghost.style.width = h ? `${ship.size * CELL_SIZE}px` : `${CELL_SIZE}px`;
     ghost.style.height = h ? `${CELL_SIZE}px` : `${ship.size * CELL_SIZE}px`;
-    ghost.style.position = "fixed";
-    ghost.style.pointerEvents = "none";
-    ghost.style.zIndex = "9999";
-    ghost.style.opacity = "0.75";
 
     const img = document.createElement("img");
     img.src = getImageUrl(ship);
@@ -290,6 +311,7 @@ function moveGhost(e) {
     if (!ghost) return;
     const w = parseInt(ghost.style.width);
     const h = parseInt(ghost.style.height);
+    // Căn chuẩn tâm kéo thả nằm chính giữa ảnh tàu
     ghost.style.left = `${e.clientX - w / 2}px`;
     ghost.style.top = `${e.clientY - h / 2}px`;
 }
@@ -301,7 +323,7 @@ function removeGhost() {
     }
 }
 
-// ========== PREVIEW HIGHLIGHT ==========
+// ========== TACTICAL PREVIEW MATRIX ==========
 function highlightCells(e) {
     clearPreview();
     const elements = document.elementsFromPoint(e.clientX, e.clientY);
@@ -309,17 +331,17 @@ function highlightCells(e) {
     if (!target || !draggingShip) return;
 
     const h = draggingShip.direction === "horizontal";
-    const size = draggingShip.size;
     const r = parseInt(target.dataset.row);
     const c = parseInt(target.dataset.col);
-    const cells = getCells(r, c, size, h);
+    const cells = getCells(r, c, draggingShip.size, h);
 
-    // Chỉ highlight những ô nằm trong board
     const valid = isValidPlacement(cells);
     cells.forEach(({r, c}) => {
-        if (r < 0 || r >= 10 || c < 0 || c >= 10) return; // bỏ qua ô ngoài board
+        if (r < 0 || r >= 10 || c < 0 || c >= 10) return;
         const cell = getCell(r, c);
-        if (cell) cell.classList.add(valid ? "preview-valid" : "preview-invalid");
+        if (cell) {
+            cell.classList.add(valid ? "preview-valid" : "preview-invalid");
+        }
     });
 }
 
@@ -329,9 +351,8 @@ function clearPreview() {
     });
 }
 
-// ========== DROP ==========
+// ========== DATA MATRIX DROP EXECUTOR ==========
 function tryDrop(e, ship) {
-    // Dùng elementsFromPoint để xuyên qua ảnh ghost/ship
     const elements = document.elementsFromPoint(e.clientX, e.clientY);
     const target = elements.find(el => el.classList.contains("cell"));
     if (!target) return false;
@@ -341,14 +362,12 @@ function tryDrop(e, ship) {
     const c = parseInt(target.dataset.col);
     const cells = getCells(r, c, ship.size, h);
 
-    // Kiểm tra hợp lệ trước khi làm gì cả
     if (!isValidPlacement(cells)) return false;
 
-    // Cập nhật ship object
     ship.cells = cells;
     ship.placed = true;
 
-    // Cập nhật catalog gốc
+    // Đồng bộ ngược lại catalog quản lý tổng
     const original = SHIP_CATALOG.find(s => s.name === ship.name);
     if (original) {
         original.placed = true;
@@ -360,15 +379,16 @@ function tryDrop(e, ship) {
     placedShips.push(ship);
     cells.forEach(({r, c}) => occupiedCells.add(`${r},${c}`));
 
-    if (draggingFromPanel) {
-        const panelItem = document.querySelector(`.ship-item[data-size="${ship.size}"]`);
-        if (panelItem) panelItem.style.visibility = "hidden";
+    // Ẩn vĩnh viễn thẻ chọn ở panel khi đã kéo xuống nước thành công
+    const panelItem = document.querySelector(`.ship-item-card[data-size="${ship.size}"]`);
+    if (panelItem) {
+        panelItem.style.visibility = "hidden";
     }
 
     return true;
 }
 
-// ========== PLACE ON BOARD ==========
+// ========== DRAW SHIP GRAPHIC ON THE MATRIC BOARD ==========
 function placeShipOnBoard(ship) {
     const {cells, direction, size} = ship;
 
@@ -377,31 +397,37 @@ function placeShipOnBoard(ship) {
         if (cell) cell.classList.add("occupied");
     });
 
-    const first = getCell(cells[0].r, cells[0].c);
-    if (!first) return;
+    const firstCell = getCell(cells[0].r, cells[0].c);
+    if (!firstCell) return;
 
     const h = direction === "horizontal";
     const img = document.createElement("img");
     img.src = getImageUrl(ship);
+    img.className = "deployed-ship-sprite";
     img.style.position = "absolute";
-    img.style.pointerEvents = "none";
     img.style.width = h ? `${size * CELL_SIZE}px` : `${CELL_SIZE}px`;
     img.style.height = h ? `${CELL_SIZE}px` : `${size * CELL_SIZE}px`;
     img.style.top = "0";
     img.style.left = "0";
     img.style.zIndex = "10";
+    img.style.pointerEvents = "auto"; // Cho phép nhận sự kiện mousedown để nhấc tàu lên lại
+    img.style.cursor = "grab";
 
-    first.style.position = "relative";
-    first.style.overflow = "visible";
-    first.appendChild(img);
+    firstCell.style.position = "relative";
+    firstCell.style.overflow = "visible";
+    firstCell.appendChild(img);
 
-    first.addEventListener("mousedown", (e) => {
+    // Bắt sự kiện nhấc tàu ngược từ dưới bảng cờ lên
+    img.addEventListener("mousedown", (e) => {
+        if (isLocked) return;
         const found = placedShips.find(s => s.cells[0].r === cells[0].r && s.cells[0].c === cells[0].c);
-        if (found) startDragFromBoard(e, found);
-    }, {once: true});
+        if (found) {
+            startDragFromBoard(e, found);
+        }
+    });
 }
 
-// ========== REMOVE FROM BOARD ==========
+// ========== DISMANTLE SHIP FROM MATRIX ==========
 function removePlacedShip(ship) {
     ship.cells.forEach(({r, c}) => {
         occupiedCells.delete(`${r},${c}`);
@@ -423,8 +449,8 @@ function removePlacedShip(ship) {
     }
 }
 
+// ========== OUTPUT API SYSTEM ==========
 function getPlacementData() {
-
     return placedShips.map(s => ({
         name: s.name,
         size: s.size,
@@ -434,8 +460,10 @@ function getPlacementData() {
 }
 
 function allShipsPlaced() {
-
-    return SHIP_CATALOG.every(
-        s => s.placed
-    );
+    return SHIP_CATALOG.every(s => s.placed);
 }
+
+// Tự động kích hoạt lắng nghe panel sau khi DOM cây thư mục sẵn sàng
+document.addEventListener("DOMContentLoaded", () => {
+    initFleetPanel();
+});

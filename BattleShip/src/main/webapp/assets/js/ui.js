@@ -1,44 +1,119 @@
 let players = [];
+const radarPositionMap = {};
 
 // =========================================================
 // RENDER UI
 // =========================================================
 
 function renderPlayers() {
-    const list = document.getElementById("playerList");
-    if (!list) return;
 
-    list.innerHTML = "";
+    const radarLayer =
+        document.getElementById("radarPlayersLayer");
+
+    if (!radarLayer) return;
+
+    radarLayer.innerHTML = "";
 
     let allReady = true;
     let isHost = false;
 
-    players.forEach(p => {
-        const li = document.createElement("li");
-        li.className = "player";
+    players.forEach((p, index) => {
 
-        // Logic UI Role & Trạng thái
-        const roleIcon = p.role === "HOST" ? "👑" : "🚢";
-        const readyText = p.role === "HOST" ? "(HOST)" : (p.ready ? "✅ READY" : "❌ NOT READY");
+        // Random position nếu chưa có
+        if (!radarPositionMap[p.username]) {
 
-        li.innerText = `${roleIcon} ${p.username} ${readyText}`;
+            const angle =
+                Math.random() * Math.PI * 2;
 
-        // Highlight User hiện tại
-        if (p.username === userId) {
-            li.style.borderLeft = "4px solid #00ffcc";
-            if (p.role === "HOST") isHost = true;
+            const radius =
+                25 + Math.random() * 35;
+
+            radarPositionMap[p.username] = {
+
+                x: 50 + Math.cos(angle) * radius,
+
+                y: 50 + Math.sin(angle) * radius
+            };
         }
 
-        // Kiểm tra xem tất cả player (trừ HOST) đã ready chưa
-        if (p.role !== "HOST" && !p.ready) {
+        const radarPos =
+            radarPositionMap[p.username];
+
+        // PLAYER CONTAINER
+        const player =
+            document.createElement("div");
+
+        player.className =
+            `radar-player ${p.ready ? "ready" : ""}`;
+
+        player.style.left = `${radarPos.x}%`;
+        player.style.top = `${radarPos.y}%`;
+
+        // HOST ICON
+        const roleIcon =
+            p.role === "HOST"
+                ? "👑"
+                : "🚢";
+
+        player.innerHTML = `
+            <div class="radar-player-dot"></div>
+
+            <div class="radar-player-name">
+                ${roleIcon} ${p.username}
+            </div>
+        `;
+
+        radarLayer.appendChild(player);
+
+        // Current User
+        if (p.username === userId &&
+            p.role === "HOST") {
+
+            isHost = true;
+        }
+
+        // Check Ready
+        if (p.role !== "HOST" &&
+            !p.ready) {
+
             allReady = false;
         }
-
-        list.appendChild(li);
     });
 
+    Object.keys(radarPositionMap)
+        .forEach(username => {
+
+            const exists =
+                players.some(
+                    p => p.username === username
+                );
+
+            if (!exists) {
+
+                delete radarPositionMap[username];
+            }
+        });
+
     updateRoomStatus();
-    setupRoomButtons(isHost, allReady, players.length);
+
+    setupRoomButtons(
+        isHost,
+        allReady,
+        players.length
+    );
+
+    updatePlayerCounter();
+}
+
+function updatePlayerCounter() {
+
+    const counter =
+        document.getElementById("playerCounter");
+
+    if (!counter) return;
+
+    counter.innerText =
+        `${players.length} / 2`;
 }
 
 function updateRoomStatus() {

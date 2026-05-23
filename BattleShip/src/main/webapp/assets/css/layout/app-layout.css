@@ -1,0 +1,82 @@
+body {
+    background-color: var(--color-bg-deep);
+    overflow-x: hidden;
+}
+
+.app-container {
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    grid-template-rows: 100vh;
+    gap: 0;
+    transition: grid-template-columns 0.3s ease;
+}
+
+/* Luồng hiển thị cho thanh lệnh cố định phía trên */
+.top-command-bar {
+    width: 100%;
+    height: 60px;
+    background: rgba(7, 15, 30, 0.85);
+    backdrop-filter: var(--blur-intensity);
+    border-bottom: var(--border-tech);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 var(--space-xl);
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+}
+
+/* Thanh dữ liệu cố định ở đáy màn hình */
+.system-footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: var(--space-s) var(--space-xl);
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: var(--accent-radar-gray);
+    border-top: 1px solid rgba(56, 189, 248, 0.05);
+    background: rgba(2, 6, 23, 0.9);
+    z-index: 900;
+}
+
+/* Thanh điều hướng quay về trang chủ hoặc các phân khu */
+.tactical-nav-bar {
+    display: flex;
+    gap: var(--space-s);
+    border-bottom: 1px solid rgba(6, 182, 212, 0.1);
+    padding-bottom: var(--space-s);
+}
+
+.nav-btn {
+    padding: 6px 14px;
+    font-size: 11px;
+    font-family: var(--font-mono), serif;
+    text-decoration: none;
+    border: var(--border-tech);
+    border-radius: 4px;
+    background: rgba(15, 23, 42, 0.6);
+    color: var(--accent-radar-gray);
+    transition: all 0.2s ease;
+}
+
+.nav-btn:hover {
+    background: rgba(6, 182, 212, 0.1);
+    border-color: var(--accent-cyan);
+    box-shadow: 0 0 10px rgba(6, 182, 212, 0.2);
+}
+
+.inline-form {
+    display: inline-block;
+}
+
+.auth-telemetry-zone,
+.control-telemetry-zone {
+    display: flex;
+    align-items: center;
+    gap: var(--space-m);
+}

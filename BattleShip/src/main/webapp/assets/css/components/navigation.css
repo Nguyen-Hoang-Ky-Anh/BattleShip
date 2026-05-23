@@ -1,0 +1,31 @@
+/* Thanh điều hướng bên cạnh */
+.sidebar {
+    background: var(--panel-bg);
+    backdrop-filter: var(--blur-intensity);
+    border-right: var(--border-tech);
+    padding: var(--space-l);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-m);
+    z-index: 100;
+}
+
+/* Thẻ đại diện người chơi / thực thể tương tác trong danh sách navigation */
+.player {
+    background: var(--panel-bg-alt);
+    border: var(--border-tech);
+    padding: var(--space-m);
+    border-radius: 4px;
+    cursor: pointer;
+    transition: transform 0.1s ease, background 0.2s ease;
+}
+
+.player:hover {
+    transform: translateX(4px);
+    background: rgba(56, 189, 248, 0.1);
+    border-color: var(--accent-cyan);
+}
+
+.player:active {
+    transform: translateX(2px) scale(0.98);
+}

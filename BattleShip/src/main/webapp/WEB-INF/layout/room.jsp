@@ -1,130 +1,287 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<html>
-<head>
-    <title>Battleship Room</title>
 
-    <%-- [UC-08][UI Rendering]
-         Load CSS cho giao diện phòng chờ --%>
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/room.css">
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Battleship Tactical Room</title>
+
+    <!-- CORE CSS SYSTEM -->
+    <link rel="stylesheet"
+          href="${pageContext.request.contextPath}/assets/css/main.css">
 </head>
 
-<body>
+<body class="main-hub-container">
 
-<div class="container">
+<div class="room-lobby-layout">
 
-    <%-- =========================================
-         [UC-08 - Lobby Screen]
-         Sidebar hiển thị thông tin phòng
-       ========================================= --%>
-    <div class="sidebar">
+    <!-- =========================================================
+         SIDEBAR COMMAND PANEL
+    ========================================================== -->
+    <aside class="room-sidebar-panel glass-panel-prime">
 
-        <%-- [UC-08][Display Room ID]
-             Step: Show roomId sau khi join thành công --%>
-        <div class="room-id-box">
-            <span id="roomIdText">${roomId}</span>
+        <!-- ROOM IDENTIFICATION -->
+        <div class="room-sidebar-header">
 
-            <%-- [UC-08][Optional Action - Copy Room ID] --%>
-            <button onclick="copyRoomId()">📋</button>
+            <div class="room-code-panel neon-panel-cyan">
+
+                <div class="room-code-meta">
+                    <span class="room-code-label">
+                        SECURE ROOM CODE
+                    </span>
+
+                    <span id="roomIdText"
+                          class="room-code-value neon-text-cyan">
+                        ${roomId}
+                    </span>
+                </div>
+
+                <button class="copy-room-btn"
+                        onclick="copyRoomId()"
+                        title="Copy Room ID">
+                    📋
+                </button>
+
+            </div>
+
+            <div class="sidebar-divider"></div>
+
+            <!-- ROOM TELEMETRY -->
+            <div class="room-telemetry-list">
+
+                <div class="telemetry-row">
+                    <span class="telemetry-key">
+                        MATRIX_SIZE
+                    </span>
+
+                    <span class="telemetry-data">
+                        ${rows} x ${cols}
+                    </span>
+                </div>
+
+                <div class="telemetry-row">
+                    <span class="telemetry-key">
+                        OPERATOR
+                    </span>
+
+                    <span class="telemetry-data highlighted-cyan">
+                        ${userId}
+                    </span>
+                </div>
+
+                <div class="telemetry-row">
+                    <span class="telemetry-key">
+                        GAME_MODE
+                    </span>
+
+                    <span class="telemetry-data">
+                        PVP_STANDARD
+                    </span>
+                </div>
+
+                <div class="telemetry-row">
+                    <span class="telemetry-key">
+                        NETWORK
+                    </span>
+
+                    <span class="telemetry-data highlighted-mint">
+                        SYNCHRONIZED
+                    </span>
+                </div>
+
+            </div>
+
         </div>
 
-        <%-- [UC-08][Display Board Info] --%>
-        <div class="info">Board: ${rows} x ${cols}</div>
+        <!-- =========================================================
+             PLAYER LIST
+        ========================================================== -->
+        <section class="fleet-operator-section">
 
-        <%-- [UC-08][Display Current User] --%>
-        <div class="info">You: <b>${userId}</b></div>
+            <div class="section-title monospace-data">
+                👥 CONNECTED OPERATORS
+            </div>
 
-        <%-- [UC-08][Display Player List] --%>
-        <h3>👥 Players</h3>
-        <ul id="playerList"></ul>
+            <ul id="playerList" class="operator-list">
+                <!-- Dynamic render -->
+            </ul>
 
-        <%-- =========================================
-             [UC-08 - Room Actions]
-           ========================================= --%>
-        <div class="room-actions">
+        </section>
 
-            <%-- [UC-08.1 - Toggle Ready]
-                 User action → gửi WS: TOGGLE_READY --%>
+        <!-- =========================================================
+             ROOM ACTIONS
+        ========================================================== -->
+        <div class="room-action-panel">
+
             <button id="readyBtn"
+                    class="lobby-action-btn btn-ready"
                     onclick="toggleReady()">
-                READY
+
+                READY SYSTEM
             </button>
 
-            <%-- [UC-08.2 - Start Game]
-                 Chỉ host thấy → WS: START_GAME --%>
             <button id="startBtn"
+                    class="lobby-action-btn btn-start"
                     onclick="startGame()"
-                    style="display:none">
-                START GAME
+                    style="display:none;">
+
+                INITIATE BATTLE
             </button>
 
-            <%-- [UC-08.3 - Leave Room]
-                 WS: LEAVE_ROOM hoặc close socket --%>
             <button id="leaveBtn"
-                    onclick="leaveRoom()"
-                    style="display:none">
+                    class="lobby-action-btn btn-leave"
+                    onclick="leaveRoom()">
+
                 LEAVE ROOM
             </button>
 
         </div>
-    </div>
 
-    <%-- =========================================
-         [UC-08][Main Lobby Display]
-       ========================================= --%>
-    <div class="main">
+    </aside>
 
-        <%-- [UI Static Title] --%>
-        <div class="title">⚓ BATTLESHIP ⚓</div>
+    <!-- =========================================================
+         MAIN COMMAND CENTER
+    ========================================================== -->
+    <main class="room-command-workspace">
 
-        <%-- [UC-08][System Status Display]
-             VD: Waiting / Enough players / Starting... --%>
-        <div id="roomStatus">⏳ Waiting for players...</div>
+        <!-- MAIN TITLE -->
+        <header class="room-command-header">
 
-        <%-- [UC-08][Optional Preview Grid / Placeholder] --%>
-        <div class="grid" id="grid"></div>
-    </div>
+            <h1 class="battle-command-title neon-text-cyan">
+                ⚓ BATTLESHIP COMMAND ⚓
+            </h1>
+
+            <div id="roomStatus"
+                 class="room-sync-status monospace-data">
+
+                ⏳ SYNCHRONIZING COMMAND LINK...
+            </div>
+
+        </header>
+
+        <!-- =========================================================
+             CENTRAL COMMAND CENTER
+        ========================================================== -->
+        <section class="room-command-center glass-panel-prime scan-active">
+
+            <!-- =========================================================
+                 LIVE RADAR SYSTEM
+            ========================================================= -->
+            <div class="command-radar-panel">
+
+                <!-- Radar Sweep -->
+                <div class="radar-sweep"></div>
+
+                <!-- Radar Rings -->
+                <div class="radar-ring radar-ring-1"></div>
+                <div class="radar-ring radar-ring-2"></div>
+                <div class="radar-ring radar-ring-3"></div>
+
+                <!-- Radar Grid -->
+                <div class="radar-grid-cross horizontal"></div>
+                <div class="radar-grid-cross vertical"></div>
+
+                <!-- CENTER CORE -->
+                <div class="radar-core"></div>
+
+                <!-- PLAYER DOTS -->
+                <div id="radarPlayersLayer"
+                     class="radar-players-layer">
+                </div>
+
+            </div>
+
+            <!-- TELEMETRY GRID -->
+            <div class="command-telemetry-grid">
+
+                <div class="telemetry-card">
+                    <span class="telemetry-card-label">
+                        MATCH_MODE
+                    </span>
+
+                    <span class="telemetry-card-value">
+                        PVP_STANDARD
+                    </span>
+                </div>
+
+                <div class="telemetry-card">
+                    <span class="telemetry-card-label">
+                        BATTLEFIELD
+                    </span>
+
+                    <span class="telemetry-card-value">
+                        ${rows} x ${cols}
+                    </span>
+                </div>
+
+                <div class="telemetry-card">
+                    <span class="telemetry-card-label">
+                        PLAYERS
+                    </span>
+
+                    <span class="telemetry-card-value"
+                          id="playerCounter">
+                        1 / 2
+                    </span>
+                </div>
+
+                <div class="telemetry-card">
+                    <span class="telemetry-card-label">
+                        STATUS
+                    </span>
+
+                    <span class="telemetry-card-value highlighted-mint">
+                        WAITING
+                    </span>
+                </div>
+
+            </div>
+
+            <!-- ROOM STATUS -->
+            <div class="room-central-status monospace-data">
+
+                WAITING FOR ALL OPERATORS TO CONFIRM DEPLOYMENT...
+
+            </div>
+
+        </section>
+
+    </main>
 
 </div>
 
-<%-- =========================================
-     [UC-08][Init Client State]
-     Data được inject từ RoomController
-   ========================================= --%>
+<!-- =========================================================
+     OCEAN BACKGROUND EFFECT
+========================================================= -->
+<div class="ocean">
+    <div class="wave"></div>
+    <div class="wave wave2"></div>
+</div>
+
+<!-- =========================================================
+     CLIENT CONFIGURATION
+========================================================= -->
 <script>
-    // [UC-08][Step 5 - Client Init]
+
     const roomId = "${roomId}";
     const userId = "${userId}";
     const rows = ${rows};
     const cols = ${cols};
 
-    // [System Config]
-    const contextPath = "${pageContext.request.contextPath}";
+    const contextPath =
+        "${pageContext.request.contextPath}";
+
 </script>
 
-<%-- =========================================
-     [UC-08 → UC-10][Frontend Modules]
-   ========================================= --%>
-
-<%-- [UI Handling Layer]
-     Render player list, status, button state --%>
+<!-- =========================================================
+     CORE SCRIPTS
+========================================================= -->
 <script src="${pageContext.request.contextPath}/assets/js/ui.js"></script>
 
-<%-- [CORE - WebSocket Layer]
-     - connect()
-     - send message
-     - receive event
-     - dispatch UI update
-     => QUAN TRỌNG cho Sequence Diagram --%>
 <script src="${pageContext.request.contextPath}/assets/js/socket.js"></script>
 
-<%-- [Board Logic]
-     Chuẩn bị cho UC-09 (placement) và UC-10 (battle) --%>
-<script src="${pageContext.request.contextPath}/assets/js/board.js"></script>
-
-<%-- [Main Entry]
-     - bind events
-     - init socket
-     - start flow UC-08 --%>
 <script src="${pageContext.request.contextPath}/assets/js/main.js"></script>
 
 </body>

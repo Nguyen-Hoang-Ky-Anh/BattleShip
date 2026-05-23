@@ -1,107 +1,282 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Ship Placement</title>
 
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/ship-placement.css">
-    <%--    BootStrap lib--%>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Strategic Ship Placement</title>
+
+    <!-- CORE CSS -->
+    <link rel="stylesheet"
+          href="${pageContext.request.contextPath}/assets/css/main.css">
+
+    <!-- ICON SYSTEM -->
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
 </head>
 
-<body>
+<body class="main-hub-container">
 
-<div class="container">
+<!-- =========================================================
+     DEPLOYMENT WORKSPACE
+========================================================= -->
+<div class="deployment-workspace">
 
-    <!-- ================= LEFT PANEL ================= -->
-    <div class="sidebar">
+    <!-- =====================================================
+         SIDEBAR CONTROL PANEL
+    ====================================================== -->
+    <aside class="tactical-sidebar-panel">
 
-        <div class="title">
-            ⚓ SHIP PLACEMENT
+        <!-- HEADER -->
+        <div class="deployment-header-zone">
+
+            <h2 class="sidebar-title">
+                ⚓ DEPLOYMENT SECTOR
+            </h2>
+
+            <div class="operator-badge monospace-data">
+
+                OPERATOR:
+                <span class="highlight-text">
+                    ${userId}
+                </span>
+
+            </div>
+
         </div>
 
-        <div class="room-info">
-            <div>Player: <b>${userId}</b></div>
-        </div>
+        <div class="terminal-separator"></div>
 
-        <div class="ship-panel">
+        <!-- =====================================================
+             FLEET LIST
+        ====================================================== -->
+        <section class="fleet-management-zone">
 
-            <h3>🚢 Ships</h3>
-<%--            selected--%>
-            <div class="ship-item "
-                 data-size="5">
-                <img id="ship-battle-4" src="${pageContext.request.contextPath}/assets/images/ship_4_ngang.png" width="150" height="50" alt="Đây là ship 4"/>
-                <div> Carrier (5)</div>
-            </div>
+            <h3 class="panel-section-title monospace-data">
 
-            <div class="ship-item"
-                 data-size="4">
-                <img src="${pageContext.request.contextPath}/assets/images/ship_3_ngang.png" width="150" height="50" alt="Đây là ship 4"/>
-                <div> Battleship (4)</div>
-            </div>
+                // AVAILABLE_FLEET
 
-            <div class="ship-item"
-                 data-size="3">
-                <img src="${pageContext.request.contextPath}/assets/images/ship_2_ngang.png" width="150" height="50" alt="Đây là ship 4"/>
-               <div> Submarine (3)</div>
-            </div>
+            </h3>
 
-            <div class="ship-item"
-                 data-size="2">
-                <div class="img_ship" draggable="true">
-                <img src="${pageContext.request.contextPath}/assets/images/ship_1_ngang.png" width="150" height="50" alt="Đây là ship 4"/>
+            <div class="ship-fleet-list">
+
+                <!-- CARRIER -->
+                <div class="ship-item-card"
+                     data-size="5">
+
+                    <div class="ship-visual-wrapper">
+
+                        <img
+                                src="${pageContext.request.contextPath}/assets/images/ship_4_ngang.png"
+                                alt="Carrier">
+
+                    </div>
+
+                    <div class="ship-meta monospace-data">
+
+                        <span class="ship-name">
+                            CARRIER
+                        </span>
+
+                        <span class="ship-size-indicator">
+                            [SIZE: 5]
+                        </span>
+
+                    </div>
+
                 </div>
-                <div>Destroyer (2)</div>
+
+                <!-- BATTLESHIP -->
+                <div class="ship-item-card"
+                     data-size="4">
+
+                    <div class="ship-visual-wrapper">
+
+                        <img
+                                src="${pageContext.request.contextPath}/assets/images/ship_3_ngang.png"
+                                alt="Battleship">
+
+                    </div>
+
+                    <div class="ship-meta monospace-data">
+
+                        <span class="ship-name">
+                            BATTLESHIP
+                        </span>
+
+                        <span class="ship-size-indicator">
+                            [SIZE: 4]
+                        </span>
+
+                    </div>
+
+                </div>
+
+                <!-- SUBMARINE -->
+                <div class="ship-item-card"
+                     data-size="3">
+
+                    <div class="ship-visual-wrapper">
+
+                        <img
+                                src="${pageContext.request.contextPath}/assets/images/ship_2_ngang.png"
+                                alt="Submarine">
+
+                    </div>
+
+                    <div class="ship-meta monospace-data">
+
+                        <span class="ship-name">
+                            SUBMARINE
+                        </span>
+
+                        <span class="ship-size-indicator">
+                            [SIZE: 3]
+                        </span>
+
+                    </div>
+
+                </div>
+
+                <!-- DESTROYER -->
+                <div class="ship-item-card"
+                     data-size="2">
+
+                    <div class="ship-visual-wrapper">
+
+                        <img
+                                src="${pageContext.request.contextPath}/assets/images/ship_1_ngang.png"
+                                alt="Destroyer">
+
+                    </div>
+
+                    <div class="ship-meta monospace-data">
+
+                        <span class="ship-name">
+                            DESTROYER
+                        </span>
+
+                        <span class="ship-size-indicator">
+                            [SIZE: 2]
+                        </span>
+
+                    </div>
+
+                </div>
+
             </div>
 
-        </div>
+        </section>
 
-        <div class="controls">
+        <div class="terminal-separator"></div>
 
-            <button onclick="rotateShip()">
-                🔄 Rotate
+        <!-- =====================================================
+             ACTION PANEL
+        ====================================================== -->
+        <section class="tactical-control-grid">
+
+            <button class="btn-action-tech btn-rotate"
+                    onclick="rotateShip()">
+
+                <i class="bi bi-arrow-repeat"></i>
+
+                ROTATE
+
             </button>
 
-            <button onclick="resetBoard()">
-                ♻ Reset
+            <button class="btn-action-tech btn-reset"
+                    onclick="resetBoard()">
+
+                <i class="bi bi-arrow-counterclockwise"></i>
+
+                RESET
+
             </button>
 
-            <button onclick="confirmPlacement()">
-                ✅ Confirm
+            <button class="btn-action-tech btn-confirm"
+                    onclick="confirmPlacement()">
+
+                <i class="bi bi-shield-check"></i>
+
+                ENGAGE
+
             </button>
-            <button  onclick="window.history.back()"><i class="bi bi-arrow-return-left " style="font-size: 24px"></i></button>
-        </div>
 
-    </div>
+            <button class="btn-action-tech btn-return"
+                    onclick="window.history.back()">
 
+                <i class="bi bi-arrow-return-left"></i>
 
-    <!-- ================= MAIN BOARD ================= -->
-    <div class="main">
+            </button>
 
-        <div class="status"
+        </section>
+
+    </aside>
+
+    <!-- =====================================================
+         MAIN BOARD SECTOR
+    ====================================================== -->
+    <main class="tactical-main-board-sector">
+
+        <!-- STATUS BAR -->
+        <div class="status-telemetry-bar monospace-data"
              id="placementStatus">
 
-            Place your ships
+            <span class="status-pulse-dot"></span>
+
+            SYSTEM_READY:
+            PLACE YOUR SHIPS ON THE MATRIX
 
         </div>
 
-        <div class="board"
-             id="board">
+        <!-- =================================================
+             BOARD AREA
+        ================================================== -->
+        <section class="ocean-matrix-container">
 
-        </div>
+            <div class="board-grid-frame">
 
-    </div>
+                <!-- BOARD -->
+                <div id="board"
+                     class="board-matrix board-matrix--enemy">
+
+                    <!-- Dynamic Board Render -->
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
 
 </div>
 
-<%--<script>--%>
-<%--    const rows = ${rows};--%>
-<%--    const cols = ${cols};--%>
-<%--</script>--%>
+<!-- =========================================================
+     BACKGROUND EFFECTS
+========================================================= -->
+<div class="ocean">
 
+    <div class="wave"></div>
+
+    <div class="wave wave2"></div>
+
+</div>
+
+<!-- =========================================================
+     CLIENT CONFIG
+========================================================= -->
 <script>
-    const contextPath = "${pageContext.request.contextPath}"
+
+    const contextPath =
+        "${pageContext.request.contextPath}";
 
     const roomId =
         "${roomId}";
@@ -111,14 +286,29 @@
 
 </script>
 
+<!-- =========================================================
+     CORE SCRIPTS
+========================================================= -->
 <script src="${pageContext.request.contextPath}/assets/js/socket.js"></script>
-<script  src="${pageContext.request.contextPath}/assets/js/board.js"></script>
-<script  src="${pageContext.request.contextPath}/assets/js/shipdraw.js"></script>
 
+<script src="${pageContext.request.contextPath}/assets/js/board.js"></script>
+
+<script src="${pageContext.request.contextPath}/assets/js/shipdraw.js"></script>
+
+<!-- =========================================================
+     INITIALIZATION
+========================================================= -->
 <script>
-    <%--    Khởi tạo lưới game--%>
-    createBoard(10, 10, "board");
-    connectSocket()
+
+    createBoard(
+        10,
+        10,
+        "board"
+    );
+
+    connectSocket();
+
 </script>
+
 </body>
 </html>

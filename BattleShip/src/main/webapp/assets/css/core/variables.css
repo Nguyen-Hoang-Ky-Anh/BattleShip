@@ -1,0 +1,39 @@
+:root {
+    /* Primary Deep Canvas */
+    --color-bg-deep: #020617;
+    --color-bg-surface: #070f1e;
+
+    /* Panels & Grid Blocks (Glassmorphism) */
+    --panel-bg: rgba(15, 23, 42, 0.7);
+    --panel-bg-alt: rgba(30, 41, 59, 0.5);
+    --border-tech: 1px solid rgba(56, 189, 248, 0.15);
+    --blur-intensity: blur(12px);
+
+    /* Neon Telemetry Accents */
+    --accent-cyan: #06b6d4;
+    --accent-mint: #00ff99;
+    --accent-orange: #f97316;
+    --accent-crimson: #ef4444;
+    --accent-sonar: #fbbf24;
+    --accent-radar-gray: #475569;
+    --accent-water: #64748b;
+
+    /* Typography */
+    --font-mono: 'JetBrains Mono', 'Courier New', monospace;
+    --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+
+    /* 8pt Grid Multipliers */
+    --space-unit: 8px;
+    --space-xs: 4px;
+    --space-s: 8px;
+    --space-m: 16px;
+    --space-l: 24px;
+    --space-xl: 32px;
+    --space-2xl: 48px;
+
+    --board-rows: 10;
+    --board-cols: 10;
+
+    --text-muted: #94a3b8;
+    --text-secondary: #cbd5e1;
+}

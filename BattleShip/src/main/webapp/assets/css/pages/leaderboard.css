@@ -1,0 +1,86 @@
+/* ==========================================================================
+   LEADERBOARD SYSTEM (HỆ THỐNG BẢNG XẾP HẠNG CAO THỦ)
+   ========================================================================== */
+
+/* --- TIÊU ĐỀ KHỐI BẢNG XẾP HẠNG (LEADERBOARD TITLE) --- */
+.leaderboard-title {
+    font-family: var(--font-mono), sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: #ffffff;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+
+    display: flex;
+    align-items: center;
+    gap: var(--space-s);
+    margin: 0 0 var(--space-m) 0;
+    padding-left: var(--space-xs);
+    border-left: 4px solid var(--accent-mint); /* Vạch định vị màu xanh mint tượng trưng cho thứ hạng cao */
+
+    /* Hiệu ứng bóng chữ phát sáng nhẹ */
+    text-shadow: 0 0 10px rgba(0, 255, 153, 0.2);
+}
+
+/* Thêm ký hiệu nhận diện luồng dữ liệu xếp hạng quân hàm */
+.leaderboard-title::after {
+    content: "[GLOBAL_RANKING]";
+    font-size: 10px;
+    font-weight: 400;
+    color: var(--accent-radar-gray);
+    letter-spacing: 0.5px;
+    opacity: 0.7;
+    margin-left: auto;
+}
+
+
+/* --- HIỆU ỨNG DÒNG VINH DANH TOP 1 (RANK ROW 1) --- */
+/* Tạo điểm nhấn phát sáng nhẹ cho dòng của Top 1 (Cao thủ tối cao) */
+.table-row-interactive.rank-row-1 {
+    background: rgba(234, 179, 8, 0.03); /* Nền vàng kim cực mỏng */
+    border-left: 3px solid #eab308; /* Viền chỉ thị màu vàng Gold hoàng gia */
+    position: relative;
+}
+
+/* Hiệu ứng quét mạch điện tử / hào quang khi di chuột vào dòng Top 1 */
+.table-row-interactive.rank-row-1:hover {
+    box-shadow:
+            inset 4px 0 0 #eab308,
+            inset 0 0 15px rgba(234, 179, 8, 0.08);
+    background: rgba(234, 179, 8, 0.06);
+}
+
+/* Biểu tượng vương miện hoặc huy hiệu nhỏ chìm ở góc dòng Top 1 (tùy chọn) */
+.table-row-interactive.rank-row-1::after {
+    content: "👑";
+    position: absolute;
+    right: var(--space-m);
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.1rem;
+    opacity: 0.2;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+}
+.table-row-interactive.rank-row-1:hover::after {
+    opacity: 0.7;
+}
+
+
+/* --- ĐỊNH DẠNG SỐ HẠNG THÔNG THƯỜNG (RANK NUMBER) --- */
+/* Áp dụng cho các số thứ hạng thông thường nằm ngoài Top 3 (Từ hạng 4 trở xuống) */
+.rank-number {
+    font-family: var(--font-mono), serif;
+    color: var(--accent-radar-gray);
+    font-size: 13px;
+    font-weight: bold;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 24px;
+    height: 24px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 3px;
+    text-align: center;
+}

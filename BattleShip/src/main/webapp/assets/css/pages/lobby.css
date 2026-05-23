@@ -1,0 +1,96 @@
+/* ==========================================================================
+   MAIN HUB & TACTICAL NAVIGATION (TRUNG TÂM ĐIỀU HÀNH & MENU CHIẾN THUẬT)
+   ========================================================================== */
+
+/* --- KHUNG CHỨA TRUNG TÂM (MAIN HUB CONTAINER) --- */
+.main-hub-container {
+    width: 100%;
+    max-width: 1400px;
+    min-height: 100vh;
+    margin: 0 auto;
+    padding: var(--space-xl);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xl);
+
+    /* Hiệu ứng tạo chiều sâu cho tổng thể phòng điều hành */
+    background: radial-gradient(circle at 50% 30%, rgba(16, 24, 48, 0.3) 0%, rgba(5, 10, 20, 0.8) 100%);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Các góc viền trang trí mang phong cách bản vẽ kỹ thuật (Ký hiệu góc HUD) */
+.main-hub-container::before,
+.main-hub-container::after {
+    content: '';
+    position: absolute;
+    width: 24px;
+    height: 24px;
+    border: 2px solid var(--accent-cyan);
+    pointer-events: none;
+    opacity: 0.4;
+}
+.main-hub-container::before { top: var(--space-m); left: var(--space-m); border-right: none; border-bottom: none; }
+.main-hub-container::after { top: var(--space-m); right: var(--space-m); border-left: none; border-bottom: none; }
+
+
+/* --- LƯỚI ĐIỀU HƯỚNG CHIẾN THUẬT (TACTICAL MENU GRID) --- */
+.tactical-menu-grid {
+    display: grid;
+    /* Tự động co giãn số lượng cột (ví dụ: các nút vào trận, kho hạm đội, bảng điểm, cấu hình) */
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: var(--space-m);
+    width: 100%;
+    margin-bottom: var(--space-l);
+}
+
+/* Định dạng chung cho các nút/lựa chọn trong Menu Chiến Thuật */
+.tactical-menu-grid .menu-item {
+    background: rgba(9, 17, 34, 0.7);
+    border: 1px solid rgba(6, 182, 212, 0.2);
+    border-radius: 4px;
+    padding: var(--space-m) var(--space-l);
+    display: flex;
+    align-items: center;
+    gap: var(--space-s);
+    color: rgba(255, 255, 255, 0.8);
+    font-family: var(--font-mono);
+    font-size: 13px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+}
+
+/* Hiệu ứng khi lướt chuột qua lựa chọn hệ thống */
+.tactical-menu-grid .menu-item:hover {
+    color: #ffffff;
+    background: rgba(6, 182, 212, 0.1);
+    border-color: var(--accent-cyan);
+    box-shadow:
+            0 0 15px rgba(6, 182, 212, 0.15),
+            inset 0 0 10px rgba(6, 182, 212, 0.1);
+    transform: translateY(-2px);
+}
+
+/* Biểu tượng (Icon) đi kèm trong menu */
+.tactical-menu-grid .menu-item .menu-icon {
+    font-size: 16px;
+    color: var(--accent-water);
+    transition: color 0.2s ease;
+}
+.tactical-menu-grid .menu-item:hover .menu-icon {
+    color: var(--accent-cyan);
+    filter: drop-shadow(0 0 5px var(--accent-cyan));
+}
+
+/* Trạng thái Menu đang được kích hoạt (Active tab/screen) */
+.tactical-menu-grid .menu-item.active {
+    background: rgba(6, 182, 212, 0.15);
+    border-color: var(--accent-cyan);
+    color: #ffffff;
+    box-shadow:
+            inset 4px 0 0 var(--accent-cyan), /* Vạch màu chỉ thị ở rìa */
+            0 0 20px rgba(6, 182, 212, 0.2);
+}

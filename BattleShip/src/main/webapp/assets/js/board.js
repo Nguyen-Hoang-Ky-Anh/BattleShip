@@ -4,33 +4,21 @@
  * @param {number} rows
  * @param {number} cols
  */
-function createBoard(rows, cols,idBroad) {
-
-    // reset board
-    const board = document.getElementById(idBroad);
+function createBoard(rows, cols, idBoard) {
+    const board = document.getElementById(idBoard);
     board.innerHTML = "";
 
-    // tạo grid css động
-    board.style.gridTemplateColumns = `repeat(${cols}, 45px)`;
-    board.style.gridTemplateRows = `repeat(${rows}, 45px)`;
+    // Nên dùng '1fr' để ô tự chia đều không gian theo cấu trúc CSS Grid của hệ thống layout
+    board.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+    board.style.gridTemplateRows = `repeat(${rows}, 1fr)`;
 
-    // tạo từng ô
     for (let r = 0; r < rows; r++) {
-
         for (let c = 0; c < cols; c++) {
-
             const cell = document.createElement("div");
-
             cell.classList.add("cell");
-
-            // lưu vị trí
             cell.dataset.row = r;
             cell.dataset.col = c;
 
-            // hiển thị tọa độ (debug)
-            // cell.innerText = `${r},${c}`;
-
-            // click event
             cell.addEventListener("click", () => {
                 console.log(`Row: ${r}, Col: ${c}`);
             });
