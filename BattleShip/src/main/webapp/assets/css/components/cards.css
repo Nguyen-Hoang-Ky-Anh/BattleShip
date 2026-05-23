@@ -1,0 +1,88 @@
+/* Thẻ bọc từng loại tàu chiến trong danh sách */
+.ship-item-card {
+    background: rgba(15, 23, 42, 0.6);
+    border: 1px solid rgba(56, 189, 248, 0.15);
+    border-radius: 6px;
+    padding: var(--space-s);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-xs);
+}
+
+.ship-item-card:hover {
+    border-color: var(--accent-cyan);
+    background: rgba(6, 182, 212, 0.05);
+    transform: translateX(4px);
+}
+
+/* Trạng thái tàu được kích hoạt / chọn để chuẩn bị đặt */
+.ship-item-card.selected,
+.ship-item-card[active="true"] {
+    border-color: var(--accent-mint);
+    background: rgba(0, 255, 153, 0.05);
+    box-shadow: 0 0 15px rgba(0, 255, 153, 0.15);
+}
+
+/* Thẻ hiển thị số liệu thống kê tổng quan (Dashboard) */
+.stat-card {
+    background: rgba(15, 23, 42, 0.8);
+    border: var(--border-tech);
+    border-radius: 4px;
+    padding: var(--space-m);
+    text-align: left;
+    position: relative;
+}
+
+.stat-card .num {
+    font-size: 1.8rem;
+    font-weight: bold;
+    line-height: 1;
+    margin-bottom: 4px;
+}
+
+.stat-card .lbl {
+    font-size: 10px;
+    color: var(--accent-radar-gray);
+    letter-spacing: 1px;
+}
+
+/* Phân loại màu sắc công nghệ cho từng loại thẻ số liệu */
+.total-card { border-left: 3px solid var(--accent-cyan); }
+.total-card .num { color: var(--accent-cyan); }
+
+.win-card { border-left: 3px solid var(--accent-mint); }
+.win-card .num { color: var(--accent-mint); }
+
+.loss-card { border-left: 3px solid #ef4444; }
+.loss-card .num { color: #ef4444; }
+
+/* Các thẻ con chứa nội dung quy tắc đạn dược */
+.rule-sub-card {
+    background: rgba(15, 23, 42, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 4px;
+    padding: var(--space-m);
+}
+
+.rule-sub-card p {
+    margin: 0;
+    font-size: 12px;
+    line-height: 1.5;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+/* Hệ thống màu sắc đổ viền trái và tiêu đề nhỏ */
+.border-cyan { border-left: 3px solid var(--accent-cyan); }
+.border-cyan .card-mini-title { color: var(--accent-cyan); }
+
+.border-mint { border-left: 3px solid var(--accent-mint); }
+.border-mint .card-mini-title { color: var(--accent-mint); }
+
+.border-gray { border-left: 3px solid var(--accent-radar-gray); }
+.border-gray .card-mini-title { color: var(--accent-radar-gray); }
+
+.border-orange { border-left: 3px solid #f97316; }
+.border-orange .card-mini-title { color: #f97316; }

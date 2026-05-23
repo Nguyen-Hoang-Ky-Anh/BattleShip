@@ -1,0 +1,84 @@
+/* Thiết lập cốt lõi cho bảng dữ liệu Cyberpunk */
+.cyber-data-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+    font-size: 13px;
+}
+
+/* Tiêu đề cột của bảng */
+.cyber-data-table th {
+    background: rgba(15, 23, 42, 0.9);
+    padding: var(--space-m);
+    font-family: var(--font-mono), monospace;
+    font-size: 11px;
+    color: var(--accent-water);
+    letter-spacing: 1px;
+    border-bottom: 2px solid rgba(6, 182, 212, 0.15);
+}
+
+/* Các ô dữ liệu tiêu chuẩn */
+.cyber-data-table td {
+    padding: var(--space-m);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+    vertical-align: middle;
+}
+
+/* Hiệu ứng sáng dòng và tạo vạch ngăn khi lướt chuột qua */
+.table-row-interactive:hover {
+    background: rgba(6, 182, 212, 0.03);
+    box-shadow: inset 3px 0 0 var(--accent-cyan);
+}
+
+/* Tạo điểm nhấn phát sáng nhẹ đặc quyền cho dòng của Top 1 vinh danh */
+.table-row-interactive.rank-row-1 {
+    background: rgba(234, 179, 8, 0.02);
+}
+
+.table-row-interactive.rank-row-1:hover {
+    box-shadow: inset 3px 0 0 #eab308;
+    background: rgba(234, 179, 8, 0.04);
+}
+
+/* Thiết lập màu sắc chuyên biệt cho các ô dữ liệu (Cells) */
+.td-muted {
+    color: var(--accent-radar-gray);
+    font-size: 11px;
+}
+
+.td-winner-name {
+    color: var(--accent-mint);
+    font-weight: 500;
+}
+
+.td-loser-name {
+    color: #94a3b8;
+}
+
+.td-shots-count {
+    color: var(--accent-cyan);
+    font-weight: bold;
+}
+
+.td-operator-name {
+    font-weight: 600;
+    color: var(--accent-radar-gray);
+}
+
+.td-wins-count {
+    color: var(--accent-mint);
+    font-weight: bold;
+}
+
+.td-losses-count {
+    color: #ef4444;
+}
+
+/* Trạng thái trống khi chưa ghi nhận dữ liệu nhật ký */
+.empty-log-state {
+    padding: var(--space-xl);
+    text-align: center;
+    color: var(--accent-radar-gray);
+    font-size: 13px;
+    letter-spacing: 1px;
+}

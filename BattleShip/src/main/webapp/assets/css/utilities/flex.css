@@ -1,0 +1,36 @@
+/* ==========================================================================
+   UTILITY FLEXBOX SYSTEM (HỆ THỐNG ĐIỀU PHỐI KHUNG BỐ CỤC FLEXBOX)
+   ========================================================================== */
+
+/* --- KHỞI TẠO LUỒNG FLEXBOX TIÊU CHUẨN (FLEX) --- */
+.flex {
+    display: flex !important; /* Đảm bảo tính ghi đè tuyệt đối của lớp tiện ích */
+    /* Mặc định sắp xếp các phần tử con nằm ngang (row) */
+    flex-direction: row;
+}
+
+
+/* --- CĂN GIỮA T TUYỆT ĐỐI (FLEX CENTER) --- */
+/* Thường dùng cho các ô lưới chiến trường (cell), vòng tròn số hiệu, hoặc modal popup */
+.flex-center {
+    display: flex !important;
+    justify-content: center; /* Căn giữa theo trục ngang chính */
+    align-items: center;     /* Căn giữa theo trục dọc phụ */
+}
+
+
+/* --- ĐẨY RỘNG RA HAI ĐẦU BIÊN (FLEX BETWEEN) --- */
+/* Thường dùng cho thanh Header bảng dữ liệu, dòng thông tin tỷ số (Đội nhà | Đội địch) */
+.flex-between {
+    display: flex !important;
+    justify-content: space-between; /* Đẩy các phần tử con dạt về 2 rìa biên */
+    align-items: center;            /* Căn trục dọc luôn nằm trên một đường thẳng */
+}
+
+
+/* --- CHUYỂN DÒNG THÀNH TRỤC DỌC (FLEX COLUMN) --- */
+/* Thường dùng cho các danh sách thông số sảnh chờ, bộ lệnh menu xếp chồng lên nhau */
+.flex-column {
+    display: flex !important;
+    flex-direction: column !important; /* Bẻ luồng hiển thị chạy dọc từ trên xuống dưới */
+}

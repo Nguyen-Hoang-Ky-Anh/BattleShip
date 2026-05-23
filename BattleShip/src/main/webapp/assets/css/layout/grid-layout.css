@@ -1,0 +1,90 @@
+/* Lưới danh sách nút chọn chế độ đấu của PvP Hub */
+.pvp-menu-grid {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-m);
+    margin-bottom: var(--space-xl);
+}
+
+/* Định hình form nhập liệu chiến thuật */
+.tactical-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-m);
+    text-align: left;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+}
+
+/* Thanh điều hướng phụ trong Form rẽ nhánh */
+.back-telemetry-zone {
+    display: flex;
+    justify-content: center;
+    margin-top: var(--space-l);
+    border-top: 1px dashed rgba(56, 189, 248, 0.1);
+    padding-top: var(--space-m);
+}
+
+.back-navigation-zone {
+    display: flex;
+    justify-content: center;
+    margin-top: var(--space-l);
+}
+
+/* Thanh điều hướng/chọn tàu cánh trái (Deployment) */
+.tactical-sidebar-panel {
+    background: rgba(9, 17, 34, 0.85);
+    backdrop-filter: var(--blur-intensity);
+    border-right: var(--border-tech);
+    padding: var(--space-l);
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    box-shadow: 5px 0 30px rgba(0, 0, 0, 0.5);
+    overflow-y: auto;
+}
+
+/* Phân khu hiển thị lưới bản đồ cánh phải (Deployment) */
+.tactical-main-board-sector {
+    display: flex;
+    flex-direction: column;
+    padding: var(--space-l);
+    height: 100vh;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Cấu trúc chia vùng bàn cờ địch lớn và bàn cờ ta nhỏ (Arena) */
+.battlefield-grid-layout {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 1fr 280px;
+    gap: var(--space-l);
+    align-items: center;
+    min-height: 0;
+}
+
+.combat-zone {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    justify-content: center;
+}
+
+/* Khung phân chia các phân đoạn tài liệu của Sổ tay */
+.manual-section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-s);
+}
+
+/* Chia lưới 2 cột cho các quy tắc hỏa lực */
+.grid-rules-two-columns {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-m);
+}

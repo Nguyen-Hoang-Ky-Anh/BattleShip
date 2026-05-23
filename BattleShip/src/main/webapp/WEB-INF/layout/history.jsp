@@ -5,83 +5,113 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lịch Sử Trận Đấu - BattleShip</title>
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/history.css">
+    <title>Combat Logs - BattleShip</title>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/main.css">
 </head>
 <body>
 
-<h1>📜 Lịch Sử Trận Đấu</h1>
-<p class="subtitle">
-    <c:choose>
-        <c:when test="${viewingUsername != null}">Trận đấu của <strong style="color:#fff">${viewingUsername}</strong></c:when>
-        <c:otherwise>Toàn bộ lịch sử trận đấu</c:otherwise>
-    </c:choose>
-</p>
+<!-- KHUNG BAO TOÀN DIỆN TRANG LỊCH SỬ TÁC CHIẾN -->
+<div class="history-page-container">
 
-<div class="nav">
-    <a href="${pageContext.request.contextPath}/">🏠 Trang Chủ</a>
-    <a href="${pageContext.request.contextPath}/leaderboard">🏆 Bảng Xếp Hạng</a>
+    <!-- ================= CONTROL NAVIGATION (THANH ĐIỀU HƯỚNG SƠ CẤP) ================= -->
+    <nav class="tactical-nav-bar">
+        <a href="${pageContext.request.contextPath}/" class="nav-btn btn-home">🏠 TRANG CHỦ</a>
+        <a href="${pageContext.request.contextPath}/leaderboard" class="nav-btn btn-leader">🏆 BẢNG XẾP HẠNG</a>
+    </nav>
+
+    <!-- ================= HEADER TITLE (TIÊU ĐỀ TRẠM DỮ LIỆU) ================= -->
+    <header class="history-header">
+        <h1 class="history-title">📜 COMBAT LOGS</h1>
+        <p class="history-subtitle monospace-data">
+            <c:choose>
+                <c:when test="${viewingUsername != null}">
+                    DECRYPTING ENTRIES FOR OPERATOR: <span class="operator-highlight">${viewingUsername}</span>
+                </c:when>
+                <c:otherwise>HỆ THỐNG GHI NHẬN TOÀN BỘ LỊCH SỬ TÁC CHIẾN</c:otherwise>
+            </c:choose>
+        </p>
+    </header>
+
+    <!-- ================= TELEMETRY STATS BAR (KHỐI THỐNG KÊ CHIẾN LƯỢC) ================= -->
+    <c:if test="${viewingUsername != null}">
+        <c:set var="winCount" value="0"/>
+        <c:forEach var="m" items="${matches}">
+            <c:if test="${m.winner == viewingUsername}">
+                <c:set var="winCount" value="${winCount + 1}"/>
+            </c:if>
+        </c:forEach>
+
+        <div class="telemetry-stats-grid monospace-data">
+            <div class="stat-card total-card">
+                <div class="num num-total">${matches.size()}</div>
+                <div class="lbl">// TOTAL_ENGAGED</div>
+            </div>
+            <div class="stat-card win-card">
+                <div class="num num-win">${winCount}</div>
+                <div class="lbl">// VICTORIES</div>
+            </div>
+            <div class="stat-card loss-card">
+                <div class="num num-loss">${matches.size() - winCount}</div>
+                <div class="lbl">// DEFEATS</div>
+            </div>
+        </div>
+    </c:if>
+
+    <!-- ================= DATA TABLE AREA (PHÂN KHU MA TRẬN LỊCH SỬ) ================= -->
+    <main class="table-data-wrapper">
+        <c:choose>
+            <c:when test="${empty matches}">
+                <div class="empty-log-state monospace-data alert-blink">
+                    ⚠️ NO DATA ENTRIES FOUND IN THIS SECTOR.
+                </div>
+            </c:when>
+            <c:otherwise>
+                <table id="history-table" class="cyber-data-table">
+                    <thead>
+                    <tr>
+                        <th style="width: 60px;">INDEX</th>
+                        <th>VICTOR</th>
+                        <th>DEFEATED</th>
+                        <th style="text-align: center;">SHOTS</th>
+                        <th style="text-align: center;">OUTCOME</th>
+                        <th style="text-align: right;">TIMESTAMP</th>
+                    </tr>
+                    </thead>
+                    <tbody class="monospace-data">
+                    <c:forEach var="match" items="${matches}" varStatus="s">
+                        <tr class="table-row-interactive">
+                            <td class="td-muted">#${s.index + 1}</td>
+                            <td class="td-winner-name">${match.winner}</td>
+                            <td class="td-loser-name">${match.loser}</td>
+                            <td style="text-align: center;" class="td-shots-count">${match.totalShots}</td>
+                            <td style="text-align: center;">
+                                <c:choose>
+                                    <c:when test="${viewingUsername != null && match.winner == viewingUsername}">
+                                        <span class="badge badge-win">VICTORY</span>
+                                    </c:when>
+                                    <c:when test="${viewingUsername != null}">
+                                        <span class="badge badge-loss">DEFEATED</span>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <span class="badge badge-neutral-win">${match.winner} WIN</span>
+                                    </c:otherwise>
+                                </c:choose>
+                            </td>
+                            <td style="text-align: right;" class="td-muted">${match.formattedTime}</td>
+                        </tr>
+                    </c:forEach>
+                    </tbody>
+                </table>
+            </c:otherwise>
+        </c:choose>
+    </main>
+
 </div>
 
-<%-- Stats bar (chỉ hiện khi đã đăng nhập) --%>
-<c:if test="${viewingUsername != null}">
-    <c:set var="winCount" value="0"/>
-    <c:forEach var="m" items="${matches}">
-        <c:if test="${m.winner == viewingUsername}">
-            <c:set var="winCount" value="${winCount + 1}"/>
-        </c:if>
-    </c:forEach>
-    <div class="stats">
-        <div class="stat"><div class="num num-total">${matches.size()}</div><div class="lbl">Tổng Trận</div></div>
-        <div class="stat"><div class="num num-win">${winCount}</div><div class="lbl">Thắng</div></div>
-        <div class="stat"><div class="num num-loss">${matches.size() - winCount}</div><div class="lbl">Thua</div></div>
-    </div>
-</c:if>
-
-<div class="table-wrap">
-    <c:choose>
-        <c:when test="${empty matches}">
-            <div class="empty">Chưa có trận đấu nào được ghi lại.</div>
-        </c:when>
-        <c:otherwise>
-            <table id="history-table">
-                <thead>
-                <tr>
-                    <th>#</th>
-                    <th>Người Thắng</th>
-                    <th>Người Thua</th>
-                    <th>Lượt Bắn</th>
-                    <th>Kết Quả</th>
-                    <th>Thời Gian</th>
-                </tr>
-                </thead>
-                <tbody>
-                <c:forEach var="match" items="${matches}" varStatus="s">
-                    <tr>
-                        <td class="muted">${s.index + 1}</td>
-                        <td class="win">${match.winner}</td>
-                        <td class="loss">${match.loser}</td>
-                        <td>${match.totalShots}</td>
-                        <td>
-                            <c:choose>
-                                <c:when test="${viewingUsername != null && match.winner == viewingUsername}">
-                                    <span class="badge badge-win">THẮNG</span>
-                                </c:when>
-                                <c:when test="${viewingUsername != null}">
-                                    <span class="badge badge-loss">THUA</span>
-                                </c:when>
-                                <c:otherwise>
-                                    <span class="badge badge-win">${match.winner} thắng</span>
-                                </c:otherwise>
-                            </c:choose>
-                        </td>
-                        <td class="muted">${match.formattedTime}</td>
-                    </tr>
-                </c:forEach>
-                </tbody>
-            </table>
-        </c:otherwise>
-    </c:choose>
+<!-- LỚP NỀN ĐẠI DƯƠNG ĐỒNG BỘ HIỆU ỨNG -->
+<div class="ocean">
+    <div class="wave"></div>
+    <div class="wave wave2"></div>
 </div>
 
 </body>
