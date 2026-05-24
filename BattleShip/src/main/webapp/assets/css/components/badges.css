@@ -1,0 +1,51 @@
+/* Huy hiệu nhận diện vai trò / tổng đài viên */
+.operator-badge {
+    font-size: 12px;
+    color: var(--accent-water);
+}
+
+/* Base style chung cho các khối nhãn trạng thái */
+.badge {
+    display: inline-block;
+    padding: 2px 8px;
+    font-size: 10px;
+    font-weight: bold;
+    border-radius: 3px;
+    letter-spacing: 0.5px;
+}
+
+/* Nhãn Trận Thắng */
+.badge-win {
+    background: rgba(0, 255, 153, 0.1);
+    color: var(--accent-mint);
+    border: 1px solid rgba(0, 255, 153, 0.3);
+}
+
+/* Nhãn Trận Thua */
+.badge-loss {
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+/* Nhãn Thắng trung lập (Giải đấu / AI) */
+.badge-neutral-win {
+    background: rgba(6, 182, 212, 0.1);
+    color: var(--accent-cyan);
+    border: 1px solid rgba(6, 182, 212, 0.3);
+}
+
+/* Định dạng số thứ tự hạng thông thường (ngoài Top 3) */
+.rank-number {
+    font-family: var(--font-mono), serif;
+    color: var(--accent-radar-gray);
+    font-size: 12px;
+    font-weight: bold;
+}
+
+/* Biểu tượng hoặc kích thước emoji huy chương cho Top 3 */
+.rank-badge {
+    font-size: 1.2rem;
+    display: inline-block;
+    line-height: 1;
+}

@@ -1,0 +1,59 @@
+/* Khung bọc menu điều hướng dạng thả xuống */
+.navigation-dropdown-wrapper {
+    position: relative;
+}
+
+/* Nút kích hoạt menu Hamburger */
+.hamburger-menu-trigger {
+    color: var(--accent-cyan);
+    font-family: var(--font-mono), serif;
+    font-size: 14px;
+    cursor: pointer;
+    padding: var(--space-s) var(--space-m);
+    border: var(--border-tech);
+    background: var(--panel-bg-alt);
+    transition: all 0.2s ease;
+}
+
+.hamburger-menu-trigger:hover {
+    background: rgba(6, 182, 212, 0.2);
+    border-color: var(--accent-cyan);
+}
+
+/* Bảng nội dung chứa danh sách thả xuống */
+.dropdown-content-panel {
+    display: none; /* Điều khiển trạng thái đóng/mở qua JavaScript */
+    position: absolute;
+    top: calc(100% + var(--space-s));
+    right: 0;
+    background: var(--color-bg-surface);
+    border: var(--border-tech);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.7);
+    width: 220px;
+    z-index: 1100;
+}
+
+/* Kích hoạt hiển thị Panel thông qua class điều khiển từ file JS */
+.dropdown-content-panel.show,
+.dropdown-content-panel[style*="display: block"] {
+    display: block !important;
+}
+
+/* Phần tử nút bấm chức năng bên trong dropdown */
+.btn-dropdown-item {
+    width: 100% !important;
+    background: transparent !important;
+    color: var(--accent-water) !important;
+    text-align: left !important;
+    padding: var(--space-m) !important;
+    border-bottom: 1px solid rgba(56, 189, 248, 0.05) !important;
+    clip-path: none !important;
+    font-size: 13px;
+}
+
+.btn-dropdown-item:hover {
+    background: rgba(6, 182, 212, 0.1) !important;
+    color: var(--accent-cyan) !important;
+    transform: none !important;
+    box-shadow: none !important;
+}

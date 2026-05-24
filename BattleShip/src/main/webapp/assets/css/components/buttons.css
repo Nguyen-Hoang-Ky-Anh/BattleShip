@@ -1,0 +1,283 @@
+button {
+    width: 100%;
+    background: var(--accent-cyan);
+    color: var(--color-bg-deep);
+    border: none;
+    padding: var(--space-m);
+    text-transform: uppercase;
+    font-weight: 800;
+    letter-spacing: 2px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    clip-path: polygon(5% 0, 100% 0, 100% 70%, 95% 100%, 0 100%, 0 30%);
+}
+
+button:hover {
+    background: var(--accent-mint);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 255, 153, 0.4);
+}
+
+button:active {
+    transform: translateY(0);
+}
+
+.btn-command-large {
+    width: 100%;
+    background: var(--panel-bg-alt);
+    border: var(--border-tech);
+    color: #fff;
+    padding: var(--space-m) var(--space-l);
+    font-size: 16px;
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    clip-path: polygon(3% 0, 100% 0, 100% 70%, 97% 100%, 0 100%, 0 30%);
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-command-large:hover {
+    background: rgba(6, 182, 212, 0.15);
+    border-color: var(--accent-cyan);
+    box-shadow: inset 0 0 15px rgba(6, 182, 212, 0.2);
+    transform: translateX(4px);
+}
+
+.btn-command-large .btn-icon {
+    margin-right: var(--space-s);
+    display: inline-block;
+}
+
+.btn-command-large .btn-sub-label {
+    font-family: var(--font-mono), serif;
+    font-size: 11px;
+    color: var(--accent-radar-gray);
+    text-transform: none;
+    letter-spacing: 0px;
+    margin-top: 2px;
+}
+
+/* Nút bấm nhỏ trên Top Bar */
+.btn-terminal-sm {
+    background: transparent;
+    border: 1px solid var(--accent-cyan);
+    color: var(--accent-cyan);
+    padding: var(--space-xs) var(--space-m);
+    font-size: 12px;
+    font-family: var(--font-mono), serif;
+    letter-spacing: 1px;
+    font-weight: 600;
+    clip-path: polygon(10% 0, 100% 0, 100% 70%, 90% 100%, 0 100%, 0 30%);
+    width: auto;
+}
+
+.btn-terminal-sm:hover {
+    background: var(--accent-cyan);
+    color: var(--color-bg-deep);
+    box-shadow: 0 0 10px rgba(6, 182, 212, 0.4);
+}
+
+.btn-terminal-sm.accent-mint-border {
+    border-color: var(--accent-mint);
+    color: var(--accent-mint);
+}
+
+.btn-terminal-sm.accent-mint-border:hover {
+    background: var(--accent-mint);
+    color: var(--color-bg-deep);
+    box-shadow: 0 0 10px rgba(0, 255, 153, 0.4);
+}
+
+.btn-terminal-sm.accent-crimson-border {
+    border-color: var(--accent-crimson);
+    color: var(--accent-crimson);
+}
+
+.btn-terminal-sm.accent-crimson-border:hover {
+    background: var(--accent-crimson);
+    color: #fff;
+    box-shadow: 0 0 10px rgba(239, 68, 68, 0.4);
+}
+
+/* Nút tiện ích tròn (Âm thanh) */
+.btn-utility {
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: var(--panel-bg-alt);
+    border: var(--border-tech);
+    color: var(--accent-cyan);
+    border-radius: 50%;
+    clip-path: none;
+}
+
+.btn-utility:hover {
+    background: rgba(6, 182, 212, 0.2);
+    border-color: var(--accent-cyan);
+    box-shadow: 0 0 10px rgba(6, 182, 212, 0.3);
+}
+
+/* Hiệu ứng viền neon khi di chuột qua nút lệnh */
+.btn-command-large.neon-mint-hover:hover {
+    border-color: var(--accent-mint) !important;
+    box-shadow: inset 0 0 15px rgba(0, 255, 153, 0.2) !important;
+    color: var(--accent-mint) !important;
+}
+
+.btn-command-large.neon-cyan-hover:hover {
+    border-color: var(--accent-cyan) !important;
+    box-shadow: inset 0 0 15px rgba(6, 182, 212, 0.2) !important;
+    color: var(--accent-cyan) !important;
+}
+
+.btn-command-submit {
+    clip-path: polygon(4% 0, 100% 0, 100% 70%, 96% 100%, 0 100%, 0 30%);
+}
+
+.btn-command-submit:hover {
+    background: var(--accent-mint);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 255, 153, 0.4);
+}
+
+/* Nút bấm lệnh đặc chủng của dòng Join Flow */
+.btn-command-submit-cyan {
+    width: 100%;
+    background: transparent;
+    color: var(--accent-cyan);
+    border: 1px solid var(--accent-cyan);
+    padding: var(--space-m);
+    text-transform: uppercase;
+    font-weight: 800;
+    letter-spacing: 2px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    clip-path: polygon(4% 0, 100% 0, 100% 70%, 96% 100%, 0 100%, 0 30%);
+}
+
+.btn-command-submit-cyan:hover {
+    background: rgba(6, 182, 212, 0.1);
+    box-shadow: 0 0 15px rgba(6, 182, 212, 0.3), inset 0 0 10px rgba(6, 182, 212, 0.2);
+    transform: translateY(-1px);
+}
+
+/* Các nút điều khiển kỹ thuật (Đặt tàu) */
+.btn-action-tech {
+    background: rgba(15, 23, 42, 0.8);
+    border: 1px solid rgba(56, 189, 248, 0.2);
+    color: var(--accent-radar-gray);
+    padding: var(--space-s) var(--space-xs);
+    font-family: var(--font-mono), serif;
+    font-size: 11px;
+    font-weight: bold;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+}
+
+.btn-action-tech i {
+    font-size: 16px;
+}
+
+.btn-action-tech:hover {
+    background: rgba(56, 189, 248, 0.1);
+    color: var(--accent-cyan);
+    border-color: var(--accent-cyan);
+}
+
+/* Nút xác nhận đặt tàu đặc chủng */
+.btn-confirm {
+    background: var(--accent-cyan);
+    color: var(--color-bg-deep);
+    border: none;
+}
+
+.btn-confirm:hover {
+    background: var(--accent-mint) !important;
+    color: var(--color-bg-deep) !important;
+    box-shadow: 0 0 15px rgba(0, 255, 153, 0.4);
+}
+
+/* Base style cho dạng thẻ liên kết hoạt động như nút chọn độ khó AI */
+.menu-item-link {
+    display: flex;
+    align-items: center;
+    padding: 14px var(--space-m);
+    background: rgba(15, 23, 42, 0.75);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 6px;
+    text-decoration: none;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.menu-item-link .link-text {
+    font-size: 14px;
+    font-weight: bold;
+    color: var(--accent-radar-gray);
+    letter-spacing: 1.5px;
+}
+
+.menu-item-link .sub-text {
+    font-size: 10px;
+    color: var(--accent-radar-gray);
+    margin-left: auto;
+    opacity: 0.8;
+}
+
+/* Phân cấp hiệu ứng Hover của thực thể chọn độ khó */
+.difficulty-easy:hover {
+    background: rgba(0, 255, 153, 0.04);
+    border-color: var(--accent-mint);
+    box-shadow: 0 0 20px rgba(0, 255, 153, 0.15);
+    transform: translateY(-2px);
+}
+
+.difficulty-normal:hover {
+    background: rgba(234, 179, 8, 0.04);
+    border-color: #eab308;
+    box-shadow: 0 0 20px rgba(234, 179, 8, 0.15);
+    transform: translateY(-2px);
+}
+
+.difficulty-hard:hover {
+    background: rgba(239, 68, 68, 0.04);
+    border-color: #ef4444;
+    box-shadow: 0 0 20px rgba(239, 68, 68, 0.15);
+    transform: translateY(-2px);
+}
+
+/* Nút quay lại hệ thống */
+.btn-back-control {
+    justify-content: center;
+    background: transparent;
+    border: var(--border-tech);
+    color: var(--accent-radar-gray);
+    margin-top: var(--space-xs);
+}
+
+.btn-back-control:hover {
+    border-color: var(--accent-cyan);
+    color: var(--accent-cyan);
+    box-shadow: 0 0 15px rgba(6, 182, 212, 0.2);
+}
+
+.room-action-btn {
+    justify-content: center;
+}
+
+.btn-command-large {
+    text-decoration: none;
+}

@@ -26,31 +26,25 @@ window.addEventListener("DOMContentLoaded", () => {
         return;
     }
 
-    createBattleBoards();
-    renderPlayerBoard();
-    initEnemyBoard();
+    if (typeof createBattleBoards === "function") {
+        createBattleBoards();
+    } else {
+        createBoardForBattle("enemyBoard");
+        createBoardForBattle("myBoard", () => {
+            // Sử dụng qua window biến toàn cục an toàn
+            if (typeof window.renderMyShips === "function") {
+                window.renderMyShips();
+            }
+        });
+    }
 
+    initEnemyBoard();
     setStatus("🎯 Lượt của bạn");
 });
 
 // =========================
 // BOARD INIT & RENDER
 // =========================
-
-function createBattleBoards() {
-    log("Creating battle boards...");
-    const my = document.getElementById("myBoard");
-    const enemy = document.getElementById("enemyBoard");
-
-    if (!my || !enemy) {
-        console.error("❌ Board containers missing");
-        return;
-    }
-
-    createBoardForBattle("myBoard");
-    createBoardForBattle("enemyBoard");
-    log("Boards created");
-}
 
 function renderPlayerBoard() {
     log("Rendering player board");
@@ -239,14 +233,34 @@ function addLog(msg) {
     if (!logBox) return;
 
     const div = document.createElement("div");
+    div.classList.add("log-entry");
     div.textContent = msg;
 
-    // Highlight các log quan trọng
-    if (msg.includes("BẮN CHÌM") || msg.includes("CHIẾN THẮNG")) div.style.color = "lime";
-    if (msg.includes("CẢNH BÁO") || msg.includes("THẤT BẠI")) div.style.color = "red";
+    // --- PHÂN PHỐI CLASS MÀU THEO NỘI DUNG LOG ---
+    if (msg.includes("BẮN CHÌM") || msg.includes("CẢNH BÁO")) {
+        div.classList.add("log-sunk");
+    }
+    else if (msg.includes("TRÚNG ĐÍCH")) {
+        if (msg.includes("🤖 Địch")) {
+            div.classList.add("log-hit-ai"); // Địch bắn trúng ta -> Hiện màu Cam
+        } else {
+            div.classList.add("log-hit-player"); // Ta bắn trúng đích -> Hiện màu Xanh mint
+        }
+    }
+    else if (msg.includes("TRƯỢT")) {
+        div.classList.add("log-miss"); // Phát bắn hụt -> Hiện màu Xám gọn gàng
+    }
+    else {
+        // Nhật ký khởi tạo hệ thống ban đầu hoặc kết quả chung cuộc
+        div.classList.add("log-turn");
+    }
 
     logBox.appendChild(div);
-    logBox.scrollTop = logBox.scrollHeight; // Tự động cuộn xuống dưới cùng
+
+    // Kích hoạt cuộn xuống đáy ngay lập tức mà không gây giật lag UI
+    requestAnimationFrame(() => {
+        logBox.scrollTop = logBox.scrollHeight;
+    });
 }
 
 function log(msg, obj) {

@@ -1,0 +1,90 @@
+/* Tấm bảng kính trung tâm tại Trang Chủ */
+.tactical-glass-panel {
+    background: var(--panel-bg);
+    backdrop-filter: var(--blur-intensity);
+    border: var(--border-tech);
+    padding: var(--space-2xl);
+    border-radius: 8px;
+    width: 100%;
+    max-width: 520px;
+    box-shadow: 0 0 40px rgba(6, 182, 212, 0.1);
+    text-align: center;
+}
+
+/* Tấm bảng kính kết nối PvP */
+.tactical-glass-card {
+    background: var(--panel-bg);
+    backdrop-filter: var(--blur-intensity);
+    border: var(--border-tech);
+    padding: var(--space-2xl);
+    border-radius: 8px;
+    width: 100%;
+    max-width: 480px;
+    box-shadow: 0 0 40px rgba(6, 182, 212, 0.1);
+    text-align: center;
+}
+
+/* Vùng chứa lưới cờ lúc dàn trận đặt hạm đội */
+.ocean-matrix-container {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+/* Khung bọc lưới bắn oanh tạc địch */
+.matrix-glow-frame {
+    flex: 1;
+    background: rgba(9, 17, 34, 0.75);
+    border: var(--border-tech);
+    border-radius: 6px;
+    box-shadow: 0 0 30px rgba(6, 182, 212, 0.05);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: var(--space-m);
+}
+
+/* Khung bọc lưới radar mini bảo vệ của ta */
+.mini-matrix-frame {
+    height: 280px;
+    background: rgba(9, 17, 34, 0.9);
+    border: 1px dashed rgba(56, 189, 248, 0.3);
+    border-radius: 6px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: var(--space-s);
+}
+
+/* Khung cuộn chống tràn bọc ngoài bảng dữ liệu dữ liệu lớn */
+.table-data-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    background: rgba(9, 17, 34, 0.75);
+    border: var(--border-tech);
+    border-radius: 6px;
+    box-shadow: 0 0 25px rgba(0, 0, 0, 0.3);
+}
+
+/* Hộp bọc khối chữ quy tắc huấn luyện */
+.section-body-card {
+    background: rgba(9, 17, 34, 0.75);
+    border: var(--border-tech);
+    border-radius: 6px;
+    padding: var(--space-m);
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.tactical-main-board-sector {
+    flex: 1;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: var(--space-m);
+
+    min-width: 0;
+}

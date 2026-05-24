@@ -1,0 +1,112 @@
+/* Phân khu Hub chính của Trang chủ */
+.main-hub-container {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-top: 60px;
+}
+
+/* Khung bao và căn giữa trạm kết nối PvP */
+.pvp-hub-wrapper {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: var(--space-m);
+}
+
+/* Khung bọc trung tâm cho biểu mẫu cấu hình phòng */
+.room-creation-wrapper {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: var(--space-m);
+}
+
+/* Khung bọc trung tâm cho biểu mẫu tham gia phòng */
+.room-join-wrapper {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: var(--space-m);
+}
+
+/* Không gian làm việc toàn màn hình cho khâu đặt tàu */
+.deployment-workspace {
+    width: 100vw;
+    height: 100vh;
+    display: grid;
+    grid-template-columns: 360px 1fr;
+    position: relative;
+    z-index: 10;
+    background: rgba(2, 6, 23, 0.4);
+}
+
+/* Khung bao bọc toàn bộ không gian sàn đấu */
+.battle-arena-wrapper {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    padding: var(--space-m);
+    gap: var(--space-s);
+    position: relative;
+    z-index: 10;
+    box-sizing: border-box;
+}
+
+/* Khung định vị trung tâm trang lịch sử */
+.history-page-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: var(--space-xl) var(--space-m);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-l);
+    position: relative;
+    z-index: 10;
+}
+
+/* Container bao phủ trang cẩm nằng hướng dẫn */
+.manual-page-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: var(--space-xl) var(--space-m);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xl);
+    position: relative;
+    z-index: 10;
+}
+
+/* Container bao bọc trung tâm bảng xếp hạng vinh danh */
+.leaderboard-page-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: var(--space-xl) var(--space-m);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-l);
+    position: relative;
+    z-index: 10;
+}
+
+/* Khung định vị trung tâm màn hình chọn độ khó AI */
+.difficulty-selection-container {
+    min-height: 70vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: var(--space-xl);
+    padding: var(--space-m);
+    position: relative;
+    z-index: 10;
+}

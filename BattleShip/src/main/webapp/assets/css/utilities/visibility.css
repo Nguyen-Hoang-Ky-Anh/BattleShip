@@ -1,0 +1,42 @@
+/* ==========================================================================
+   DISPLAY & VISIBILITY CONTROLS (HỆ THỐNG KIỂM SOÁT HIỂN THỊ TRẠNG THÁI)
+   ========================================================================== */
+
+/* --- 1. ẨN HOÀN TOÀN KHỎI GIAO DIỆN (HIDDEN) --- */
+/* Xóa bỏ phần tử khỏi luồng render, không chiếm không gian trên màn hình.
+   Thường dùng cho: các tab chưa được kích hoạt, màn hình kết thúc trận đấu khi đang chơi. */
+.hidden {
+    display: none !important; /* Dùng !important để triệt tiêu mọi thuộc tính display khác */
+}
+
+
+/* --- 2. ÉP BUỘC HIỂN THỊ (SHOW) --- */
+/* Khôi phục trạng thái xuất hiện của phần tử trong luồng bố cục.
+   Mặc định gán là block, bạn có thể linh hoạt đổi sang flex/grid tùy cấu trúc HUD. */
+.show {
+    display: block !important;
+}
+
+
+/* --- 3. ẨN TÀNG HÌNH NHƯNG GIỮ NGUYÊN VỊ TRÍ (INVISIBLE) --- */
+/* Phần tử biến mất hoàn toàn nhưng vẫn chiếm diện tích và giữ nguyên bố cục xung quanh.
+   Thường dùng cho: Giữ cố định kích thước khung khi dữ liệu chưa tải xong, 
+   hoặc làm mờ các ô radar ẩn giấu quân địch mà không làm sụp đổ hệ thống lưới (grid layout). */
+.invisible {
+    visibility: hidden !important;
+    opacity: 0 !important; /* Kết hợp opacity để đảm bảo các hiệu ứng transition (nếu có) mượt mà */
+    pointer-events: none !important; /* Vô hiệu hóa khả năng tương tác chuột/click vào vật thể đang tàng hình */
+}
+
+/* Trạng thái tắt (Tàng hình) */
+.panel-switch {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease-in-out;
+}
+
+/* Trạng thái bật (Hiển thị) */
+.panel-switch.active {
+    opacity: 1;
+    pointer-events: auto;
+}

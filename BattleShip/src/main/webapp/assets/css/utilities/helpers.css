@@ -1,0 +1,40 @@
+/* ==========================================================================
+   STRUCTURAL & POSITIONING UTILITIES (LỚP TIỆN ÍCH ĐỊNH VỊ & KÍCH THƯỚC KHUNG)
+   ========================================================================== */
+
+/* --- TỐI ĐA HÓA CHIỀU RỘNG (WIDTH FULL) --- */
+/* Ép phần tử co giãn chiếm trọn 100% không gian chiều ngang của khối cha */
+.w-full {
+    width: 100% !important; /* Dùng !important để đảm bảo tính ghi đè tuyệt đối */
+}
+
+
+/* --- TỐI ĐA HÓA CHIỀU CAO (HEIGHT FULL) --- */
+/* Ép phần tử kéo dài chiếm trọn 100% không gian chiều dọc của khối cha */
+.h-full {
+    height: 100% !important;
+}
+
+
+/* --- CON TRỎ INTERACTIVE (POINTER / HAND CURSOR) --- */
+/* Chuyển con trỏ chuột thành hình bàn tay chọn. Thường dùng bổ trợ cho các hàng 
+   trong bảng xếp hạng, thẻ phòng pvp hoặc nút bấm tùy biến để báo hiệu click được. */
+.pointer {
+    cursor: pointer !important;
+}
+
+
+/* --- ĐỊNH VỊ TƯƠNG ĐỐI (RELATIVE) --- */
+/* Làm điểm neo gốc tọa độ (Anchor) cho các phần tử con định vị absolute bên trong.
+   Mặc định các lớp như `.cell` hay `.main-hub-container` rất cần thuộc tính này. */
+.relative {
+    position: relative !important;
+}
+
+
+/* --- ĐỊNH VỊ TUYỆT ĐỐI (ABSOLUTE) --- */
+/* Nhấc phần tử ra khỏi luồng render thông thường để đặt chuẩn xác vào một tọa độ.
+   Rất quan trọng khi làm hiệu ứng phủ (overlay), chèn tâm ngắm AI, hoặc hiệu ứng khói lửa. */
+.absolute {
+    position: absolute !important;
+}
