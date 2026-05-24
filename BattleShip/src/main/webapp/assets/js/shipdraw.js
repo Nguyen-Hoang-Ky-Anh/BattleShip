@@ -140,30 +140,35 @@ function resetBoard() {
     document.getElementById("placementStatus").textContent = "Place your ships";
 }
 
+//USC-05.5: Khóa bố cục
 // ========== CONFIRM ==========
-function confirmPlacement() {
+function validatePlacement() {
+    return SHIP_CATALOG.every(
+        ship => ship.placed
+    );
+}
 
-    const allPlaced =
-        SHIP_CATALOG.every(s => s.placed);
-
-    if (!allPlaced) {
-
-        document.getElementById(
-            "placementStatus"
-        ).textContent =
-            "⚠ Place all ships first!";
-
-        return;
-    }
+function lockPlacementUI() {
 
     isLocked = true;
 
-    const shipData = placedShips.map(s => ({
-        name: s.name,
-        size: s.size,
-        direction: s.direction,
-        cells: s.cells
+    document.getElementById(
+        "placementStatus"
+    ).textContent =
+        "⏳ Waiting opponent...";
+}
+
+function buildShipData() {
+
+    return placedShips.map(ship => ({
+        name: ship.name,
+        size: ship.size,
+        direction: ship.direction,
+        cells: ship.cells
     }));
+}
+
+function sendPlacementToServer(shipData) {
 
     socket.send(
         "CONFIRM_PLACEMENT|" +
@@ -176,14 +181,35 @@ function confirmPlacement() {
         "playerBoard",
         JSON.stringify(shipData)
     );
+}
 
-    document.getElementById(
-        "placementStatus"
-    ).textContent =
-        "⏳ Waiting opponent...";
+function confirmPlacement() {
+
+    const isValid =
+        validatePlacement();
+
+    if (!isValid) {
+
+        document.getElementById(
+            "placementStatus"
+        ).textContent =
+            "⚠ Place all ships first!";
+
+        return;
+    }
+
+    const shipData =
+        buildShipData();
+
+    lockPlacementUI();
+
+    sendPlacementToServer(
+        shipData
+    );
 }
 
 // ========== DRAG FROM PANEL ==========
+// USC-05.4: Thực hiện việc sắp xếp thuyền
 function startDragFromPanel(e, ship, panelItem) {
     draggingFromPanel = true;
     draggingShip = {...ship}; // clone để không sửa catalog gốc khi đang kéo
@@ -443,4 +469,7 @@ function allShipsPlaced() {
     return SHIP_CATALOG.every(
         s => s.placed
     );
+}
+function returnLobby(){
+    window.history.back()
 }

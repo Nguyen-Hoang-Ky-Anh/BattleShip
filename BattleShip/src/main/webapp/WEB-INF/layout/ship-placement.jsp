@@ -58,7 +58,7 @@
         </div>
 
         <div class="controls">
-
+<%--        --%>
             <button onclick="rotateShip()">
                 🔄 Rotate
             </button>
@@ -66,11 +66,11 @@
             <button onclick="resetBoard()">
                 ♻ Reset
             </button>
-
+    <%--   UCS-05.5: Khóa bố cục   --%>
             <button onclick="confirmPlacement()">
                 ✅ Confirm
             </button>
-            <button  onclick="window.history.back()"><i class="bi bi-arrow-return-left " style="font-size: 24px"></i></button>
+            <button  onclick="returnLobby()"><i class="bi bi-arrow-return-left " ></i></button>
         </div>
 
     </div>

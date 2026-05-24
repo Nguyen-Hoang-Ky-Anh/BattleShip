@@ -3,6 +3,7 @@ package controllers;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
+
 import java.io.IOException;
 
 @WebServlet("/pre-game/*")
@@ -11,15 +12,15 @@ public class PreGameController extends HttpServlet {
     // =========================
     // SELECT DIFFICULTY PAGE
     // =========================
+
+    // USC-05.1 Chọn chế độ PvE
     @Override
     protected void doGet(
             HttpServletRequest request,
             HttpServletResponse response
     ) throws ServletException, IOException {
 
-        String action =
-                request.getPathInfo();
-
+        String action = request.getPathInfo();
         if (action == null) {
 
             request.getRequestDispatcher(
@@ -28,7 +29,7 @@ public class PreGameController extends HttpServlet {
 
             return;
         }
-
+// USC-05.2 chọn độ khó máy
         switch (action) {
 
             case "/easy":
