@@ -12,9 +12,9 @@
     <div class="form-container sign-up-container">
         <form action="login" method="post">
             <h1>Create Account</h1>
-            <input type="text" name="username" placeholder="Name" />
-            <input type="email" name="email" placeholder="Email" />
-            <input type="password" name="password" placeholder="Password" />
+            <input type="text" name="username" placeholder="Name" required />
+            <input type="email" name="email" placeholder="Email" required />
+            <input type="password" name="password" placeholder="Password" required />
             <button style="background-color: #0f3460; border: none; cursor: pointer;"
                     onmouseover="this.style.backgroundColor='#3c97bf'"
                     onmouseout="this.style.backgroundColor='#0f3460'">
@@ -35,8 +35,8 @@
             <%
                 }
             %>
-            <input type="text" name="user" placeholder="Email" />
-            <input type="password" name="password" placeholder="Password" />
+            <input type="text" name="user" placeholder="Email" required />
+            <input type="password" name="password" placeholder="Password" required />
             <a href="#">Forgot your password?</a>
             <button style="background-color: #0f3460; border: none; cursor: pointer;"
                     onmouseover="this.style.backgroundColor='#3c97bf'"
