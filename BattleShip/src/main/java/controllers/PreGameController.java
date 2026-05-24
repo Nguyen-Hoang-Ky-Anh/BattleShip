@@ -28,28 +28,15 @@ public class PreGameController extends HttpServlet {
 
             return;
         }
-
+        HttpSession session = request.getSession();
         switch (action) {
 
             case "/easy":
             case "/normal":
             case "/hard":
-
-                HttpSession session =
-                        request.getSession();
-
-                session.setAttribute(
-                        "aiDifficulty",
-                        action.substring(1)
-                );
-
-                response.sendRedirect(
-                        request.getContextPath()
-                                + "/ship-placement-pve"
-                );
-
+                session.setAttribute("aiDifficulty", action.substring(1));
+                response.sendRedirect(request.getContextPath() + "/ship-placement-pve");
                 break;
-
             default:
 
                 response.sendError(
