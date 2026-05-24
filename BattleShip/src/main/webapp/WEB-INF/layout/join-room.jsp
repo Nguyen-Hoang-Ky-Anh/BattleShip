@@ -36,6 +36,20 @@
             </div>
         </c:if>
 
+            <%-- ======================================================
+                LẤY THÔNG TIN USER ĐANG ĐĂNG NHẬP TỪ SESSION
+            ====================================================== --%>
+            <%@ page import="models.User" %>
+
+            <%
+                User currentUser = (User) session.getAttribute("user");
+                String username = "";
+
+                if(currentUser != null){
+                    username = currentUser.getUsername();
+                }
+            %>
+
         <%-- =========================================
              [UC-08 - Entry Flow (Join)]
              Step A2.1: User nhập thông tin
@@ -48,6 +62,7 @@
                 <%-- [UC-08][Step A2.1.1 - Input User ID] --%>
                 <input type="text"
                        name="userId"
+                       value="<%= username %>"
                        placeholder="DEPLOY IDENTITY ENCODING..."
                        required>
             </div>
