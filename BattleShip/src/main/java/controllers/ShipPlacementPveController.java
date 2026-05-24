@@ -65,11 +65,31 @@ public class ShipPlacementPveController extends HttpServlet {
         // =========================
         // AI
         // =========================
-        AIStrategy strategy =
-                new RandomAI();
+        // =========================
+        // AI Theo option
+        // =========================
+        HttpSession session = request.getSession();
+        AIStrategy strategy =   null;
+        String difficult = (String) session.getAttribute("aiDifficulty").toString();
+        if(difficult == null){
+            difficult = "easy";
+        }
+        switch (difficult) {
+            case "easy":
+                strategy =  new RandomAI();
+                break;
+            case "normal":
+                strategy =  new HuntTargetAI();
+                break;
+            case "hard":
+                break;
+            default:
+                System.out.println("Invalid AiDifficulty");
 
-        Player ai =
-                new Player("BOT", strategy);
+        }
+
+
+        Player ai = new Player("BOT", strategy);
 
         Board aiBoard =
                 AIPlacementService.generateRandomBoard();
