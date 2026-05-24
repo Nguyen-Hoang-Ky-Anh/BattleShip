@@ -39,7 +39,7 @@
                 </div>
 
                 <button class="copy-room-btn"
-                        onclick="copyRoomId()"
+                        onclick="copyRoomId(this)"
                         title="Copy Room ID">
                     📋
                 </button>
