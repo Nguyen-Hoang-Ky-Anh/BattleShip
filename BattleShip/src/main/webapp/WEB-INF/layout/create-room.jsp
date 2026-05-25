@@ -28,6 +28,20 @@
 
         <div class="terminal-separator"></div>
 
+            <%-- ======================================================
+                LẤY THÔNG TIN USER ĐANG ĐĂNG NHẬP TỪ SESSION
+            ====================================================== --%>
+            <%@ page import="models.User" %>
+
+            <%
+                User currentUser = (User) session.getAttribute("user");
+                String username = "";
+
+                if(currentUser != null){
+                    username = currentUser.getUsername();
+                }
+            %>
+
         <%-- =========================================
              [UC-07.1 - Configure Room]
              Step 2: User nhập thông tin cấu hình
@@ -40,6 +54,7 @@
                 <%-- [UC-07.1][Step 2.1 - Input User ID] --%>
                 <input type="text"
                        name="userId"
+                       value="<%= username %>"
                        placeholder="DEPLOY IDENTITY ENCODING..."
                        required>
             </div>

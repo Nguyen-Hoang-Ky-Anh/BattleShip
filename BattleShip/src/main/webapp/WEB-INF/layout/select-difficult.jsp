@@ -20,11 +20,19 @@
 <div class="top-command-bar">
 
     <!-- LEFT AUTH ZONE -->
+    <!-- LEFT AUTH ZONE -->
     <div class="auth-telemetry-zone">
+
+        <%-- =========================================
+             TRẠNG THÁI: CHƯA ĐĂNG NHẬP (GUEST)
+        ========================================= --%>
+        <% if(session.getAttribute("user") == null){ %>
 
         <form action="${pageContext.request.contextPath}/login"
               method="get"
               class="inline-form">
+
+            <input type="hidden" name="mode" value="login">
 
             <button type="submit"
                     class="btn-terminal-sm">
@@ -35,9 +43,11 @@
 
         </form>
 
-        <form action="${pageContext.request.contextPath}/register"
+        <form action="${pageContext.request.contextPath}/login"
               method="get"
               class="inline-form">
+
+            <input type="hidden" name="mode" value="register">
 
             <button type="submit"
                     class="btn-terminal-sm accent-mint-border">
@@ -47,6 +57,43 @@
             </button>
 
         </form>
+
+        <% } else { %>
+
+        <%-- =========================================
+             TRẠNG THÁI: ĐÃ ĐĂNG NHẬP
+        ========================================= --%>
+
+        <% models.User user =
+                (models.User) session.getAttribute("user");
+        %>
+
+        <!-- USERNAME -->
+        <div class="operator-badge">
+
+            <span class="status-indicator-online"></span>
+
+            <span class="monospace-data">
+            OP: <%= user.getUsername() %>
+        </span>
+
+        </div>
+
+        <!-- LOGOUT -->
+        <form action="${pageContext.request.contextPath}/logout"
+              method="post"
+              class="inline-form">
+
+            <button type="submit"
+                    class="btn-terminal-sm accent-crimson-border">
+
+                LOGOUT
+
+            </button>
+
+        </form>
+
+        <% } %>
 
     </div>
 

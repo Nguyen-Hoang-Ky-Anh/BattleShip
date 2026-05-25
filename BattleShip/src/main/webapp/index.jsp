@@ -15,27 +15,57 @@
 <!-- TOP COMMAND BAR (HEADER REFACTOR) -->
 <div class="top-command-bar">
     <div class="auth-telemetry-zone">
+
+        <%-- =========================================
+             [UC-01 - Chơi game với tư cách Guest]
+        ========================================= --%>
+        <%-- [UC-01][Step 1.1.0 - Check Guest Session] --%>
         <% if(session.getAttribute("user") == null){ %>
+
         <!-- TRẠNG THÁI: CHƯA KẾT NỐI (GUEST) -->
+        <%-- =========================================
+             [UC-03 - Đăng nhập]
+        ========================================= --%>
+        <%-- [UC-03][Step 3.1.0 - Người dùng ở màn hình “Đăng nhập”] --%>
         <form action="${pageContext.request.contextPath}/login" method="get" class="inline-form">
+            <%-- [UC-03][Step 3.1.1 - Người dùng nhập thông tin đăng nhập] --%>
             <input type="hidden" name="mode" value="login">
+                <%-- [UC-03][Step 3.1.2 - Người dùng nhấn nút "Đăng nhập"] --%>
             <button type="submit" class="btn-terminal-sm">LOG IN</button>
         </form>
 
+        <%-- =========================================
+             [UC-02 - Đăng ký tài khoản]
+        ========================================= --%>
+        <%-- [UC-02][Step 2.1.0 - Guest ở màn hình “Đăng ký”] --%>
         <form action="${pageContext.request.contextPath}/login" method="get" class="inline-form">
+            <%-- [UC-02][Step 2.1.1 - Hệ thống hiển thị form đăng ký: username, email, password] --%>
             <input type="hidden" name="mode" value="register">
+            <%-- [UC-02][Step 2.1.2 - Guest nhập thông tin và gửi form] --%>
             <button type="submit" class="btn-terminal-sm accent-mint-border">REGISTER</button>
         </form>
         <% } else { %>
+
         <!-- TRẠNG THÁI: ĐÃ ĐĂNG NHẬP (OPERATOR) -->
+        <%-- [UC-03][Step 3.1.5 - Hệ thống khởi tạo phiên làm việc cho User] --%>
         <% models.User user = (models.User) session.getAttribute("user"); %>
 
+        <%-- [UC-03][Step 3.1.6 - Hệ thống chuyển hướng người dùng về màn hình chính] --%>
         <div class="operator-badge">
             <span class="status-indicator-online"></span>
             <span class="monospace-data">OP: <%= user.getUsername() %></span>
         </div>
 
-        <form action="${pageContext.request.contextPath}/logout" method="post" class="inline-form">
+        <%-- =========================================
+             [UC-04 - Đăng xuất]
+        ========================================= --%>
+        <%-- [UC-04][Step 4.1.0 - User ở màn hình chính] --%>
+        <form action="${pageContext.request.contextPath}/logout" method="post" class="inline-form"
+
+              <%-- [UC-04][Step 4.1.2 - Hệ thống hiển thị hộp thoại xác nhận] --%>
+              onsubmit="return confirm('Bạn có chắc chắn muốn đăng xuất không?');">
+
+            <%-- [UC-04][Step 4.1.1 - User nhấn chọn nút "Đăng xuất"] --%>
             <button type="submit" class="btn-terminal-sm accent-crimson-border">LOGOUT</button>
         </form>
         <% } %>
