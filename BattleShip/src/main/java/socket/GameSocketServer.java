@@ -339,6 +339,8 @@ public class GameSocketServer {
 
         player.setConnected(true);
 
+        room.getSessions().put(username, session);
+
         // =========================================
         // SEND BATTLE STATE
         // =========================================

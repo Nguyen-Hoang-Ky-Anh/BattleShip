@@ -148,6 +148,9 @@ function handleBattleUpdate(parts) {
 
     if (cell && !cell.classList.contains("hit") && !cell.classList.contains("miss")) {
         cell.classList.add(result === "HIT" || result === "SUNK" ? "hit" : "miss");
+        if (result === "SUNK") {
+            cell.classList.add("sunk");
+        }
         cell.textContent = result === "SUNK" ? "💀" : (result === "HIT" ? "💥" : "•");
     }
 
@@ -208,6 +211,9 @@ function updateTurnUI() {
 
     GameState.canAttack = (GameState.currentTurn === userId);
     el.textContent = GameState.canAttack ? "🔥 Your turn" : "⏳ Opponent turn";
+
+    // Set neon screen borders dynamically based on whose turn it is
+    document.body.setAttribute("data-turn", GameState.canAttack ? "PLAYER" : "AI");
 }
 
 // =========================================================
@@ -235,6 +241,9 @@ function replayShots(shots) {
 
         if (result === "HIT" || result === "SUNK") {
             cell.classList.add("hit");
+            if (result === "SUNK") {
+                cell.classList.add("sunk");
+            }
             cell.textContent = result === "SUNK" ? "💀" : "💥";
         } else {
             cell.classList.add("miss");
@@ -245,7 +254,7 @@ function replayShots(shots) {
 
 function clearBoard(boardId) {
     document.querySelectorAll(`#${boardId} .cell`).forEach(cell => {
-        cell.classList.remove("ship", "hit", "miss");
+        cell.classList.remove("ship", "hit", "miss", "sunk");
         cell.textContent = "";
     });
 }

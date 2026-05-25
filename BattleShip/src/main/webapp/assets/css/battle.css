@@ -1,186 +1,281 @@
-*{
-    box-sizing:border-box;
+/* =========================================
+   BATTLE PVP STYLESHEET
+   ========================================= */
+
+* {
+    box-sizing: border-box;
 }
 
-body{
-    margin:0;
-    padding:20px;
-    background:#0f172a;
-    color:white;
-    font-family:Arial,sans-serif;
-    overflow:hidden;
+body {
+    margin: 0;
+    padding: 20px;
+    background: #0f172a;
+    color: white;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    overflow-x: hidden;
+    overflow-y: auto;
+    transition: border 0.3s ease, box-shadow 0.3s ease;
 }
 
-.page{
-    width:100%;
-    height:100vh;
+.page {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
 }
 
 /* ================= TOP BAR ================= */
 
-.top-bar{
-    display:flex;
-    gap:20px;
-    align-items:center;
-    margin-bottom:20px;
+.top-bar {
+    display: flex;
+    gap: 30px;
+    align-items: center;
+    margin-bottom: 10px;
+    padding: 10px 20px;
+    background: rgba(30, 41, 59, 0.7);
+    border-radius: 8px;
+    border: 1px solid #334155;
+}
+
+.top-bar h1 {
+    margin: 0;
+    font-size: 24px;
+    color: #38bdf8; /* Xanh neon sáng */
+}
+
+.top-bar span {
+    font-weight: bold;
+    color: #e2e8f0;
+    margin-left: 5px;
+}
+
+/* ================= STATUS (LƯỢT ĐẤU) ================= */
+
+.battle-status {
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #fbbf24; /* Vàng hổ phách */
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    text-shadow: 0 0 10px rgba(251, 191, 36, 0.5);
+    transition: color 0.3s ease;
 }
 
 /* ================= MAIN LAYOUT ================= */
 
-.battle-layout{
-    position:relative;
-    width:100%;
-    height:calc(100vh - 120px);
-
-    display:flex;
-    justify-content:center;
-    align-items:center;
+.battle-layout {
+    position: relative;
+    width: 100%;
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 /* ================= ENEMY BOARD ================= */
 
-.enemy-section{
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    gap:15px;
+.enemy-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
 }
 
-.enemy-board{
-    display:grid;
-    grid-template-columns:repeat(10,60px);
-    grid-template-rows:repeat(10,60px);
-    gap:4px;
+.enemy-section h2 {
+    margin: 0;
+    color: #f87171; /* Chữ đỏ báo hiệu khu vực địch */
+    letter-spacing: 1px;
+}
+
+.enemy-board {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    grid-template-rows: repeat(10, 1fr);
+    gap: 3px;
+
+    /* Tự động chọn kích thước nhỏ nhất giữa 600px, 90% chiều rộng hoặc 60% chiều cao màn hình */
+    width: min(600px, 90vw, 60vh);
+    height: min(600px, 90vw, 60vh);
+
+    background: #1e293b;
+    padding: 6px;
+    border-radius: 8px;
+    border: 2px solid #334155;
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.6);
 }
 
 /* ================= MINI PLAYER BOARD ================= */
 
-.my-board-mini{
-    position:absolute;
-
-    top:0;
-    right:20px;
-
-    background:#111827;
-    padding:15px;
-
-    border-radius:12px;
-
-    border:1px solid #334155;
-
-    box-shadow:0 0 20px rgba(0,0,0,0.4);
+.my-board-mini {
+    position: absolute;
+    top: 0;
+    right: 20px;
+    background: rgba(17, 24, 39, 0.85); /* Trong suốt nhẹ */
+    padding: 15px;
+    border-radius: 12px;
+    border: 1px solid #334155;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+    opacity: 0.95;
+    backdrop-filter: blur(6px); /* Hiệu ứng kính mờ (glassmorphism) */
 }
 
-.my-board-mini h3{
-    margin-top:0;
-    text-align:center;
-    margin-bottom:10px;
+.my-board-mini h3 {
+    margin-top: 0;
+    text-align: center;
+    margin-bottom: 10px;
+    color: #4ade80; /* Chữ xanh khu vực của mình */
+    font-size: 16px;
 }
 
-/* MINI BOARD */
-
-.mini-board{
-    display:grid;
-    grid-template-columns:repeat(10,22px);
-    grid-template-rows:repeat(10,22px);
-    gap:2px;
+.mini-board {
+    display: grid;
+    grid-template-columns: repeat(10, 22px);
+    grid-template-rows: repeat(10, 22px);
+    gap: 2px;
+    background: #1e293b;
+    padding: 4px;
+    border-radius: 6px;
 }
 
 /* ================= CELLS ================= */
 
-.cell{
-    background:#1e293b;
-    border:1px solid #334155;
-
-    display:flex;
-    justify-content:center;
-    align-items:center;
-
-    transition:0.2s;
+.cell {
+    background: #0f172a;
+    border: 1px solid #334155;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.2s ease;
+    border-radius: 2px;
 }
 
-/* ENEMY CELL */
-
-.enemy-board .cell{
-    width:60px;
-    height:60px;
-    cursor:pointer;
+/* ENEMY CELL INTERACTIONS */
+.enemy-board .cell {
+    width: 100%;
+    height: 100%;
+    cursor: crosshair; /* Trỏ chuột ngắm bắn */
 }
 
-.enemy-board .cell:hover{
-    background:#334155;
-    transform:scale(1.05);
+.enemy-board .cell:hover {
+    background: #334155;
+    transform: scale(1.1);
+    box-shadow: 0 0 12px rgba(255, 255, 255, 0.2);
+    z-index: 10; /* Giúp ô phóng to đè lên các ô xung quanh */
+}
+
+.enemy-board .cell:active {
+    transform: scale(0.92); /* Thu nhỏ khi click */
 }
 
 /* MINI BOARD CELL */
-
-.mini-board .cell{
-    width:22px;
-    height:22px;
-    cursor:default;
+.mini-board .cell {
+    width: 100%;
+    height: 100%;
+    cursor: default;
 }
 
-/* ================= STATES ================= */
+/* ================= STATES (TRẠNG THÁI Ô TÀU) ================= */
 
-.hit{
-    background:#ef4444 !important;
-    box-shadow:0 0 15px #ef4444;
+.hit {
+    background: #f97316 !important; /* Cam cháy */
+    box-shadow: 0 0 15px rgba(249, 115, 22, 0.6);
+    border-color: #fdba74 !important;
 }
 
-.miss{
-    background:#64748b !important;
+.miss {
+    background: #64748b !important; /* Xám xỉn màu */
+    opacity: 0.6;
 }
 
-.ship{
-    background:#22c55e !important;
+.ship {
+    background: #22c55e !important; /* Xanh lá cây */
+    box-shadow: 0 0 10px rgba(34, 197, 94, 0.4);
 }
 
-/* ================= LOG ================= */
-
-.log{
-    position:absolute;
-
-    left:20px;
-    bottom:20px;
-
-    width:320px;
-    height:220px;
-
-    background:#111827;
-    padding:15px;
-
-    overflow-y:auto;
-
-    border-radius:10px;
-
-    border:1px solid #334155;
+/* TRẠNG THÁI TÀU CHÌM (SUNK) */
+.sunk {
+    background: #b71c1c !important; /* Đỏ sẫm máu */
+    border: 2px solid #ffeb3b !important; /* Viền vàng cảnh báo */
+    box-shadow: 0 0 20px rgba(183, 28, 28, 0.8);
+    animation: pulseSunk 1.2s infinite alternate; /* Hiệu ứng chớp nháy */
+    z-index: 5;
 }
 
-.enemy-board .cell:hover{
-    cursor:crosshair;
+@keyframes pulseSunk {
+    0% { transform: scale(1); box-shadow: 0 0 10px rgba(183, 28, 28, 0.5); }
+    100% { transform: scale(0.92); box-shadow: 0 0 25px rgba(183, 28, 28, 1); }
 }
 
-.enemy-board .cell:active{
-    transform:scale(0.92);
+/* ================= LOG (LỊCH SỬ BẮN) ================= */
+
+.log {
+    position: absolute;
+    left: 20px;
+    bottom: 20px;
+    width: 340px;
+    height: 240px;
+    background: rgba(17, 24, 39, 0.85);
+    padding: 15px;
+    overflow-y: auto;
+    border-radius: 10px;
+    border: 1px solid #334155;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+    font-family: 'Courier New', Courier, monospace; /* Font kiểu terminal */
+    font-size: 13px;
+    line-height: 1.5;
+    backdrop-filter: blur(4px);
 }
 
-.my-board-mini{
-    opacity:0.92;
-    backdrop-filter:blur(6px);
+.log div {
+    margin-bottom: 6px;
+    border-bottom: 1px dashed #334155;
+    padding-bottom: 4px;
 }
 
-body[data-turn="PLAYER"] { border: 3px solid blue; }
-body[data-turn="AI"] { border: 3px solid red; }
+.log div:last-child {
+    border-bottom: none;
+}
 
-@media (max-width:1200px){
+/* ================= TURN INDICATORS (HIỆU ỨNG ĐỔI LƯỢT) ================= */
 
-    .enemy-board{
-        grid-template-columns:repeat(10,45px);
-        grid-template-rows:repeat(10,45px);
+body[data-turn="PLAYER"] {
+    border: 4px solid #3b82f6; /* Viền màn hình xanh khi tới lượt mình */
+    box-shadow: inset 0 0 40px rgba(59, 130, 246, 0.15);
+}
+
+body[data-turn="AI"] {
+    border: 4px solid #ef4444; /* Viền màn hình đỏ báo động khi AI nã pháo */
+    box-shadow: inset 0 0 40px rgba(239, 68, 68, 0.15);
+}
+
+/* ================= RESPONSIVE ================= */
+
+@media (max-width: 1200px) {
+    .my-board-mini {
+        transform: scale(0.85); /* Thu nhỏ bảng mini một chút */
+        transform-origin: top right;
+    }
+}
+
+@media (max-width: 768px) {
+    /* Đẩy bảng của địch to lên trên điện thoại */
+    .enemy-board {
+        width: min(90vw, 50vh);
+        height: min(90vw, 50vh);
     }
 
-    .enemy-board .cell{
-        width:45px;
-        height:45px;
+    .my-board-mini {
+        display: none; /* Giấu bảng mini đi nếu màn hình quá nhỏ */
+    }
+
+    .log {
+        position: relative; /* Bỏ position absolute để nó trôi xuống dưới cùng */
+        width: 100%;
+        left: 0;
+        bottom: 0;
+        margin-top: 20px;
+        height: 180px;
     }
 }
