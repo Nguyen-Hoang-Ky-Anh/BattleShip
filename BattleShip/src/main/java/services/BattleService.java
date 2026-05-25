@@ -140,7 +140,6 @@ public class BattleService {
         if (isGameOver) {
             battle.setWinner(attacker);
             room.setPhase(GamePhase.FINISHED);
-            MatchHistoryService.saveMatchResult(room, attacker,opponent);
         } else {
             if (result.equals("MISS")) {
                 battle.setCurrentTurn(opponent);
@@ -166,7 +165,16 @@ public class BattleService {
             String roomId,
             String msg
     ) {
-        RoomManager.broadcast(roomId, msg);
+
+        Room room = RoomManager.getRoom(roomId);
+
+        if (room == null) return;
+
+        for (Session session :
+                room.getSessions().values()) {
+
+            send(session, msg);
+        }
     }
 
     // =========================================================
