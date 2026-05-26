@@ -10,17 +10,25 @@ function renderPlayers() {
     const radarLayer = document.getElementById("radarPlayersLayer");
     const playerList = document.getElementById("playerList");
 
-    if (!radarLayer || !playerList) return;
+    if (!radarLayer) return;
 
     radarLayer.innerHTML = "";
-    playerList.innerHTML = ""; // clear list
+
+    if (playerList) {
+        playerList.innerHTML = "";
+    }
 
     let allReady = true;
     let isHost = false;
 
     players.forEach((p) => {
 
+        // ======================
+        // RADAR RENDER
+        // ======================
+
         if (!radarPositionMap[p.username]) {
+
             const angle = Math.random() * Math.PI * 2;
             const radius = 25 + Math.random() * 35;
 
@@ -52,19 +60,23 @@ function renderPlayers() {
         radarLayer.appendChild(player);
 
         // ======================
-        // PLAYER LIST (THÊM MỚI)
+        // OPTIONAL PLAYER LIST
         // ======================
 
-        const li = document.createElement("li");
+        if (playerList) {
 
-        li.className = `operator-item ${p.ready ? "ready" : ""}`;
+            const li = document.createElement("li");
 
-        li.innerHTML = `
-            <span>${roleIcon} ${p.username}</span>
-            <span>${p.ready ? "✅" : "⏳"}</span>
-        `;
+            li.className =
+                `operator-item ${p.ready ? "ready" : ""}`;
 
-        playerList.appendChild(li);
+            li.innerHTML = `
+                <span>${roleIcon} ${p.username}</span>
+                <span>${p.ready ? "✅" : "⏳"}</span>
+            `;
+
+            playerList.appendChild(li);
+        }
 
         // ======================
 
@@ -163,4 +175,25 @@ function leaveRoom() {
         GameState.socket.close();
     }
     window.location.href = `${contextPath}/pvp`;
+}
+
+function shareRoomCode() {
+    const joinUrl = `${window.location.origin}${contextPath}/join?room=${roomId}`;
+    const shareData = {
+        title: 'Battleship Tactical Command',
+        text: `Commander, I need backup! Join my Battleship room [${roomId}]`,
+        url: joinUrl
+    };
+
+    if (navigator.share) {
+        navigator.share(shareData)
+            .then(() => console.log('Mission shared successfully!'))
+            .catch((error) => console.log('Error sharing mission', error));
+    } else {
+        navigator.clipboard.writeText(joinUrl).then(() => {
+            alert("🔗 Invite Link copied to clipboard! Send it to your backup operator.");
+        }).catch(err => {
+            console.error('Failed to copy: ', err);
+        });
+    }
 }

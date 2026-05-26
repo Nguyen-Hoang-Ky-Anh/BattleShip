@@ -96,24 +96,14 @@
         </div>
 
         <!-- =========================================================
-             PLAYER LIST
-        ========================================================== -->
-        <section class="fleet-operator-section">
-
-            <div class="section-title monospace-data">
-                👥 CONNECTED OPERATORS
-            </div>
-
-            <ul id="playerList" class="operator-list">
-                <!-- Dynamic render -->
-            </ul>
-
-        </section>
-
-        <!-- =========================================================
              ROOM ACTIONS
         ========================================================== -->
         <div class="room-action-panel">
+            <button id="shareBtn"
+                    class="lobby-action-btn btn-share"
+                    onclick="shareRoomCode()">
+                🔗 SHARE INVITE LINK
+            </button>
 
             <button id="readyBtn"
                     class="lobby-action-btn btn-ready"
@@ -193,6 +183,17 @@
 
             </div>
 
+            <!-- =========================================================
+             PLAYER LIST
+            ========================================================== -->
+            <section class="fleet-operator-section">
+
+                <ul id="playerList" class="operator-list">
+                    <!-- Dynamic render -->
+                </ul>
+
+            </section>
+
             <!-- TELEMETRY GRID -->
             <div class="command-telemetry-grid">
 
@@ -236,13 +237,6 @@
                         WAITING
                     </span>
                 </div>
-
-            </div>
-
-            <!-- ROOM STATUS -->
-            <div class="room-central-status monospace-data">
-
-                WAITING FOR ALL OPERATORS TO CONFIRM DEPLOYMENT...
 
             </div>
 
