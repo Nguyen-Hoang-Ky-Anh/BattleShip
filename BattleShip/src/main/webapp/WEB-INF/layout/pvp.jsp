@@ -58,6 +58,8 @@
             </form>
         </div>
 
+        <form action="${pageContext.request.contextPath}/index.jsp" method="get">
+            <button type="submit">🏠 Home</button>
     </div>
 </div>
 

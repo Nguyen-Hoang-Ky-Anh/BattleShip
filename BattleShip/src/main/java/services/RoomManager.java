@@ -121,6 +121,7 @@ public class RoomManager {
             // [Extend Flow]
             existingPlayer.setSession(session);
             existingPlayer.setConnected(true);
+            room.getSessions().put(username, session);
 
             sessionUserMap.put(session, username);
             sessionRoomMap.put(session, roomId);

@@ -5,6 +5,7 @@ import jakarta.servlet.*;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
 import models.PlayerStats;
+import models.User;
 
 import java.io.IOException;
 import java.util.List;
@@ -25,6 +26,15 @@ public class LeaderboardServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+
+        HttpSession session = request.getSession(false);
+        User currentUser = (session != null) ? (User) session.getAttribute("user") : null;
+
+        if (currentUser == null) {
+            request.setAttribute("isLocked", true);
+        } else {
+            request.setAttribute("isLocked", false);
+        }
 
         int limit = DEFAULT_LIMIT;
         String limitParam = request.getParameter("limit");

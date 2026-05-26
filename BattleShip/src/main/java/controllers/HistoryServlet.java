@@ -23,23 +23,18 @@ public class HistoryServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        // Lấy user từ session (nếu đã đăng nhập)
+        // Lấy user từ session
         HttpSession session = request.getSession(false);
         User currentUser = (session != null) ? (User) session.getAttribute("user") : null;
 
-        List<MatchHistory> matches;
-
-        if (currentUser != null) {
-            // Người dùng đã đăng nhập, lấy lịch sử của họ
-            matches = matchDao.getMatchesByPlayer(currentUser.getUsername());
-            request.setAttribute("viewingUsername", currentUser.getUsername());
+        if (currentUser == null) {
+            request.setAttribute("isLocked", true);
         } else {
-            // Chưa đăng nhập, lấy toàn bộ lịch sử
-            matches = matchDao.getAllMatches();
-            request.setAttribute("viewingUsername", null);
+            request.setAttribute("isLocked", false);
+            List<MatchHistory> matches = matchDao.getMatchesByPlayer(currentUser.getUsername());
+            request.setAttribute("viewingUsername", currentUser.getUsername());
+            request.setAttribute("matches", matches);
         }
-
-        request.setAttribute("matches", matches);
 
         request.getRequestDispatcher(
                 "/WEB-INF/layout/history.jsp"
