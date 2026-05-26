@@ -15,8 +15,8 @@
 
     <!-- ================= CONTROL NAVIGATION (THANH ĐIỀU HƯỚNG SƠ CẤP) ================= -->
     <nav class="tactical-nav-bar">
-        <a href="${pageContext.request.contextPath}/" class="nav-btn btn-home">🏠 TRANG CHỦ</a>
-        <a href="${pageContext.request.contextPath}/history" class="nav-btn btn-history">📜 LỊCH SỬ TRẬN ĐẤU</a>
+        <a href="${pageContext.request.contextPath}/" class="nav-btn btn-home">🏠 HOME</a>
+        <a href="${pageContext.request.contextPath}/history" class="nav-btn btn-history">📜 HISTORY MATCH</a>
     </nav>
 
     <!-- ================= HEADER TITLE (TIÊU ĐỀ TRẠM VINH DANH) ================= -->

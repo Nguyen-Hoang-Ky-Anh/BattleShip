@@ -15,8 +15,8 @@
 
     <!-- ================= CONTROL NAVIGATION (THANH ĐIỀU HƯỚNG SƠ CẤP) ================= -->
     <nav class="tactical-nav-bar">
-        <a href="${pageContext.request.contextPath}/" class="nav-btn btn-home">🏠 TRANG CHỦ</a>
-        <a href="${pageContext.request.contextPath}/leaderboard" class="nav-btn btn-leader">🏆 BẢNG XẾP HẠNG</a>
+        <a href="${pageContext.request.contextPath}/" class="nav-btn btn-home">🏠 HOME</a>
+        <a href="${pageContext.request.contextPath}/leaderboard" class="nav-btn btn-leader">🏆 LEADERBOARD</a>
     </nav>
 
     <!-- ================= HEADER TITLE (TIÊU ĐỀ TRẠM DỮ LIỆU) ================= -->
@@ -59,6 +59,7 @@
 
     <!-- ================= DATA TABLE AREA (PHÂN KHU MA TRẬN LỊCH SỬ) ================= -->
     <main class="table-data-wrapper">
+        <c:choose>
         <c:when test="${isLocked}">
             <div class="locked-container" style="text-align: center; padding: 60px 20px; background: #16213e; color: #fff;">
                 <div class="lock-icon" style="font-size: 3.5rem; margin-bottom: 15px; filter: drop-shadow(0 0 10px rgba(0, 170, 255, 0.3));">🔒</div>
@@ -114,6 +115,7 @@
             </c:otherwise>
         </c:choose>
         </c:otherwise>
+        </c:choose>
     </main>
 
 </div>
