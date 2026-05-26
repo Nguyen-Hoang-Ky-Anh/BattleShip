@@ -1,7 +1,7 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -15,8 +15,8 @@
 
     <!-- ================= CONTROL NAVIGATION (THANH ĐIỀU HƯỚNG SƠ CẤP) ================= -->
     <nav class="tactical-nav-bar">
-        <a href="${pageContext.request.contextPath}/" class="nav-btn btn-home">🏠 TRANG CHỦ</a>
-        <a href="${pageContext.request.contextPath}/leaderboard" class="nav-btn btn-leader">🏆 BẢNG XẾP HẠNG</a>
+        <a href="${pageContext.request.contextPath}/" class="nav-btn btn-home">🏠 HOME</a>
+        <a href="${pageContext.request.contextPath}/leaderboard" class="nav-btn btn-leader">🏆 LEADERBOARD</a>
     </nav>
 
     <!-- ================= HEADER TITLE (TIÊU ĐỀ TRẠM DỮ LIỆU) ================= -->
@@ -59,6 +59,16 @@
 
     <!-- ================= DATA TABLE AREA (PHÂN KHU MA TRẬN LỊCH SỬ) ================= -->
     <main class="table-data-wrapper">
+        <c:choose>
+        <c:when test="${isLocked}">
+            <div class="locked-container" style="text-align: center; padding: 60px 20px; background: #16213e; color: #fff;">
+                <div class="lock-icon" style="font-size: 3.5rem; margin-bottom: 15px; filter: drop-shadow(0 0 10px rgba(0, 170, 255, 0.3));">🔒</div>
+                <h2 style="font-size: 1.5rem; margin-bottom: 10px; font-weight: 600; color: #fff;">Login Required</h2>
+                <p style="color: #888; font-size: 0.95rem; margin-bottom: 24px; max-width: 400px; margin-left: auto; margin-right: auto;">Please log in to view your personal match history!</p>
+                <a href="${pageContext.request.contextPath}/login" class="login-btn" style="display: inline-block; padding: 10px 24px; background: #0f3460; color: #fff; text-decoration: none; border-radius: 6px; font-weight: bold; border: 1px solid #3c97bf; transition: all 0.3s;" onmouseover="this.style.background='#3c97bf'" onmouseout="this.style.background='#0f3460'">Login Now</a>
+            </div>
+        </c:when>
+        <c:otherwise>
         <c:choose>
             <c:when test="${empty matches}">
                 <div class="empty-log-state monospace-data alert-blink">
@@ -104,6 +114,8 @@
                 </table>
             </c:otherwise>
         </c:choose>
+        </c:otherwise>
+        </c:choose>
     </main>
 
 </div>
@@ -112,6 +124,7 @@
 <div class="ocean">
     <div class="wave"></div>
     <div class="wave wave2"></div>
+>>>>>>> origin/main
 </div>
 
 </body>

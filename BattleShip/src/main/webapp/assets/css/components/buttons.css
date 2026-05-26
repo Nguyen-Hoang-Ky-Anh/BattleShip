@@ -281,3 +281,46 @@ button:active {
 .btn-command-large {
     text-decoration: none;
 }
+
+.btn-share {
+    background: rgba(0, 255, 255, 0.1);
+    border: 1px solid #00FFFF;
+    color: #00FFFF;
+    margin-bottom: 10px;
+}
+.btn-share:hover {
+    background: rgba(0, 255, 255, 0.3);
+    box-shadow: 0 0 10px #00FFFF;
+}
+
+.btn-quick-join{
+    width: 100%;
+
+    margin-top: 14px;
+
+    padding: 12px;
+
+    border: none;
+
+    border-radius: 10px;
+
+    cursor: pointer;
+
+    background: linear-gradient(
+            135deg,
+            #00d9ff,
+            #007cf0
+    );
+
+    color: white;
+
+    font-weight: 700;
+
+    transition: 0.25s ease;
+}
+
+.btn-quick-join:hover{
+    transform: translateY(-1px);
+
+    filter: brightness(1.08);
+}

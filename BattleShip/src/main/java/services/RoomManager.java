@@ -1,5 +1,6 @@
 package services;
 
+import dto.RoomPreview;
 import enums.GamePhase;
 import enums.PlayerRole;
 import jakarta.websocket.Session;
@@ -9,6 +10,7 @@ import models.Room;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -121,6 +123,7 @@ public class RoomManager {
             // [Extend Flow]
             existingPlayer.setSession(session);
             existingPlayer.setConnected(true);
+            room.getSessions().put(username, session);
 
             sessionUserMap.put(session, username);
             sessionRoomMap.put(session, roomId);
@@ -433,9 +436,39 @@ public class RoomManager {
         return rooms.containsKey(roomId);
     }
 
+    public static boolean canJoin(String roomId){
+
+        Room room = rooms.get(roomId);
+
+        if(room == null){
+            return false;
+        }
+
+        return room.getPhase() == GamePhase.WAITING
+                && room.getPlayers().size() < 2;
+    }
+
     public static Room getRoom(String roomId) {
 
         return rooms.get(roomId);
+    }
+
+    public static List<RoomPreview> getAvailableRooms() {
+        List<RoomPreview> availableRooms = new ArrayList<>();
+        for(Room room : rooms.values()) {
+            if(room.getPhase() == GamePhase.WAITING
+                    && room.getPlayers().size() < 2) {
+                RoomPreview roomPreview = new RoomPreview();
+                roomPreview.setHost(room.getHostName());
+                roomPreview.setCurrentPlayers(room.getPlayers().size());
+                roomPreview.setRoomId(room.getRoomId());
+                roomPreview.setMaxPlayers(2);
+                roomPreview.setRows(room.getRows());
+                roomPreview.setCols(room.getCols());
+                availableRooms.add(roomPreview);
+            }
+        }
+        return availableRooms;
     }
 
     public static Map<String, Room> getRooms() {

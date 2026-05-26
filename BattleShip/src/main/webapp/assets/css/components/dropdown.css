@@ -57,3 +57,36 @@
     transform: none !important;
     box-shadow: none !important;
 }
+
+.quick-join-form{
+    margin-top: 16px;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 10px;
+}
+
+.quick-join-input{
+    width: 100%;
+
+    padding: 10px 12px;
+
+    border-radius: 10px;
+
+    border: 1px solid rgba(0,255,255,0.18);
+
+    background: rgba(255,255,255,0.04);
+
+    color: white;
+
+    outline: none;
+
+    font-family: monospace;
+}
+
+.quick-join-input:focus{
+    border-color: rgba(0,255,255,0.45);
+
+    box-shadow: 0 0 12px rgba(0,255,255,0.12);
+}

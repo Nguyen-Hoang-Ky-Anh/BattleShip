@@ -57,7 +57,6 @@
                 <button type="submit" class="btn-terminal-sm">◀ RETURN TO MAIN COMMAND</button>
             </form>
         </div>
-
     </div>
 </div>
 

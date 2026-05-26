@@ -24,6 +24,87 @@
     z-index: 2;
 }
 
+.tactical-lobby-grid{
+    width: 95%;
+    max-width: 1500px;
+
+    display: grid;
+    grid-template-columns: 420px 1fr;
+
+    gap: 28px;
+
+    align-items: start;
+}
+
+.terminal-panel{
+    background: rgba(5, 12, 24, 0.82);
+
+    border: 1px solid rgba(0,255,255,0.18);
+
+    border-radius: 18px;
+
+    padding: 28px;
+
+    backdrop-filter: blur(10px);
+
+    box-shadow:
+            0 0 25px rgba(0,255,255,0.06),
+            inset 0 0 20px rgba(255,255,255,0.02);
+}
+
+.room-list-container{
+    display: flex;
+    flex-direction: column;
+
+    gap: 18px;
+
+    max-height: 650px;
+
+    overflow-y: auto;
+
+    padding-right: 6px;
+}
+
+.room-card{
+    background: rgba(0,0,0,0.35);
+
+    border: 1px solid rgba(0,255,255,0.12);
+
+    border-radius: 14px;
+
+    padding: 18px;
+
+    transition: 0.25s ease;
+}
+
+.room-card:hover{
+    transform: translateY(-2px);
+
+    border-color: rgba(0,255,255,0.35);
+
+    box-shadow: 0 0 20px rgba(0,255,255,0.08);
+}
+
+.room-card-header{
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    margin-bottom: 16px;
+}
+
+.room-id{
+    font-size: 1rem;
+
+    font-weight: 700;
+
+    color: #7ef9ff;
+
+    letter-spacing: 1px;
+}
+
 /* =========================================================
    SIDEBAR
 ========================================================= */
@@ -246,12 +327,16 @@
 ========================================================= */
 
 .fleet-operator-section {
+
+    width: 100%;
+    max-width: 800px;
+
     display: flex;
     flex-direction: column;
 
-    flex: 1;
+    align-items: center;
 
-    min-height: 0;
+    gap: 16px;
 }
 
 .section-title {
@@ -267,39 +352,58 @@
 }
 
 .operator-list {
-    display: flex;
-    flex-direction: column;
 
-    gap: 12px;
+    width: 100%;
 
-    overflow-y: auto;
+    display: grid;
+
+    grid-template-columns:
+        repeat(auto-fit, minmax(220px, 1fr));
+
+    gap: 16px;
+
+    overflow: visible;
 }
 
 .operator-list li {
+
     list-style: none;
 
     display: flex;
     align-items: center;
     justify-content: space-between;
 
-    padding: 10px 12px;
+    padding: 14px 18px;
 
-    border-radius: 12px;
+    border-radius: 16px;
 
     background:
-            rgba(15,23,42,0.65);
+            rgba(15,23,42,0.75);
 
     border:
-            1px solid rgba(255,255,255,0.04);
+            1px solid rgba(56,189,248,0.12);
+
+    backdrop-filter: blur(10px);
 
     transition: 0.25s ease;
 }
 
 .operator-list li:hover {
-    transform: translateX(4px);
+
+    transform:
+            translateY(-3px);
+
+    box-shadow:
+            0 0 24px rgba(56,189,248,0.14);
+}
+
+.operator-list li.ready {
 
     border-color:
-            rgba(56,189,248,0.14);
+            rgba(52,211,153,0.45);
+
+    box-shadow:
+            0 0 18px rgba(52,211,153,0.12);
 }
 
 /* =========================================================
@@ -443,6 +547,64 @@
     font-size: 12px;
 
     letter-spacing: 2px;
+}
+
+/* CONTAINER CHÍNH CHO HÀNG TRẠNG THÁI */
+.header-status-row {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr 1fr; /* Tỉ lệ: Trái (25%) - Giữa (50%) - Phải (25%) */
+    align-items: center;
+    gap: 15px;
+    margin: 20px auto 0 auto;
+    padding: 12px 25px;
+    max-width: 900px;
+    background: rgba(0, 0, 0, 0.5);
+    border-top: 1px dashed rgba(0, 255, 255, 0.3);
+    border-bottom: 1px dashed rgba(0, 255, 255, 0.3);
+    border-radius: 4px;
+}
+
+/* CẤU HÌNH CHUNG CHO CÁC CỘT */
+.status-col {
+    font-size: 0.9rem;
+    letter-spacing: 1px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis; /* Nếu tên quá dài sẽ tự động sinh dấu ... */
+}
+
+/* CỘT TRÁI - HOST */
+.operator-host {
+    text-align: left;
+    color: #ffffff;
+}
+.operator-host .status-tag {
+    color: #00FFFF; /* Màu Cyan nhận diện phe mình */
+    font-weight: bold;
+}
+
+/* CỘT GIỮA - TRẠNG THÁI PHÒNG */
+.status-main {
+    text-align: center;
+    color: #FFFF00;
+    text-shadow: 0 0 8px rgba(255, 255, 0, 0.5);
+    font-weight: bold;
+}
+
+/* CỘT PHẢI - ĐỐI THỦ */
+.operator-opponent {
+    text-align: right;
+    color: #ffffff;
+}
+.operator-opponent .status-tag {
+    color: #FF3366;
+    font-weight: bold;
+}
+
+/* CLASS ĐỔI MÀU NỔI BẬT */
+.highlighted-red {
+    color: #FF3366;
+    text-shadow: 0 0 5px rgba(255, 51, 102, 0.5);
 }
 
 /* =========================================================
@@ -717,6 +879,18 @@
     text-align: center;
 }
 
+.empty-room-state{
+    padding: 40px 20px;
+
+    text-align: center;
+
+    color: rgba(255,255,255,0.55);
+
+    border: 1px dashed rgba(255,255,255,0.15);
+
+    border-radius: 12px;
+}
+
 /* =========================================================
    ANIMATIONS
 ========================================================= */
@@ -734,6 +908,12 @@
 
     .room-command-center {
         min-height: 500px;
+    }
+
+    .tactical-lobby-grid{
+
+        grid-template-columns: 1fr;
+
     }
 }
 

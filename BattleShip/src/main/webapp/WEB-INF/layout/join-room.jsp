@@ -18,80 +18,232 @@
     <div class="wave wave2"></div>
 </div>
 
-<!-- MAIN CONTAINER -->
+<%@ page import="models.User" %>
+
+<%
+    User currentUser = (User) session.getAttribute("user");
+
+    String username = "";
+
+    if(currentUser != null){
+        username = currentUser.getUsername();
+    }
+%>
+
 <div class="room-join-wrapper">
-    <div class="form-container">
 
-        <%-- [UC-08][Entry Flow - Join Room][Display Title] --%>
-        <h1 class="terminal-title">⚓ INTERCEPT ROOM</h1>
-        <div class="terminal-subtitle monospace-data">NET_CMD: SCAN_QUANTUM_COORDINATES</div>
+    <!-- MAIN GRID -->
+    <div class="tactical-lobby-grid">
 
-        <div class="terminal-separator"></div>
+        <!-- ================================================= -->
+        <!-- LEFT PANEL : MANUAL JOIN -->
+        <!-- ================================================= -->
+        <div class="terminal-panel">
 
-        <%-- [UC-08][Alternative Flow A2.1 - Room Invalid]
-             Hiển thị khối cảnh báo lỗi nếu room không tồn tại hoặc không hợp lệ --%>
-        <c:if test="${not empty error}">
-            <div class="alert-terminal-error monospace-data">
-                <span class="alert-blink">⚠️ [CRITICAL_ERROR] :</span> ${error}
-            </div>
-        </c:if>
+            <h1 class="terminal-title">
+                ⚓ INTERCEPT ROOM
+            </h1>
 
-            <%-- ======================================================
-                LẤY THÔNG TIN USER ĐANG ĐĂNG NHẬP TỪ SESSION
-            ====================================================== --%>
-            <%@ page import="models.User" %>
-
-            <%
-                User currentUser = (User) session.getAttribute("user");
-                String username = "";
-
-                if(currentUser != null){
-                    username = currentUser.getUsername();
-                }
-            %>
-
-        <%-- =========================================
-             [UC-08 - Entry Flow (Join)]
-             Step A2.1: User nhập thông tin
-           ========================================= --%>
-        <form action="${pageContext.request.contextPath}/join-room" method="post" class="tactical-form">
-
-            <!-- KHỐI NHẬP TÊN OPERATOR -->
-            <div class="form-group">
-                <label class="input-label monospace-data">GUEST_SIGNATURE :</label>
-                <%-- [UC-08][Step A2.1.1 - Input User ID] --%>
-                <input type="text"
-                       name="userId"
-                       value="<%= username %>"
-                       placeholder="DEPLOY IDENTITY ENCODING..."
-                       required>
-            </div>
-
-            <!-- KHỐI NHẬP MÃ PHÒNG ĐẤU -->
-            <div class="form-group">
-                <label class="input-label monospace-data">TARGET_ROOM_ID :</label>
-                <%-- [UC-08][Step A2.1.2 - Input Room ID] --%>
-                <input type="text"
-                       name="roomId"
-                       placeholder="ENTER QUANTUM ROOM ID..."
-                       required>
+            <div class="terminal-subtitle monospace-data">
+                MANUAL ROOM ACCESS
             </div>
 
             <div class="terminal-separator"></div>
 
-            <%-- [UC-08][Step A2.2 - Submit Join Request] --%>
-            <button type="submit" class="btn-command-submit-cyan">ESTABLISH QUANTUM LINK</button>
+            <c:if test="${not empty error}">
+                <div class="alert-terminal-error monospace-data">
+                    <span class="alert-blink">
+                        ⚠️ [CRITICAL_ERROR] :
+                    </span>
+                        ${error}
+                </div>
+            </c:if>
 
-        </form>
+            <!-- MANUAL JOIN FORM -->
+            <form action="${pageContext.request.contextPath}/join-room"
+                  method="post"
+                  class="tactical-form">
 
-        <!-- ĐƯỜNG DẪN QUAY LẠI LOBBY MẸ -->
-        <div class="back-navigation-zone">
-            <form action="${pageContext.request.contextPath}/pvp" method="get">
-                <button type="submit" class="btn-terminal-sm">◀ ABORT INTERCEPTION</button>
+                <!-- USERNAME -->
+                <div class="form-group">
+
+                    <label class="input-label monospace-data">
+                        OPERATOR_ID :
+                    </label>
+
+                    <input type="text"
+                           name="userId"
+                           value="<%= username %>"
+                           placeholder="DEPLOY IDENTITY..."
+                           required>
+
+                </div>
+
+                <!-- ROOM ID -->
+                <div class="form-group">
+
+                    <label class="input-label monospace-data">
+                        TARGET_ROOM :
+                    </label>
+
+                    <input type="text"
+                           name="roomId"
+                           placeholder="ENTER ROOM CODE..."
+                           required>
+
+                </div>
+
+                <div class="terminal-separator"></div>
+
+                <button type="submit"
+                        class="btn-command-submit-cyan">
+
+                    ESTABLISH QUANTUM LINK
+
+                </button>
+
             </form>
+
+            <!-- BACK -->
+            <div class="back-navigation-zone">
+
+                <form action="${pageContext.request.contextPath}/pvp"
+                      method="get">
+
+                    <button type="submit"
+                            class="btn-terminal-sm">
+
+                        ◀ ABORT INTERCEPTION
+
+                    </button>
+
+                </form>
+
+            </div>
+
+        </div>
+
+        <!-- ================================================= -->
+        <!-- RIGHT PANEL : AVAILABLE ROOMS -->
+        <!-- ================================================= -->
+        <div class="terminal-panel">
+
+            <h2 class="terminal-title">
+                🛰 AVAILABLE ROOMS
+            </h2>
+
+            <div class="terminal-subtitle monospace-data">
+                ACTIVE WAITING LOBBIES
+            </div>
+
+            <div class="terminal-separator"></div>
+
+            <!-- EMPTY STATE -->
+            <c:if test="${empty availableRooms}">
+
+                <div class="empty-room-state monospace-data">
+
+                    NO AVAILABLE ROOMS DETECTED
+
+                </div>
+
+            </c:if>
+
+            <!-- ROOM LIST -->
+            <div class="room-list-container">
+
+                <c:forEach var="room"
+                           items="${availableRooms}">
+
+                    <div class="room-card">
+
+                        <!-- ROOM HEADER -->
+                        <div class="room-card-header">
+
+                            <div class="room-id">
+                                    ${room.roomId}
+                            </div>
+
+                            <div class="room-status waiting">
+                                WAITING
+                            </div>
+
+                        </div>
+
+                        <!-- ROOM INFO -->
+                        <div class="room-card-body">
+
+                            <div class="room-meta">
+                                HOST :
+                                    ${room.host}
+                            </div>
+
+                            <div class="room-meta">
+                                PLAYERS :
+                                    ${room.currentPlayers}/${room.maxPlayers}
+                            </div>
+
+                            <div class="room-meta">
+                                GRID :
+                                    ${room.rows} x ${room.cols}
+                            </div>
+
+                        </div>
+
+                        <!-- QUICK JOIN -->
+                        <form action="${pageContext.request.contextPath}/join-room"
+                              method="post"
+                              class="quick-join-form">
+
+                            <!-- ROOM ID -->
+                            <input type="hidden"
+                                   name="roomId"
+                                   value="${room.roomId}">
+
+                            <!-- IF LOGGED IN -->
+                            <c:choose>
+
+                                <c:when test="<%= currentUser != null %>">
+
+                                    <input type="text"
+                                           name="userId"
+                                           value="<%= username %>"
+                                            <%= currentUser != null ? "readonly" : "" %>
+                                           required>
+
+                                </c:when>
+
+                                <c:otherwise>
+
+                                    <input type="text"
+                                           name="userId"
+                                           class="quick-join-input"
+                                           placeholder="ENTER CALLSIGN..."
+                                           required>
+
+                                </c:otherwise>
+
+                            </c:choose>
+
+                            <button type="submit"
+                                    class="btn-quick-join">
+
+                                QUICK JOIN
+
+                            </button>
+
+                        </form>
+
+                    </div>
+
+                </c:forEach>
+
+            </div>
+
         </div>
 
     </div>
+
 </div>
 
 </body>

@@ -85,4 +85,15 @@ public class Room {
     public void setPhase(GamePhase phase) {
         this.phase = phase;
     }
+
+    public String getHostName() {
+        if (hostUsername == null || !players.containsKey(hostUsername)) {
+            if (!players.isEmpty()) {
+                hostUsername = players.keySet().iterator().next();
+            } else {
+                return "Không có chủ phòng";
+            }
+        }
+        return hostUsername;
+    }
 }
