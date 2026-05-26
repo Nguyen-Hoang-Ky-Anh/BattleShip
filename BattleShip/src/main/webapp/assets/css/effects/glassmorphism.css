@@ -1,0 +1,72 @@
+/* ==========================================================================
+   GLASSMORPHISM & SCI-FI PANEL EFFECTS (HIỆU ỨNG GƯƠNG MỜ PHÒNG ĐIỀU HÀNH)
+   ========================================================================== */
+
+/* --- TOÀN BỘ KHÔNG GIAN KÍNH CHỦ ĐẠO (GLASS BACKGROUNDS) --- */
+.glass-panel-prime {
+    /* Đảm bảo độ trong suốt vừa phải để không bị nuốt mất ký tự phía sau */
+    background: rgba(15, 23, 42, 0.45);
+
+    /* Hiệu ứng khúc xạ ánh sáng làm mờ phần tử phía dưới tấm kính */
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px); /* Tối ưu cho nhân Webkit (Safari) */
+
+    /* Đường viền giả lập cạnh vát sắc cạnh của tấm kính cường lực */
+    border: 1px solid rgba(56, 189, 248, 0.15);
+    border-radius: 8px;
+
+    /* Đổ bóng sâu tạo cảm giác tấm kính đang nổi trên radar */
+    box-shadow:
+            0 8px 32px 0 rgba(0, 0, 0, 0.4),
+            inset 0 0 15px rgba(6, 182, 212, 0.05); /* Ánh cyan hắt nhẹ bên trong rìa kính */
+
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+
+/* --- PHÂN LỚP NỀN TRONG SUỐT SIÊU MỎNG (PANEL TRANSPARENCY) --- */
+/* Dùng cho các bảng lớp dưới, lưới ô cờ hoặc khung dữ liệu vệ tinh cần độ xuyên thấu cao */
+.panel-transparency-layer {
+    background: rgba(9, 17, 34, 0.25);
+
+    /* Độ mờ backdrop nhẹ hơn để phân cấp với panel chính */
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+
+    border: 1px solid rgba(255, 255, 255, 0.04);
+    border-radius: 4px;
+}
+
+
+/* --- HIỆU ỨNG LƯỚI QUÉT ĐIỆN TỬ TRÊN BỀ MẶT KÍNH (CYBER SCAN OVERLAY) --- */
+/* Thêm class này vào chung với panel kính để tạo các đường sọc quét ma trận động */
+.glass-panel-prime.scan-active {
+    position: relative;
+}
+
+.glass-panel-prime.scan-active::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+
+    /* Tạo các đường sọc ngang đứt đoạn mỏng như màn hình CRT quân sự */
+    background: linear-gradient(
+            rgba(18, 16, 16, 0) 50%,
+            rgba(0, 0, 0, 0.25) 50%
+    );
+    background-size: 100% 4px;
+    z-index: 2;
+    pointer-events: none; /* Không cản trở tương tác chuột click của người chơi */
+    opacity: 0.4;
+}
+
+
+/* --- HIỆU ỨNG CHỚP SÁNG PHẢN CHIẾU KHI HOVER --- */
+/* Tạo cảm giác có ánh đèn radar quét ngang qua bề mặt tấm kính khi rê chuột */
+.glass-panel-prime:hover {
+    border-color: rgba(6, 182, 212, 0.35);
+    background: rgba(15, 23, 42, 0.55);
+    box-shadow:
+            0 12px 40px 0 rgba(0, 0, 0, 0.5),
+            0 0 20px rgba(6, 182, 212, 0.1);
+}

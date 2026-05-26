@@ -1,0 +1,17 @@
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.form-container {
+    background: var(--panel-bg);
+    backdrop-filter: var(--blur-intensity);
+    border: var(--border-tech);
+    padding: var(--space-2xl);
+    border-radius: 6px;
+    width: 100%;
+    max-width: 400px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+}

@@ -1,0 +1,25 @@
+/* Khung hiển thị lỗi hệ thống mang phong cách thiết bị đầu cuối (Terminal) */
+.alert-terminal-error {
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid var(--accent-crimson);
+    color: var(--accent-crimson);
+    padding: var(--space-m);
+    border-radius: 4px;
+    font-size: 12px;
+    margin-bottom: var(--space-m);
+    text-align: left;
+    box-shadow: 0 0 15px rgba(239, 68, 68, 0.15);
+    line-height: 1.4;
+}
+
+/* Hiệu ứng nhấp nháy chữ cảnh báo nguy hiểm */
+.alert-blink {
+    font-weight: bold;
+    animation: terminal-alert-flash 1.5s infinite;
+}
+
+/* Chu kỳ nhấp nháy của hệ thống cảnh báo */
+@keyframes terminal-alert-flash {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+}

@@ -1,0 +1,32 @@
+/* ==========================================================================
+   TYPOGRAPHY UTILITIES (HỆ THỐNG LỚP TIỆN ÍCH ĐỊNH DẠNG VĂN BẢN)
+   ========================================================================== */
+
+/* --- CĂN GIỮA VĂN BẢN (TEXT CENTER) --- */
+/* Thường dùng cho các con số trong ô lưới chiến trường, tiêu đề bảng xếp hạng hoặc nội dung thông báo */
+.text-center {
+    text-align: center !important; /* Đảm bảo tính ghi đè tuyệt đối lên các phần tử khối */
+}
+
+
+/* --- SẮC XANH ĐIỆN TỬ CHỦ ĐẠO (TEXT CYAN) --- */
+/* Màu chỉ thị hệ thống hoạt động bình thường, nhãn tọa độ radar hoặc dữ liệu telemetry đang truyền về */
+.text-cyan {
+    color: var(--accent-cyan) !important;
+}
+
+
+/* --- KIỂU CHỮ TRẦM / LÀM MỜ THÔNG TIN (TEXT MUTED) --- */
+/* Giảm độ tương phản của các thông tin phụ, chú thích, mã dòng log đã qua hoặc mô tả cấp độ dễ */
+.text-muted {
+    color: var(--accent-radar-gray) !important;
+    opacity: 0.6 !important; /* Làm mờ nhẹ để mắt người chơi tập trung vào các chỉ số sáng hơn */
+}
+
+
+/* --- CHUYỂN CHỮ IN HOA TOÀN BỘ (UPPERCASE) --- */
+/* Chuẩn hóa các dòng tiêu đề lệnh, nút bấm sảnh chờ hoặc cảnh báo quân sự theo đúng chuẩn giao diện HUD */
+.uppercase {
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px; /* Tăng nhẹ khoảng cách giữa các chữ in hoa để dễ đọc hơn trên màn hình tối */
+}

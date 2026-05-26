@@ -37,6 +37,8 @@ public class JoinRoomController extends HttpServlet {
             return;
         }
 
+        req.getSession().setAttribute("userId", userId);
+
         resp.sendRedirect(
                 req.getContextPath() +
                         "/room?roomId=" + roomId + "&userId=" + userId

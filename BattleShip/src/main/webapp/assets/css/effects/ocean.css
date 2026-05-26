@@ -1,0 +1,26 @@
+.ocean {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    pointer-events: none;
+    background: radial-gradient(circle at center, #070f1e 0%, #020617 100%);
+}
+
+.wave, .wave2 {
+    position: absolute;
+    width: 200%;
+    height: 100%;
+    opacity: 0.15;
+    background: repeat-x url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="2000" height="1000" viewBox="0 0 2000 1000"><path d="M0,500 C300,400 600,600 1000,500 C1400,400 1700,600 2000,500 L2000,1000 L0,1000 Z" fill="rgba(6,182,212,0.03)"/></svg>');
+    animation: drift 60s linear infinite;
+}
+
+.wave2 {
+    opacity: 0.1;
+    animation-duration: 45s;
+    animation-direction: reverse;
+    top: 50px;
+}

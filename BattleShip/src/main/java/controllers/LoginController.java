@@ -27,20 +27,46 @@ public class LoginController extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
         String username = request.getParameter("username");
         String email = request.getParameter("email");
 
-        // login form của bạn đang là name="user"
+        // login form đang dùng name="user"
         if (email == null || email.isEmpty()) {
             email = request.getParameter("user");
         }
 
         String password = request.getParameter("password");
 
-        // ================= REGISTER =================
-        // nếu có username => form register
-        if (username != null && !username.isEmpty()) {
+        // =====================================================
+        // [UC-02][A1 - Validate Register Form Empty]
+        // =====================================================
+        if (username != null) {
+
+            if (username.trim().isEmpty()
+                    || email == null || email.trim().isEmpty()
+                    || password == null || password.trim().isEmpty()) {
+
+                request.setAttribute(
+                        "message",
+                        "Please fill in all register fields!"
+                );
+
+                request.setAttribute(
+                        "mode",
+                        "register"
+                );
+
+                request.getRequestDispatcher(
+                        "/WEB-INF/layout/login.jsp"
+                ).forward(request, response);
+
+                return;
+            }
+
+            // ================= REGISTER =================
 
             User user = new User(
                     1,
@@ -53,8 +79,7 @@ public class LoginController extends HttpServlet {
 
             if (success) {
 
-                HttpSession session =
-                        request.getSession();
+                HttpSession session = request.getSession();
 
                 session.setAttribute(
                         "user",
@@ -82,10 +107,33 @@ public class LoginController extends HttpServlet {
                         "/WEB-INF/layout/login.jsp"
                 ).forward(request, response);
             }
-        }
 
-        // ================= LOGIN =================
-        else {
+        } else {
+
+            // =====================================================
+            // [UC-03][A1 - Validate Login Form Empty]
+            // =====================================================
+            if (email == null || email.trim().isEmpty()
+                    || password == null || password.trim().isEmpty()) {
+
+                request.setAttribute(
+                        "message",
+                        "Please fill in all login fields!"
+                );
+
+                request.setAttribute(
+                        "mode",
+                        "login"
+                );
+
+                request.getRequestDispatcher(
+                        "/WEB-INF/layout/login.jsp"
+                ).forward(request, response);
+
+                return;
+            }
+
+            // ================= LOGIN =================
 
             User user =
                     userService.authenticate(

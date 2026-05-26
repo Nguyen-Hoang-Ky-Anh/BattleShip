@@ -4,7 +4,11 @@
 const GameState = {
     socket: null,
     currentTurn: null,
-    canAttack: false
+    canAttack: false,
+    isSyncing: false,
+
+    prevMyBoard: null,
+    prevEnemyBoard: null
 };
 
 const ACTIONS = {
@@ -21,6 +25,7 @@ const ACTIONS = {
     CONFIRM_PLACEMENT: "CONFIRM_PLACEMENT",
     TOGGLE_READY: "TOGGLE_READY",
     START_GAME: "START_GAME",
+    SYNC: "SYNC",
 };
 
 // =========================================================
@@ -65,7 +70,10 @@ function connectSocket() {
         routeMessage(parts[0], parts);
     };
 
-    GameState.socket.onclose = () => console.log("Disconnected from server");
+    GameState.socket.onclose = () =>{
+        console.log("Disconnected from server");
+        startSyncPolling();
+    }
     GameState.socket.onerror = (err) => console.error("Socket error:", err);
 }
 
@@ -98,6 +106,8 @@ function routeMessage(action, parts) {
         case ACTIONS.ERROR:
             // [Exception Flow]
             return handleError(parts);
+        case ACTIONS.SYNC:
+            return handleSync(parts);
         default:
             console.warn("Unknown action:", action);
     }
@@ -154,7 +164,23 @@ function handleBattleUpdate(parts) {
         cell.textContent = result === "SUNK" ? "💀" : (result === "HIT" ? "💥" : "•");
     }
 
-    addLog(`${attacker} attacked [${row},${col}] => ${result}`);
+    const isMe = attacker === userId;
+    const pos = `${String.fromCharCode(65 + row)}${col + 1}`; // A1, B5...
+
+// attack log
+    addLog(
+        `${isMe ? "🟢 You" : "🔴 Enemy"} attacked <b>${pos}</b>`,
+        "turn"
+    );
+
+// result log
+    if (result === "HIT") {
+        addLog(`💥 ${isMe ? "You hit a ship!" : "Your ship was hit!"}`, "hit");
+    } else if (result === "MISS") {
+        addLog(`💨 Missed shot`, "miss");
+    } else if (result === "SUNK") {
+        addLog(`🔥 ${isMe ? "You sunk a ship!" : "Your ship was sunk!"}`, "sunk");
+    }
 
     // 2. Cập nhật trạng thái lượt
     GameState.currentTurn = nextTurn;
@@ -187,8 +213,11 @@ function handleInitBattleState(parts) {
 }
 
 function handleError(parts) {
-    GameState.canAttack = true; // Rollback trạng thái lock nếu có lỗi
+    GameState.canAttack = true;
     alert(parts[1]);
+    document.querySelectorAll(".pending").forEach(c => {
+        c.classList.remove("pending");
+    });
 }
 
 // =========================================================
@@ -198,9 +227,14 @@ function handleError(parts) {
 function onEnemyCellClick(row, col) {
     if (!GameState.canAttack) return;
 
-    // Khóa tức thì (Optimistic Lock)
+    const cell = document.querySelector(`#enemyBoard .cell[data-row="${row}"][data-col="${col}"]`);
+
+    if (!cell || cell.classList.contains("hit") || cell.classList.contains("miss")) {
+        return;
+    }
+
     GameState.canAttack = false;
-    safeSetText("battleStatus", "⏳ Processing...");
+    cell.classList.add("pending");
 
     GameState.socket.send(`${ACTIONS.ATTACK}|${roomId}|${userId}|${row}|${col}`);
 }
@@ -254,7 +288,7 @@ function replayShots(shots) {
 
 function clearBoard(boardId) {
     document.querySelectorAll(`#${boardId} .cell`).forEach(cell => {
-        cell.classList.remove("ship", "hit", "miss", "sunk");
+        cell.classList.remove("ship", "hit", "miss", "pending");
         cell.textContent = "";
     });
 }
@@ -274,16 +308,207 @@ function parseRoomState(data) {
     });
 }
 
-function addLog(message) {
+function addLog(message, type = "info") {
     const log = document.getElementById("log");
     if (!log) return;
 
-    const div = document.createElement("div");
-    div.textContent = message;
-    log.prepend(div);
+    const entry = document.createElement("div");
+    entry.classList.add("log-entry");
+
+    // type: hit | miss | sunk | turn | info
+    entry.classList.add(`log-${type}`);
+
+    const time = new Date().toLocaleTimeString();
+
+    entry.innerHTML = `<span class="log-time">[${time}]</span> ${message}`;
+
+    log.appendChild(entry);
+
+    // auto scroll xuống dưới
+    log.scrollTop = log.scrollHeight;
+
+    // giới hạn 50 dòng
+    if (log.children.length > 50) {
+        log.removeChild(log.firstChild);
+    }
 }
 
 function safeSetText(id, text) {
     const el = document.getElementById(id);
     if (el) el.textContent = text;
+}
+
+function handleSync(parts) {
+    if (parts.length < 4) return;
+
+    const turn = parts[1];
+
+    let myBoard = JSON.parse(parts[2]);
+    let enemyBoard = JSON.parse(parts[3]);
+
+    detectBoardChanges("myBoard", GameState.prevMyBoard, myBoard, false);
+    detectBoardChanges("enemyBoard", GameState.prevEnemyBoard, enemyBoard, true);
+
+    GameState.prevMyBoard = myBoard;
+    GameState.prevEnemyBoard = enemyBoard;
+
+    GameState.currentTurn = turn;
+    updateTurnUI();
+
+    applyBoard("myBoard", myBoard);
+    applyBoard("enemyBoard", enemyBoard);
+}
+
+function applyBoard(boardId, data) {
+    data.forEach((row, r) => {
+        row.forEach((cell, c) => {
+            const el = document.querySelector(
+                `#${boardId} .cell[data-row="${r}"][data-col="${c}"]`
+            );
+
+            if (!el) return;
+
+            el.classList.remove("hit", "miss");
+            el.textContent = "";
+
+            if (cell === "HIT") {
+                el.classList.add("hit");
+                el.textContent = "💥";
+            } else if (cell === "MISS") {
+                el.classList.add("miss");
+                el.textContent = "•";
+            }
+        });
+    });
+}
+
+// =========================================================
+// AJAX SYNC (Fallback + Reconnect)
+// =========================================================
+
+async function syncBattleState() {
+    if (GameState.isSyncing) return;
+
+    GameState.isSyncing = true;
+
+    try {
+        const res = await fetch(`${contextPath}/battle-sync?roomId=${roomId}&userId=${userId}`);
+
+        if (!res.ok) throw new Error("Sync failed");
+
+        const data = await res.json();
+
+        applyBattleState(data);
+
+    } catch (err) {
+        console.error("Sync error:", err);
+    } finally {
+        GameState.isSyncing = false;
+    }
+}
+
+function applyBattleState(data) {
+
+    // ===== TURN =====
+    if (data.turn) {
+        GameState.currentTurn = data.turn;
+        updateTurnUI();
+    }
+
+    // ===== BOARD (RENDER FULL) =====
+    if (data.myBoard) {
+        applyBoard("myBoard", data.myBoard);
+
+        data.myBoard.forEach((row, r) => {
+            row.forEach((cell, c) => {
+                const el = document.querySelector(`#myBoard .cell[data-row="${r}"][data-col="${c}"]`);
+                if (!el) return;
+
+                if (cell === "SHIP") {
+                    el.classList.add("ship");
+                    el.textContent = "🚢";
+                } else if (cell === "HIT") {
+                    el.classList.add("hit");
+                    el.textContent = "💥";
+                } else if (cell === "MISS") {
+                    el.classList.add("miss");
+                    el.textContent = "•";
+                }
+            });
+        });
+    }
+
+    if (data.enemyBoard) {
+        applyBoard("enemyBoard", data.enemyBoard);
+
+        data.enemyBoard.forEach((row, r) => {
+            row.forEach((cell, c) => {
+                const el = document.querySelector(`#enemyBoard .cell[data-row="${r}"][data-col="${c}"]`);
+                if (!el) return;
+
+                if (cell === "HIT") {
+                    el.classList.add("hit");
+                    el.textContent = "💥";
+                } else if (cell === "MISS") {
+                    el.classList.add("miss");
+                    el.textContent = "•";
+                }
+            });
+        });
+    }
+
+    // ===== LOG =====
+    if (data.log && data.log.length > 0) {
+        data.log.forEach(m => addLog(m));
+    }
+
+    // ===== GAME OVER =====
+    if (data.gameOver) {
+        GameState.canAttack = false;
+        setTimeout(() => {
+            alert(data.winner === userId ? "🎉 You win!" : "💀 You lose!");
+            window.location.href = `${contextPath}/pvp`;
+        }, 500);
+    }
+}
+
+function startSyncPolling() {
+    setInterval(() => {
+
+        // chỉ sync khi socket lỗi hoặc chưa có turn
+        if (
+            !GameState.socket ||
+            GameState.socket.readyState !== WebSocket.OPEN
+        ) {
+            syncBattleState();
+        }
+
+    }, 2000);
+}
+
+function detectBoardChanges(boardId, oldBoard, newBoard, isEnemyBoard) {
+    if (!oldBoard) return; // lần đầu
+
+    newBoard.forEach((row, r) => {
+        row.forEach((cell, c) => {
+            const prev = oldBoard[r][c];
+
+            if (prev === cell) return;
+
+            const pos = `${String.fromCharCode(65 + r)}${c + 1}`;
+
+            // 🔥 detect event
+            if (cell === "HIT") {
+                addLog(
+                    `${isEnemyBoard ? "🟢 You hit enemy" : "🔴 Enemy hit you"} at <b>${pos}</b> 💥`,
+                    "hit"
+                );
+            } else if (cell === "MISS") {
+                addLog(
+                    `${isEnemyBoard ? "🟢 You missed" : "🔴 Enemy missed"} at <b>${pos}</b> 💨`,
+                    "miss"
+                );
+            }
+        });
+    });
 }

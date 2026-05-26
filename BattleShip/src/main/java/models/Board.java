@@ -132,4 +132,54 @@ public class Board {
         }
         return null;
     }
+
+    public String[][] toSimpleGrid() {
+        int rows = grid.length;
+        int cols = grid[0].length;
+
+        String[][] result = new String[rows][cols];
+
+        for (int r = 0; r < rows; r++) {
+            for (int c = 0; c < cols; c++) {
+
+                Cell cell = grid[r][c];
+
+                if (cell.getState() == Cell.HIT) {
+                    result[r][c] = "HIT";
+                } else if (cell.getState() == Cell.MISS) {
+                    result[r][c] = "MISS";
+                } else if (cell.getState() == Cell.SHIP) {
+                    result[r][c] = "SHIP";
+                } else {
+                    result[r][c] = "EMPTY";
+                }
+            }
+        }
+
+        return result;
+    }
+
+    public String[][] toFogGrid() {
+        int rows = grid.length;
+        int cols = grid[0].length;
+
+        String[][] result = new String[rows][cols];
+
+        for (int r = 0; r < rows; r++) {
+            for (int c = 0; c < cols; c++) {
+
+                Cell cell = grid[r][c];
+
+                if (cell.getState() == Cell.HIT) {
+                    result[r][c] = "HIT";
+                } else if (cell.getState() == Cell.MISS) {
+                    result[r][c] = "MISS";
+                } else {
+                    result[r][c] = "EMPTY";
+                }
+            }
+        }
+
+        return result;
+    }
 }

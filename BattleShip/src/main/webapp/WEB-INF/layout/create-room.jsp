@@ -1,55 +1,93 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
-<html>
+<html lang="vi">
 <head>
-    <title>Create Room</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Initialize Tactical Room</title>
 
-    <%-- [UC-07.1 - Configure Room][Step 1 - UI Rendering]
-         System hiển thị form cấu hình phòng PvP --%>
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/style.css">
+    <!-- CSS CORE SYSTEM -->
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/main.css">
 </head>
 <body>
 
-<%-- [UI Decoration - Non-functional] --%>
+<!-- ATMOSPHERIC BACKGROUND -->
 <div class="ocean">
     <div class="wave"></div>
     <div class="wave wave2"></div>
 </div>
 
-<div class="container">
+<!-- MAIN CONTAINER -->
+<div class="room-creation-wrapper">
+    <div class="form-container">
 
-    <%-- [UC-07 - Create PvP Room][Step 2]
-         System hiển thị màn hình cấu hình (gọi UC-07.1) --%>
-    <h1 class="title">⚓ CREATE ROOM</h1>
+        <%-- [UC-07 - Create PvP Room][Step 2]
+             System hiển thị màn hình cấu hình (gọi UC-07.1) --%>
+        <h1 class="terminal-title">⚓ INITIALIZE ROOM</h1>
+        <div class="terminal-subtitle monospace-data">NET_CMD: CONFIG_BATTLEFIELD_MATRIX</div>
 
-    <div class="card">
+        <div class="terminal-separator"></div>
+
+            <%-- ======================================================
+                LẤY THÔNG TIN USER ĐANG ĐĂNG NHẬP TỪ SESSION
+            ====================================================== --%>
+            <%@ page import="models.User" %>
+
+            <%
+                User currentUser = (User) session.getAttribute("user");
+                String username = "";
+
+                if(currentUser != null){
+                    username = currentUser.getUsername();
+                }
+            %>
 
         <%-- =========================================
              [UC-07.1 - Configure Room]
              Step 2: User nhập thông tin cấu hình
            ========================================= --%>
-        <form action="${pageContext.request.contextPath}/create-room" method="post">
+        <form action="${pageContext.request.contextPath}/create-room" method="post" class="tactical-form">
 
-            <%-- [UC-07.1][Step 2.1 - Input User ID]
-                 Host nhập tên người chơi --%>
-            <input type="text"
-                   name="userId"
-                   placeholder="Enter your name"
-                   required>
+            <!-- KHỐI NHẬP TÊN OPERATOR -->
+            <div class="form-group">
+                <label class="input-label monospace-data">HOST_SIGNATURE :</label>
+                <%-- [UC-07.1][Step 2.1 - Input User ID] --%>
+                <input type="text"
+                       name="userId"
+                       value="<%= username %>"
+                       placeholder="DEPLOY IDENTITY ENCODING..."
+                       required>
+            </div>
 
-            <%-- [UC-07.1][Step 2.2 - Input Board Size]
-                 User chọn kích thước board (thuộc cấu hình phòng) --%>
-            <select name="boardSize">
-                <option value="10x10">10x10 (Classic)</option>
-                <option value="8x8">8x8 (Quick)</option>
-                <option value="12x12">12x12 (Hard)</option>
-            </select>
+            <!-- KHỐI CHỌN KÍCH THƯỚC CHIẾN TRƯỜNG -->
+            <div class="form-group">
+                <label class="input-label monospace-data">GRID_SECTOR_SIZE :</label>
+                <div class="custom-select-wrapper">
+                    <%-- [UC-07.1][Step 2.2 - Input Board Size] --%>
+                    <select name="boardSize" class="tactical-select">
+                        <option value="10x10">10 x 10 [CLASSIC SIMULATION]</option>
+                        <option value="8x8">8 x 8 [QUICK ENCOUNTER]</option>
+                        <option value="12x12">12 x 12 [HARD COMMAND]</option>
+                    </select>
+                    <span class="select-arrow">▼</span>
+                </div>
+            </div>
+
+            <div class="terminal-separator"></div>
 
             <%-- [UC-07.1][Step 3 - Confirm Configuration]
                  User xác nhận cấu hình phòng --%>
-            <button type="submit">Create Room</button>
+            <button type="submit" class="btn-command-submit">ENGAGE SECTOR INITIALIZATION</button>
 
         </form>
+
+        <!-- ĐƯỜNG DẪN QUAY LẠI LOBBY MẸ -->
+        <div class="back-navigation-zone">
+            <form action="${pageContext.request.contextPath}/pvp" method="get">
+                <button type="submit" class="btn-terminal-sm">◀ ABORT CONFIGURATION</button>
+            </form>
+        </div>
+
     </div>
 </div>
 

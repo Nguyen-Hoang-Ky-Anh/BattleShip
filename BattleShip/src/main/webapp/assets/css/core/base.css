@@ -1,0 +1,6 @@
+body {
+    background-color: var(--color-bg-deep);
+    color: var(--accent-water);
+    font-family: var(--font-sans), serif;
+    overflow-x: hidden;
+}

@@ -124,6 +124,11 @@ public class BattleService {
 
         if(enemyBoard == null) return;
 
+        if (enemyBoard.wasShot(row, col)) {
+            send(player.getSession(), "ERROR|Already shot");
+            return;
+        }
+
         // 2. Lấy kết quả bắn
         String result = enemyBoard.handleShot(row, col);
 
@@ -133,7 +138,9 @@ public class BattleService {
         }
 
         //2: Lưu lịch sử.
-        battle.getShotHistory().add(attacker + "|" + row + "|" + col + "|" + result);
+        battle.getShotHistory().add(
+                attacker + "|" + row + "|" + col + "|" + result
+        );
 
         // 3. Xử lý Game Over & Đổi lượt
         boolean isGameOver = enemyBoard.isAllSunk();
@@ -206,7 +213,7 @@ public class BattleService {
     // GETTER
     // =========================================================
 
-    private static String getOpponent(
+    public static String getOpponent(
             Room room,
             String username
     ) {
