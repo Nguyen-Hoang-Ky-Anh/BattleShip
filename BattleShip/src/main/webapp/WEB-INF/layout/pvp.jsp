@@ -57,9 +57,6 @@
                 <button type="submit" class="btn-terminal-sm">◀ RETURN TO MAIN COMMAND</button>
             </form>
         </div>
-
-        <form action="${pageContext.request.contextPath}/index.jsp" method="get">
-            <button type="submit">🏠 Home</button>
     </div>
 </div>
 

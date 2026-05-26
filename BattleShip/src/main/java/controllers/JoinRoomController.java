@@ -1,11 +1,13 @@
 package controllers;
 
+import dto.RoomPreview;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
 import services.RoomManager;
 
 import java.io.IOException;
+import java.util.List;
 
 @WebServlet("/join-room")
 public class JoinRoomController extends HttpServlet {
@@ -30,10 +32,25 @@ public class JoinRoomController extends HttpServlet {
             return;
         }
 
-        if (!RoomManager.exists(roomId)) {
-            req.setAttribute("error", "Room not found");
-            req.getRequestDispatcher("/WEB-INF/layout/join-room.jsp")
-                    .forward(req, resp);
+        if (!RoomManager.canJoin(roomId)) {
+
+            req.setAttribute(
+                    "error",
+                    "Room unavailable"
+            );
+
+            List<RoomPreview> availableRooms =
+                    RoomManager.getAvailableRooms();
+
+            req.setAttribute(
+                    "availableRooms",
+                    availableRooms
+            );
+
+            req.getRequestDispatcher(
+                    "/WEB-INF/layout/join-room.jsp"
+            ).forward(req, resp);
+
             return;
         }
 
@@ -48,6 +65,9 @@ public class JoinRoomController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
+
+        List<RoomPreview> availableRooms = RoomManager.getAvailableRooms();
+        req.setAttribute("availableRooms", availableRooms);
 
         req.getRequestDispatcher("/WEB-INF/layout/join-room.jsp")
                 .forward(req, resp);
