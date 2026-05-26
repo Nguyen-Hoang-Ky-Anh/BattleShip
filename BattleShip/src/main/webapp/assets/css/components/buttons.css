@@ -281,3 +281,14 @@ button:active {
 .btn-command-large {
     text-decoration: none;
 }
+
+.btn-share {
+    background: rgba(0, 255, 255, 0.1);
+    border: 1px solid #00FFFF;
+    color: #00FFFF;
+    margin-bottom: 10px;
+}
+.btn-share:hover {
+    background: rgba(0, 255, 255, 0.3);
+    box-shadow: 0 0 10px #00FFFF;
+}
