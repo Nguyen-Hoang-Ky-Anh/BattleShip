@@ -1,4 +1,4 @@
-/* Khung hiển thị lỗi hệ thống mang phong cách thiết bị đầu cuối (Terminal) */
+/* --- Khung cảnh báo Terminal --- */
 .alert-terminal-error {
     background: rgba(239, 68, 68, 0.1);
     border: 1px solid var(--accent-crimson);
@@ -12,14 +12,13 @@
     line-height: 1.4;
 }
 
-/* Hiệu ứng nhấp nháy chữ cảnh báo nguy hiểm */
+/* --- Hiệu ứng chữ nhấp nháy --- */
 .alert-blink {
     font-weight: bold;
     animation: terminal-alert-flash 1.5s infinite;
 }
 
-/* Chu kỳ nhấp nháy của hệ thống cảnh báo */
 @keyframes terminal-alert-flash {
     0%, 100% { opacity: 1; }
-    50% { opacity: 0.4; }
+    50%      { opacity: 0.4; }
 }

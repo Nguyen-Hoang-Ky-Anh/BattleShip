@@ -1,25 +1,5 @@
-/* ==========================================================================
-   DIFFICULTY SELECTION (HỆ THỐNG LỰA CHỌN MỨC ĐỘ KHÓ TRẬN ĐẤU)
-   ========================================================================== */
-
-/* --- KHUNG CHỨA TỔNG THỂ (DIFFICULTY SELECTION CONTAINER) --- */
-.difficulty-selection-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: var(--space-l);
-    width: 100%;
-    max-width: 800px;
-    margin: var(--space-xl) auto;
-    padding: var(--space-l);
-    background: rgba(9, 17, 34, 0.4);
-    border: 1px solid rgba(255, 255, 255, 0.03);
-    border-radius: 6px;
-    box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.4);
-}
-
-/* Định dạng cấu trúc chung cho thẻ lựa chọn cấu hình độ khó */
-.difficulty-selection-container .difficulty-card {
+/* --- THẺ CHỌN ĐỘ KHÓ (DIFFICULTY CARDS) --- */
+.difficulty-card {
     flex: 1;
     background: rgba(15, 23, 42, 0.8);
     border: 1px solid rgba(255, 255, 255, 0.08);
@@ -33,68 +13,44 @@
     overflow: hidden;
 }
 
-.difficulty-selection-container .difficulty-card:hover {
+.difficulty-card:hover {
     transform: translateY(-4px);
 }
 
-
-/* --- CẤP ĐỘ: DỄ / TÂN BINH (DIFFICULTY EASY) --- */
-.difficulty-easy {
-    color: var(--accent-mint);
-}
-
-.difficulty-easy:hover,
-.difficulty-easy.selected {
+/* --- MÀU SẮC PHÂN CẤP --- */
+.difficulty-easy { color: var(--accent-mint); }
+.difficulty-easy:hover, .difficulty-easy.selected {
     border-color: var(--accent-mint);
     background: rgba(0, 255, 153, 0.05);
-    box-shadow:
-            0 0 20px rgba(0, 255, 153, 0.15),
-            inset 0 0 10px rgba(0, 255, 153, 0.05);
+    box-shadow: 0 0 20px rgba(0, 255, 153, 0.15), inset 0 0 10px rgba(0, 255, 153, 0.05);
 }
 
-
-/* --- CẤP ĐỘ: THÔNG THƯỜNG / TRUNG ĐOÀN (DIFFICULTY NORMAL) --- */
-.difficulty-normal {
-    color: #eab308; /* Sắc vàng cảnh báo mức độ trung bình */
-}
-
-.difficulty-normal:hover,
-.difficulty-normal.selected {
+.difficulty-normal { color: #eab308; }
+.difficulty-normal:hover, .difficulty-normal.selected {
     border-color: #eab308;
     background: rgba(234, 179, 8, 0.05);
-    box-shadow:
-            0 0 20px rgba(234, 179, 8, 0.15),
-            inset 0 0 10px rgba(234, 179, 8, 0.05);
+    box-shadow: 0 0 20px rgba(234, 179, 8, 0.15), inset 0 0 10px rgba(234, 179, 8, 0.05);
 }
 
-
-/* --- CẤP ĐỘ: KHÓ / CHIẾN TRƯỜNG KHỐC LIỆT (DIFFICULTY HARD) --- */
-.difficulty-hard {
-    color: var(--accent-crimson);
-}
-
-.difficulty-hard:hover,
-.difficulty-hard.selected {
+.difficulty-hard { color: var(--accent-crimson); }
+.difficulty-hard:hover, .difficulty-hard.selected {
     border-color: var(--accent-crimson);
     background: rgba(239, 68, 68, 0.05);
-    box-shadow:
-            0 0 25px rgba(239, 68, 68, 0.2),
-            inset 0 0 12px rgba(239, 68, 68, 0.05);
+    box-shadow: 0 0 25px rgba(239, 68, 68, 0.2), inset 0 0 12px rgba(239, 68, 68, 0.05);
 }
 
-/* Hiệu ứng nhịp đập cảnh báo nguy hiểm (Pulse animation) dành riêng cho cấp độ khó */
+/* Hiệu ứng Pulse cảnh báo mức Khó */
 .difficulty-hard.selected::after {
     content: '';
     position: absolute;
-    top: 0; left: 0; right: 0; bottom: 0;
+    inset: 0;
     border: 1px solid var(--accent-crimson);
     border-radius: inherit;
     animation: hard-pulse-warning 2s infinite ease-out;
     pointer-events: none;
 }
 
-
-/* --- CHI TIẾT BỔ TRỢ BÊN TRONG CARD --- */
+/* --- CHI TIẾT TEXT TRONG CARD --- */
 .difficulty-card .badge-title {
     font-size: 14px;
     font-weight: bold;
@@ -107,12 +63,9 @@
     font-size: 11px;
     color: var(--accent-radar-gray);
     line-height: 1.4;
-    text-transform: none; /* Giữ chữ mô tả thường để dễ đọc */
 }
 
-
-/* --- HIỆU ỨNG LIÊN QUAN --- */
 @keyframes hard-pulse-warning {
-    0% { transform: scale(1); opacity: 1; }
+    0%   { transform: scale(1); opacity: 1; }
     100% { transform: scale(1.05); opacity: 0; }
 }

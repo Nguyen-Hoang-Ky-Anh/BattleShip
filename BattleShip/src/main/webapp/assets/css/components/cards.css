@@ -1,8 +1,14 @@
-/* Thẻ bọc từng loại tàu chiến trong danh sách */
-.ship-item-card {
+/* --- Base Card Styles --- */
+.ship-item-card,
+.rule-sub-card,
+.stat-card {
     background: rgba(15, 23, 42, 0.6);
-    border: 1px solid rgba(56, 189, 248, 0.15);
     border-radius: 6px;
+}
+
+/* --- Ship Item Card --- */
+.ship-item-card {
+    border: 1px solid rgba(56, 189, 248, 0.15);
     padding: var(--space-s);
     cursor: pointer;
     transition: all 0.2s ease;
@@ -18,7 +24,6 @@
     transform: translateX(4px);
 }
 
-/* Trạng thái tàu được kích hoạt / chọn để chuẩn bị đặt */
 .ship-item-card.selected,
 .ship-item-card[active="true"] {
     border-color: var(--accent-mint);
@@ -26,7 +31,7 @@
     box-shadow: 0 0 15px rgba(0, 255, 153, 0.15);
 }
 
-/* Thẻ hiển thị số liệu thống kê tổng quan (Dashboard) */
+/* --- Stat Card --- */
 .stat-card {
     background: rgba(15, 23, 42, 0.8);
     border: var(--border-tech);
@@ -49,17 +54,7 @@
     letter-spacing: 1px;
 }
 
-/* Phân loại màu sắc công nghệ cho từng loại thẻ số liệu */
-.total-card { border-left: 3px solid var(--accent-cyan); }
-.total-card .num { color: var(--accent-cyan); }
-
-.win-card { border-left: 3px solid var(--accent-mint); }
-.win-card .num { color: var(--accent-mint); }
-
-.loss-card { border-left: 3px solid #ef4444; }
-.loss-card .num { color: #ef4444; }
-
-/* Các thẻ con chứa nội dung quy tắc đạn dược */
+/* --- Rule Sub Card --- */
 .rule-sub-card {
     background: rgba(15, 23, 42, 0.8);
     border: 1px solid rgba(255, 255, 255, 0.05);
@@ -74,15 +69,18 @@
     color: rgba(255, 255, 255, 0.7);
 }
 
-/* Hệ thống màu sắc đổ viền trái và tiêu đề nhỏ */
-.border-cyan { border-left: 3px solid var(--accent-cyan); }
-.border-cyan .card-mini-title { color: var(--accent-cyan); }
+/* --- Card Border Color Modifiers --- */
+.total-card, .border-cyan { border-left: 3px solid var(--accent-cyan); }
+.total-card .num, .border-cyan .card-mini-title { color: var(--accent-cyan); }
 
-.border-mint { border-left: 3px solid var(--accent-mint); }
-.border-mint .card-mini-title { color: var(--accent-mint); }
+.win-card, .border-mint { border-left: 3px solid var(--accent-mint); }
+.win-card .num, .border-mint .card-mini-title { color: var(--accent-mint); }
+
+.loss-card { border-left: 3px solid var(--accent-crimson); }
+.loss-card .num { color: var(--accent-crimson); }
 
 .border-gray { border-left: 3px solid var(--accent-radar-gray); }
 .border-gray .card-mini-title { color: var(--accent-radar-gray); }
 
-.border-orange { border-left: 3px solid #f97316; }
-.border-orange .card-mini-title { color: #f97316; }
+.border-orange { border-left: 3px solid var(--accent-orange); }
+.border-orange .card-mini-title { color: var(--accent-orange); }

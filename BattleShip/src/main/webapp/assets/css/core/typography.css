@@ -1,9 +1,4 @@
-body {
-    color: var(--accent-water);
-    font-family: var(--font-sans), serif;
-    line-height: 1.5;
-}
-
+/* --- Global Headings --- */
 h1, h2, h3, .status-log-header {
     text-transform: uppercase;
     letter-spacing: 3px;
@@ -11,44 +6,97 @@ h1, h2, h3, .status-log-header {
     font-weight: 700;
 }
 
+/* --- Monospace Elements --- */
 .monospace-data,
 .combat-log,
 .telemetry-counter,
 .coordinate {
-    font-family: var(--font-mono), serif;
+    font-family: var(--font-mono), monospace;
     letter-spacing: 0.5px;
 }
 
+/* --- Major Titles --- */
 .main-tactical-title {
     font-size: 2.5rem;
     text-shadow: 0 0 15px rgba(6, 182, 212, 0.6);
 }
 
-.title-sub-text {
+.pvp-tactical-title,
+.terminal-title {
+    font-size: 1.8rem;
+    text-shadow: 0 0 15px rgba(6, 182, 212, 0.5);
+}
+
+.terminal-title {
+    text-align: center;
+}
+
+.history-title,
+.leaderboard-title {
+    font-size: 2rem;
+    font-weight: 900;
+    color: var(--accent-radar-gray);
+    letter-spacing: 2px;
+}
+
+.history-title {
+    text-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+}
+
+.leaderboard-title {
+    text-shadow: 0 0 15px rgba(255, 215, 0, 0.1);
+}
+
+.manual-title {
+    font-size: 2.2rem;
+    font-weight: 900;
+    color: var(--accent-radar-gray);
+    letter-spacing: 2px;
+}
+
+.battle-main-title {
+    font-size: 1.5rem;
+    font-weight: 900;
+    color: var(--accent-cyan);
+    letter-spacing: 1px;
+}
+
+.sidebar-title {
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: var(--accent-cyan);
+    letter-spacing: 1px;
+    text-shadow: 0 0 10px rgba(6, 182, 212, 0.4);
+}
+
+/* --- Subtitles & Meta Data (12px Group) --- */
+.title-sub-text,
+.history-subtitle,
+.battle-status-banner {
     font-size: 12px;
     color: var(--accent-radar-gray);
 }
 
-.operator-badge {
-    color: var(--accent-cyan);
-    font-size: 13px;
+.battle-status-banner {
+    letter-spacing: 1px;
 }
 
-.pvp-tactical-title {
-    font-size: 1.8rem;
-    text-shadow: 0 0 15px rgba(6, 182, 212, 0.5);
+.battle-status-banner.your-turn {
+    color: var(--accent-mint);
 }
 
-.network-status {
+/* --- Subtitles & Meta Data (11px Group) --- */
+.zone-subtitle,
+.manual-subtitle,
+.leaderboard-subtitle,
+.panel-section-title {
     font-size: 11px;
-    color: var(--accent-sonar);
-    text-shadow: 0 0 8px rgba(251, 191, 36, 0.3);
+    color: var(--accent-radar-gray);
+    letter-spacing: 1px;
 }
 
-.terminal-title {
-    font-size: 1.8rem;
-    text-shadow: 0 0 15px rgba(6, 182, 212, 0.5);
-    text-align: center;
+.panel-section-title {
+    letter-spacing: 2px;
 }
 
 .terminal-subtitle {
@@ -64,46 +112,31 @@ h1, h2, h3, .status-log-header {
     text-transform: uppercase;
 }
 
-.sidebar-title {
-    font-size: 1.4rem;
-    font-weight: 800;
-    color: var(--accent-cyan);
-    letter-spacing: 1px;
-    text-shadow: 0 0 10px rgba(6, 182, 212, 0.4);
-}
-
-.panel-section-title {
+.card-mini-title {
     font-size: 11px;
-    color: var(--accent-radar-gray);
-    letter-spacing: 2px;
+    letter-spacing: 0.5px;
 }
 
-.battle-status-banner {
-    font-size: 12px;
-    color: var(--accent-radar-gray);
-    letter-spacing: 1px;
-}
-
-.battle-status-banner.your-turn {
-    color: var(--accent-mint);
-}
-
-.battle-main-title {
-    font-size: 1.5rem;
-    font-weight: 900;
+/* --- Specific Highlights & Badges --- */
+.operator-badge {
     color: var(--accent-cyan);
-    letter-spacing: 1px;
+    font-size: 13px;
 }
 
-.zone-subtitle {
+.network-status {
     font-size: 11px;
-    color: var(--accent-radar-gray);
-    letter-spacing: 1px;
+    color: var(--accent-sonar);
+    text-shadow: 0 0 8px rgba(251, 191, 36, 0.3);
 }
 
-.highlighted-cyan {
+.highlighted-cyan,
+.operator-highlight {
     color: var(--accent-cyan);
     font-weight: bold;
+}
+
+.operator-highlight {
+    text-shadow: 0 0 8px rgba(6, 182, 212, 0.5);
 }
 
 .highlighted-mint {
@@ -111,6 +144,17 @@ h1, h2, h3, .status-log-header {
     font-weight: bold;
 }
 
+.section-tech-title {
+    font-size: 13px;
+    color: var(--accent-cyan);
+    letter-spacing: 1px;
+}
+
+.badge-neutral {
+    color: var(--accent-radar-gray);
+}
+
+/* --- Log Specific --- */
 .log-header {
     font-size: 10px;
     color: var(--accent-water);
@@ -121,65 +165,4 @@ h1, h2, h3, .status-log-header {
     line-height: 1.5;
     color: rgba(255, 255, 255, 0.7);
     text-align: left;
-}
-
-.history-title {
-    font-size: 2rem;
-    font-weight: 900;
-    color: var(--accent-radar-gray);
-    letter-spacing: 2px;
-    text-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
-}
-
-.history-subtitle {
-    font-size: 12px;
-    color: var(--accent-radar-gray);
-}
-
-.operator-highlight {
-    color: var(--accent-cyan);
-    font-weight: bold;
-    text-shadow: 0 0 8px rgba(6, 182, 212, 0.5);
-}
-
-.manual-title {
-    font-size: 2.2rem;
-    font-weight: 900;
-    color: var(--accent-radar-gray);
-    letter-spacing: 2px;
-}
-
-.manual-subtitle {
-    font-size: 11px;
-    color: var(--accent-radar-gray);
-    letter-spacing: 1px;
-}
-
-.section-tech-title {
-    font-size: 13px;
-    color: var(--accent-cyan);
-    letter-spacing: 1px;
-}
-
-.card-mini-title {
-    font-size: 11px;
-    letter-spacing: 0.5px;
-}
-
-.badge-neutral {
-    color: var(--accent-radar-gray);
-}
-
-.leaderboard-title {
-    font-size: 2rem;
-    font-weight: 900;
-    color: var(--accent-radar-gray);
-    letter-spacing: 2px;
-    text-shadow: 0 0 15px rgba(255, 215, 0, 0.1);
-}
-
-.leaderboard-subtitle {
-    font-size: 11px;
-    color: var(--accent-radar-gray);
-    letter-spacing: 1px;
 }

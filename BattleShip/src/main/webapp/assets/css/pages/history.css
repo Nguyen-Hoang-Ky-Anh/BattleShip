@@ -1,28 +1,6 @@
-/* ==========================================================================
-   MATCH HISTORY & COMBAT LOGS (TIÊU ĐỀ & KHUNG NHẬT KÝ CHIẾN SỰ)
-   ========================================================================== */
+/* Base typography đã dời sang /core/typography.css */
 
-/* --- TIÊU ĐỀ PHÂN VÙNG LỊCH SỬ ĐẤU (HISTORY TITLE) --- */
-.history-title {
-    font-family: var(--font-mono), sans-serif;
-    font-size: 18px;
-    font-weight: 700;
-    color: #ffffff;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-
-    display: flex;
-    align-items: center;
-    gap: var(--space-s);
-    margin: 0 0 var(--space-m) 0;
-    padding-left: var(--space-xs);
-    border-left: 4px solid var(--accent-cyan); /* Vạch định vị radar màu xanh cyan */
-
-    /* Hiệu ứng bóng chữ phát sáng nhẹ đặc trưng HUD kỹ thuật số */
-    text-shadow: 0 0 10px rgba(6, 182, 212, 0.2);
-}
-
-/* Thêm ký hiệu nhấp nháy hoặc mã luồng tự động cạnh tiêu đề (tùy chọn) */
+/* Ký hiệu nhúng cho tiêu đề Lịch sử */
 .history-title::after {
     content: "[SECURE_LOG]";
     font-size: 10px;
@@ -33,24 +11,20 @@
     margin-left: auto;
 }
 
-
-/* --- THANH ĐẦU MỤC KHỐI DỮ LIỆU LỊCH SỬ (HISTORY HEADER) --- */
+/* --- THANH HEADER BẢNG DỮ LIỆU LỊCH SỬ --- */
 .history-header {
     background: linear-gradient(90deg, rgba(15, 23, 42, 0.9) 0%, rgba(9, 17, 34, 0.6) 100%);
     border: 1px solid rgba(6, 182, 212, 0.15);
     border-bottom: 2px solid var(--accent-cyan);
     border-radius: 4px 4px 0 0;
-
     padding: var(--space-m);
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: var(--space-xs);
-
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
-/* Các nhãn phân loại hoặc bộ lọc nhanh bên trong thanh Header */
 .history-header .header-label {
     font-family: var(--font-mono), monospace;
     font-size: 11px;
@@ -60,7 +34,6 @@
     letter-spacing: 1px;
 }
 
-/* Trạng thái thống kê tổng quan nhanh tích hợp trên thanh header (nếu có) */
 .history-header .header-summary-meta {
     font-size: 12px;
     color: var(--accent-radar-gray);

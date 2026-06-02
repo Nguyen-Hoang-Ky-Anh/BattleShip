@@ -145,8 +145,8 @@
 
                 <button class="btn-confirm"
                         onclick="confirmPlacement()">
-                    <i class="bi bi-rocket-takeoff"></i>
-                    START BATTLE
+                    <i class="bi bi-send-fill"></i>
+                    CONFIRM PLACEMENT
                 </button>
 
                 <button class="btn-back-control"
@@ -240,8 +240,11 @@
 
 <!-- INIT -->
 <script>
-    createBoard(10, 10, "board");
-    connectSocket();
+    document.addEventListener("DOMContentLoaded", () => {
+        createBoard(10,10,"board");
+        initFleetPanel();
+        connectSocket();
+    });
 </script>
 
 </body>

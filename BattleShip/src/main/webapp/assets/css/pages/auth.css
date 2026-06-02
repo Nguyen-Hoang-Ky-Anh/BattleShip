@@ -1,10 +1,4 @@
-.container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-}
-
+/* Container bọc ngoài đã dùng class tiện ích, chỉ giữ lại định dạng Card form */
 .form-container {
     background: var(--panel-bg);
     backdrop-filter: var(--blur-intensity);

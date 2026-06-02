@@ -1,13 +1,12 @@
-/* Khung bọc cấu trúc thanh tiến trình và nhãn giá trị */
+/* --- Cyber Progress Container --- */
 .cyber-progress-container {
     display: flex;
     align-items: center;
     gap: var(--space-s);
     width: 100%;
-    max-width: 240px; /* Khống chế độ rộng hiển thị của đồ thị */
+    max-width: 240px;
 }
 
-/* Rãnh nền định vị của thanh tiến trình */
 .progress-track-bg {
     flex: 1;
     height: 6px;
@@ -17,7 +16,6 @@
     position: relative;
 }
 
-/* Thanh chạy hiển thị tỷ lệ phần trăm thực tế */
 .progress-fill-bar {
     height: 100%;
     background: linear-gradient(90deg, var(--accent-water), var(--accent-cyan));
@@ -26,9 +24,8 @@
     transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Nhãn hiển thị ký tự số phần trăm biên cạnh */
 .progress-percentage-label {
-    font-family: var(--font-mono), serif;
+    font-family: var(--font-mono), monospace;
     font-size: 11px;
     color: var(--accent-cyan);
     font-weight: bold;
@@ -36,7 +33,7 @@
     text-align: right;
 }
 
-/* Chuyển đổi trạng thái đồ họa của Top 1 sang sắc thái vàng Hoàng kim */
+/* --- Top 1 Rank Modifier --- */
 .rank-row-1 .progress-fill-bar {
     background: linear-gradient(90deg, #ca8a04, #eab308);
     box-shadow: 0 0 8px #eab308;

@@ -1,42 +1,19 @@
-/* Phân khu Hub chính của Trang chủ */
-.main-hub-container {
-    width: 100vw;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding-top: 60px;
-}
-
-/* Khung bao và căn giữa trạm kết nối PvP */
-.pvp-hub-wrapper {
-    width: 100vw;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: var(--space-m);
-}
-
-/* Khung bọc trung tâm cho biểu mẫu cấu hình phòng */
-.room-creation-wrapper {
-    width: 100vw;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: var(--space-m);
-}
-
-/* Khung bọc trung tâm cho biểu mẫu tham gia phòng */
+/* --- Fullscreen Centered Hub Wrappers (DRY Grouped) --- */
+.main-hub-container,
+.pvp-hub-wrapper,
+.room-creation-wrapper,
 .room-join-wrapper {
     width: 100vw;
     height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: var(--space-m);
 }
+
+.main-hub-container { padding-top: 60px; }
+.pvp-hub-wrapper,
+.room-creation-wrapper,
+.room-join-wrapper { padding: var(--space-m); }
 
 /* Không gian làm việc toàn màn hình cho khâu đặt tàu */
 .deployment-workspace {
@@ -62,40 +39,27 @@
     box-sizing: border-box;
 }
 
-/* Khung định vị trung tâm trang lịch sử */
-.history-page-container {
-    max-width: 1200px;
+/* --- Macro Page Containers (DRY Grouped) --- */
+.history-page-container,
+.manual-page-container,
+.leaderboard-page-container {
     margin: 0 auto;
     padding: var(--space-xl) var(--space-m);
     display: flex;
     flex-direction: column;
-    gap: var(--space-l);
     position: relative;
     z-index: 10;
 }
 
-/* Container bao phủ trang cẩm nằng hướng dẫn */
-.manual-page-container {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: var(--space-xl) var(--space-m);
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-xl);
-    position: relative;
-    z-index: 10;
-}
-
-/* Container bao bọc trung tâm bảng xếp hạng vinh danh */
+.history-page-container,
 .leaderboard-page-container {
     max-width: 1200px;
-    margin: 0 auto;
-    padding: var(--space-xl) var(--space-m);
-    display: flex;
-    flex-direction: column;
     gap: var(--space-l);
-    position: relative;
-    z-index: 10;
+}
+
+.manual-page-container {
+    max-width: 800px;
+    gap: var(--space-xl);
 }
 
 /* Khung định vị trung tâm màn hình chọn độ khó AI */
