@@ -82,6 +82,7 @@ public class ShipPlacementPveController extends HttpServlet {
                 strategy =  new HuntTargetAI();
                 break;
             case "hard":
+            	// Hard AI dùng ProbabilityAI strategy
                 strategy = new ProbabilityAI();
                 break;
             default:

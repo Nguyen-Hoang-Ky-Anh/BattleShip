@@ -4,7 +4,7 @@ import models.Board;
 import models.Position;
 
 import java.util.*;
-
+//HARD AI
 public class ProbabilityAI implements AIStrategy {
 
     private static final int SIZE = 10;
