@@ -1,15 +1,13 @@
 /* ==========================================================================
-   ADVANCED RADAR EFFECTS & AI TARGETING (HỆ THỐNG QUÉT RADAR & KHÓA MỤC TIÊU AI)
+   ADVANCED RADAR EFFECTS & AI TARGETING
    ========================================================================== */
 
-/* --- 1. HIỆU ỨNG RÊ CHUỘT QUÉT RADAR (RADAR HOVER EFFECTS) --- */
-/* Áp dụng lớp này cho các ô lưới (cell) hoặc bảng đồ vệ tinh */
+/* --- 1. HIỆU ỨNG RÊ CHUỘT QUÉT RADAR --- */
 .radar-sweep-cell {
     position: relative;
     overflow: hidden;
 }
 
-/* Tạo tia sáng quét hình cánh quạt/đường thẳng chạy dọc khi di chuột vào */
 .radar-sweep-cell::before {
     content: '';
     position: absolute;
@@ -17,43 +15,29 @@
     left: -50%;
     width: 200%;
     height: 200%;
-    /* Dải ánh sáng dạng nón mô phỏng góc quét của chùm radar */
-    background: conic-gradient(
-            from 0deg,
-            transparent 0deg,
-            rgba(6, 182, 212, 0.3) 30deg,
-            transparent 60deg
-    );
+    background: conic-gradient(from 0deg, transparent 0deg, rgba(6, 182, 212, 0.3) 30deg, transparent 60deg);
     opacity: 0;
     pointer-events: none;
     transform-origin: center center;
 }
 
-/* Kích hoạt động cơ quét khi người chơi rê chuột vào ô chiến trường */
 .radar-sweep-cell:hover::before {
     opacity: 1;
     animation: radar-sweep-rotation 2s linear infinite;
 }
 
-
-/* --- 2. VÒNG KHÓA MỤC TIÊU TỰ ĐỘNG CỦA AI (AI TARGETING GLOW) --- */
-/* Hiệu ứng khóa chết tọa độ pháo kích khi Engine AI đưa ra quyết định */
+/* --- 2. VÒNG KHÓA MỤC TIÊU TỰ ĐỘNG CỦA AI --- */
 .ai-targeted-lock {
     position: relative;
     border: 1px solid var(--accent-crimson) !important;
     background: rgba(239, 68, 68, 0.08) !important;
-    /* Ánh sáng đỏ rực ranh giới đe dọa */
-    box-shadow:
-            0 0 12px rgba(239, 68, 68, 0.4),
-            inset 0 0 8px rgba(239, 68, 68, 0.3);
+    box-shadow: 0 0 12px rgba(239, 68, 68, 0.4), inset 0 0 8px rgba(239, 68, 68, 0.3);
 }
 
-/* Khung chữ thập (Reticle) khóa tâm ngắm của AI bắn tỉa */
 .ai-targeted-lock::after {
     content: '';
     position: absolute;
-    top: 2px; left: 2px; right: 2px; bottom: 2px;
-    /* Tạo 4 góc ngắm bắn góc vuông (Ký hiệu HUD Quân sự) */
+    inset: 2px;
     background:
             linear-gradient(to right, var(--accent-crimson) 6px, transparent 6px) top left,
             linear-gradient(to bottom, var(--accent-crimson) 6px, transparent 6px) top left,
@@ -65,80 +49,47 @@
             linear-gradient(to top, var(--accent-crimson) 6px, transparent 6px) bottom right;
     background-size: 100% 100%;
     background-repeat: no-repeat;
-
-    /* Hiệu ứng co thắt tâm ngắm khi khóa mục tiêu */
     animation: ai-reticle-shrink 0.4s ease-out forwards;
 }
 
-
-/* --- 3. CÁC XUNG NĂNG LƯỢNG TUẦN HOÀN (PULSE EFFECTS) --- */
-
-/* Xung Radar quét định kỳ (Dùng cho tàu ngầm hoặc phao dò sonar) */
-.pulse-sonar-active {
-    position: relative;
-}
-
+/* --- 3. CÁC XUNG NĂNG LƯỢNG TUẦN HOÀN --- */
+.pulse-sonar-active { position: relative; }
 .pulse-sonar-active::after {
     content: '';
     position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 100%;
-    height: 100%;
+    top: 50%; left: 50%;
+    width: 100%; height: 100%;
     border: 2px solid var(--accent-cyan);
     border-radius: 50%;
     transform: translate(-50%, -50%) scale(1);
     opacity: 1;
     pointer-events: none;
-    /* Phát xung liên tục ra ngoài môi trường */
     animation: sonar-wave-outward 2s cubic-bezier(0.1, 0.8, 0.3, 1) infinite;
 }
 
-/* Xung nhịp đập cảnh báo nguy hiểm (Cấp độ Core/Hệ thống quá tải) */
 .pulse-danger-alarm {
     animation: critical-alarm-glow 1.5s ease-in-out infinite;
 }
 
-
 /* ==========================================================================
    HỆ THỐNG ĐỘNG CƠ HOẠT HỌA (ANIMATION ENGINES)
    ========================================================================== */
-
-/* Xoay góc quét radar tròn */
 @keyframes radar-sweep-rotation {
     from { transform: translate(-25%, -25%) rotate(0deg); }
-    to { transform: translate(-25%, -25%) rotate(360deg); }
+    to   { transform: translate(-25%, -25%) rotate(360deg); }
 }
 
-/* Co thắt vòng ngắm của AI khi xác định tọa độ */
 @keyframes ai-reticle-shrink {
-    0% { transform: scale(1.4); opacity: 0; }
+    0%   { transform: scale(1.4); opacity: 0; }
     100% { transform: scale(1); opacity: 1; }
 }
 
-/* Sóng siêu âm Sonar lan tỏa và tan biến */
 @keyframes sonar-wave-outward {
-    0% {
-        width: 0%;
-        height: 0%;
-        opacity: 1;
-    }
-    100% {
-        width: 250%;
-        height: 250%;
-        opacity: 0;
-    }
+    0%   { width: 0%; height: 0%; opacity: 1; }
+    100% { width: 250%; height: 250%; opacity: 0; }
 }
 
-/* Nhịp xung báo động hệ thống nguy cấp */
 @keyframes critical-alarm-glow {
-    0%, 100% {
-        background: rgba(239, 68, 68, 0.05);
-        border-color: rgba(239, 68, 68, 0.4);
-    }
-    50% {
-        background: rgba(239, 68, 68, 0.2);
-        border-color: rgba(239, 68, 68, 1);
-        box-shadow: 0 0 15px rgba(239, 68, 68, 0.4);
-    }
+    0%, 100% { background: rgba(239, 68, 68, 0.05); border-color: rgba(239, 68, 68, 0.4); }
+    50%      { background: rgba(239, 68, 68, 0.2); border-color: rgba(239, 68, 68, 1); box-shadow: 0 0 15px rgba(239, 68, 68, 0.4); }
 }

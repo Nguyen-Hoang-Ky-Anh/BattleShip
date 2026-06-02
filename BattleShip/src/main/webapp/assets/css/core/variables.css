@@ -31,9 +31,11 @@
     --space-xl: 32px;
     --space-2xl: 48px;
 
+    /* Game Logic Variables */
     --board-rows: 10;
     --board-cols: 10;
 
+    /* Text Colors */
     --text-muted: #94a3b8;
     --text-secondary: #cbd5e1;
 }

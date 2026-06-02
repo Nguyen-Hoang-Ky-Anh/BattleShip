@@ -1,10 +1,5 @@
-/* ==========================================================================
-   TELEMETRY & GRID CELLS SYSTEM (HỆ THỐNG ĐO LƯỜNG & TRẠNG THÁI Ô LƯỚI)
-   ========================================================================== */
+/* --- THANH TRẠNG THÁI & ĐO LƯỜNG --- */
 
-/* --- THANH TRẠNG THÁI & HỆ THỐNG ĐO LƯỜNG (STATUS & TELEMETRY BAR) --- */
-
-/* Băng thông số giám sát hệ thống */
 .status-telemetry-bar {
     width: 100%;
     max-width: 600px;
@@ -20,7 +15,6 @@
     box-shadow: 0 0 20px rgba(0,0,0,0.3);
 }
 
-/* Chấm đèn LED nhấp nháy báo hiệu kết nối dòng dữ liệu */
 .status-pulse-dot {
     width: 8px;
     height: 8px;
@@ -30,190 +24,96 @@
     animation: telemetry-pulse 1.8s infinite;
 }
 
-/* --- HIỆU ỨNG CHUYỂN ĐỘNG HỆ THỐNG --- */
 @keyframes telemetry-pulse {
     0%, 100% { transform: scale(1); opacity: 1; }
-    50% { transform: scale(1.3); opacity: 0.4; }
+    50%      { transform: scale(1.3); opacity: 0.4; }
 }
 
+/* --- Battle Topbar --- */
 .battle-topbar {
-
     display: flex;
     justify-content: space-between;
     align-items: center;
-
     min-height: 72px;
-
     padding: 10px 18px;
-
     border-radius: 18px;
-
-    background:
-            linear-gradient(
-                    180deg,
-                    rgba(15,23,42,0.92),
-                    rgba(2,6,23,0.98)
-            );
-
-    border:
-            1px solid rgba(56,189,248,0.14);
-
-    box-shadow:
-            0 0 30px rgba(0,0,0,0.45),
-            inset 0 0 20px rgba(6,182,212,0.04);
-
+    background: linear-gradient(180deg, rgba(15,23,42,0.92), rgba(2,6,23,0.98));
+    border: 1px solid rgba(56,189,248,0.14);
+    box-shadow: 0 0 30px rgba(0,0,0,0.45), inset 0 0 20px rgba(6,182,212,0.04);
     backdrop-filter: blur(10px);
 }
 
 .battle-brand {
-
     font-size: 18px;
     font-weight: 700;
-
     letter-spacing: 2px;
-
-    color: #38bdf8;
-
-    text-shadow:
-            0 0 12px rgba(56,189,248,0.45);
+    color: var(--accent-cyan);
+    text-shadow: 0 0 12px rgba(56,189,248,0.45);
 }
 
-.battle-topbar-info {
-
-    display: flex;
-    gap: 20px;
-}
+.battle-topbar-info { display: flex; gap: 20px; }
 
 .telemetry-node {
-
     display: flex;
     flex-direction: column;
-
     padding: 8px 12px;
-
     border-radius: 12px;
-
-    background:
-            rgba(15,23,42,0.7);
-
-    border:
-            1px solid rgba(255,255,255,0.05);
+    background: rgba(15,23,42,0.7);
+    border: 1px solid rgba(255,255,255,0.05);
 }
 
 .telemetry-label {
-
     font-size: 11px;
-
-    color:
-            rgba(255,255,255,0.55);
-
+    color: rgba(255,255,255,0.55);
     letter-spacing: 1px;
 }
+.telemetry-value { margin-top: 4px; font-size: 15px; font-weight: 700; }
 
-.telemetry-value {
-
-    margin-top: 4px;
-
-    font-size: 15px;
-    font-weight: 700;
-}
-
-/* =========================================================
-   STATUS BAR
-========================================================= */
-
+/* --- Global Status Bar --- */
 .battle-global-status {
-
     min-height: 42px;
-
     padding: 0 14px;
-
     display: flex;
     justify-content: center;
     align-items: center;
-
     gap: 12px;
-
     border-radius: 16px;
-
-    background:
-            rgba(15,23,42,0.78);
-
-    border:
-            1px solid rgba(251,191,36,0.18);
-
-    box-shadow:
-            inset 0 0 16px rgba(251,191,36,0.06);
+    background: rgba(15,23,42,0.78);
+    border: 1px solid rgba(251,191,36,0.18);
+    box-shadow: inset 0 0 16px rgba(251,191,36,0.06);
 }
 
 .status-indicator-dot {
-
     width: 12px;
     height: 12px;
-
     border-radius: 50%;
-
-    background:
-            #fbbf24;
-
-    box-shadow:
-            0 0 14px rgba(251,191,36,0.8);
-
-    animation:
-            pulseStatus 1.2s infinite alternate;
+    background: var(--accent-sonar);
+    box-shadow: 0 0 14px rgba(251,191,36,0.8);
+    animation: pulseStatus 1.2s infinite alternate;
 }
 
 @keyframes pulseStatus {
-
-    from {
-
-        transform: scale(1);
-        opacity: 0.6;
-    }
-
-    to {
-
-        transform: scale(1.25);
-        opacity: 1;
-    }
+    from { transform: scale(1); opacity: 0.6; }
+    to   { transform: scale(1.25); opacity: 1; }
 }
 
 .battle-status-text {
-
     font-size: 15px;
     font-weight: 700;
-
     letter-spacing: 1px;
-
-    color:
-            #f8fafc;
+    color: #f8fafc;
 }
 
-/* =========================================================
-   PANEL HEADER
-========================================================= */
-
+/* --- Generic Panel Header --- */
 .panel-header {
-
     height: 58px;
-
     display: flex;
     align-items: center;
-
-    padding:
-            0 20px;
-
+    padding: 0 20px;
     font-size: 13px;
     font-weight: 700;
-
     letter-spacing: 1px;
-
-    border-bottom:
-            1px solid rgba(255,255,255,0.06);
-
-    background:
-            rgba(255,255,255,0.02);
-
-    color:
-            #38bdf8;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    background: rgba(255,255,255,0.02);
+    color: var(--accent-cyan);
 }

@@ -8,20 +8,18 @@ function createBoard(rows, cols, idBoard) {
     const board = document.getElementById(idBoard);
     board.innerHTML = "";
 
-    // Nên dùng '1fr' để ô tự chia đều không gian theo cấu trúc CSS Grid của hệ thống layout
-    board.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
-    board.style.gridTemplateRows = `repeat(${rows}, 1fr)`;
+    board.style.setProperty('--board-rows', rows);
+    board.style.setProperty('--board-cols', cols);
+    board.style.setProperty('--cell-size', '45px');
 
     for (let r = 0; r < rows; r++) {
         for (let c = 0; c < cols; c++) {
+
             const cell = document.createElement("div");
             cell.classList.add("cell");
+
             cell.dataset.row = r;
             cell.dataset.col = c;
-
-            cell.addEventListener("click", () => {
-                console.log(`Row: ${r}, Col: ${c}`);
-            });
 
             board.appendChild(cell);
         }

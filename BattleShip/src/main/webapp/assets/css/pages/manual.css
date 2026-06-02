@@ -1,50 +1,23 @@
-/* ==========================================================================
-   OPERATIONS MANUAL (HƯỚNG DẪN VẬN HÀNH & QUY TRÌNH TÁC CHIẾN)
-   ========================================================================== */
-
-/* --- KHU VỰC CHỨA NỘI DUNG HƯỚNG DẪN (MANUAL SECTION) --- */
+/* Background đặc thù bản vẽ kĩ thuật cho Sổ tay */
 .manual-section {
-    border: 1px solid rgba(56, 189, 248, 0.15);
-    border-radius: 6px;
-    padding: var(--space-xl);
-    width: 100%;
-    max-width: 800px;
-    margin: 0 auto var(--space-xl) auto;
-
-    /* Hiệu ứng lưới chìm trang trí nền giống sơ đồ bản vẽ */
     background: rgba(15, 23, 42, 0.6) linear-gradient(rgba(6, 182, 212, 0.02) 1px, transparent 1px),
     linear-gradient(90deg, rgba(6, 182, 212, 0.02) 1px, transparent 1px);
     background-size: 20px 20px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(56, 189, 248, 0.15);
+    border-radius: 6px;
+    padding: var(--space-xl);
 }
 
-/* Thẻ tiêu đề bên trong mục hướng dẫn */
-.manual-section .section-title {
-    font-family: var(--font-mono), sans-serif;
-    font-size: 16px;
-    color: var(--accent-cyan);
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    margin-top: 0;
-    margin-bottom: var(--space-l);
-    display: flex;
-    align-items: center;
-    gap: var(--space-s);
-}
-
-
-/* --- DANH SÁCH TIẾN TRÌNH CÁC BƯỚC (MANUAL STEP LIST) --- */
+/* Base list reset */
 .manual-step-list {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-m);
-    padding-left: 0; /* Loại bỏ padding mặc định của ul */
+    padding-left: 0;
     margin: 0;
-    list-style-type: none; /* Khử ký hiệu bullet mặc định */
+    list-style-type: none;
     position: relative;
 }
 
-/* Đường trục dọc nối liền các bước (Timeline-style helper) */
+/* Trục dọc nối timeline */
 .manual-step-list::before {
     content: '';
     position: absolute;
@@ -56,26 +29,19 @@
     pointer-events: none;
 }
 
-
-/* --- THẺ CHO TỪNG BƯỚC LÀM CỤ THỂ (MANUAL STEP ITEM) --- */
+/* Các bước vận hành */
 .manual-step-item {
-    display: flex;
-    gap: var(--space-m);
     padding: var(--space-m);
-    background: rgba(9, 17, 34, 0.4);
-    border: 1px solid rgba(255, 255, 255, 0.03);
-    border-radius: 4px;
     transition: all 0.2s ease;
 }
 
-/* Hiệu ứng sáng nhẹ khi người dùng hover qua từng bước vận hành */
 .manual-step-item:hover {
     background: rgba(6, 182, 212, 0.03);
     border-color: rgba(6, 182, 212, 0.15);
     transform: translateX(4px);
 }
 
-/* Bộ đếm số thứ tự tự động bằng CSS (Số hiệu chỉ thị bước: 01, 02, 03...) */
+/* Bộ đếm Counter logic */
 .manual-step-item::before {
     counter-increment: manual-counter;
     content: "0" counter(manual-counter);
@@ -83,8 +49,6 @@
     font-size: 12px;
     font-weight: bold;
     color: var(--accent-sonar);
-
-    /* Thiết bị vòng tròn bọc số hiệu */
     display: flex;
     justify-content: center;
     align-items: center;
@@ -97,16 +61,12 @@
     z-index: 1;
 }
 
-/* Khối bọc nội dung văn bản bên trong bước làm */
 .manual-step-item .step-content {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-xs);
-    padding-top: 4px; /* Cân bằng dòng với vòng tròn số */
+    padding-top: 4px;
 }
 
 .manual-step-item .step-headline {
-    font-family: var(--font-mono), sans-serif;
+    font-family: var(--font-mono), monospace;
     font-size: 13px;
     font-weight: bold;
     color: #ffffff;
