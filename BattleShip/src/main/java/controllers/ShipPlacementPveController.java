@@ -82,6 +82,7 @@ public class ShipPlacementPveController extends HttpServlet {
                 strategy =  new HuntTargetAI();
                 break;
             case "hard":
+                strategy = new ProbabilityAI();
                 break;
             default:
                 System.out.println("Invalid AiDifficulty");
