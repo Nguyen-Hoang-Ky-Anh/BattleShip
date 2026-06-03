@@ -5,6 +5,15 @@ import models.Position;
 
 import java.util.*;
 //HARD AI
+//* Chế độ Hunt:
+//	 * - Quét toàn bộ bàn cờ
+//	 * - Tính điểm cho từng ô chưa bắn
+//	 * - Chọn ô có khả năng chứa tàu cao nhất
+//	 *
+//	 * Chế độ Target:
+//	 * - Khi phát hiện HIT
+//	 * - Ưu tiên các ô xung quanh
+//	 * - Tiếp tục truy đuổi cho đến khi đánh chìm tàu
 public class ProbabilityAI implements AIStrategy {
 
     private static final int SIZE = 10;
