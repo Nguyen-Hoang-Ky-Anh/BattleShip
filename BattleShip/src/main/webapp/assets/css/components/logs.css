@@ -1,28 +1,4 @@
-/* Khối chứa nội dung mô tả kỹ thuật của bước */
-.step-content {
-    padding: var(--space-s) var(--space-m);
-    font-size: 12px;
-    color: rgba(255, 255, 255, 0.8);
-}
-
-.terminal-log-stream {
-
-    flex: 1;
-
-    overflow-y: auto;
-
-    padding-right: 6px;
-
-    display: flex;
-    flex-direction: column;
-
-    gap: 10px;
-
-    font-size: 13px;
-
-    line-height: 1.5;
-}
-
+/* --- Log Stream Wrappers --- */
 .battle-log-panel {
     display: flex;
     flex-direction: column;
@@ -31,111 +7,70 @@
     overflow: hidden;
 }
 
+.terminal-log-stream,
 .battle-log-stream {
     flex: 1;
-    height: 100%;
     overflow-y: auto;
     padding-right: 6px;
     display: flex;
     flex-direction: column;
     gap: 10px;
+    font-size: 13px;
+    line-height: 1.5;
 }
 
-.battle-log-stream::-webkit-scrollbar {
-    width: 4px; /* Thanh cuộn siêu mảnh tinh tế */
-}
+.battle-log-stream { height: 100%; }
 
-.battle-log-stream::-webkit-scrollbar-track {
-    background: rgba(15, 23, 42, 0.5); /* Nền tối đồng bộ */
-}
+/* --- Scrollbar Styling --- */
+.battle-log-stream::-webkit-scrollbar { width: 4px; }
+.battle-log-stream::-webkit-scrollbar-track { background: rgba(15, 23, 42, 0.5); }
+.battle-log-stream::-webkit-scrollbar-thumb { background: var(--accent-cyan); border-radius: 2px; }
 
-.battle-log-stream::-webkit-scrollbar-thumb {
-    background: var(--accent-cyan, #06b6d4); /* Màu neon rực rỡ theo game */
-    border-radius: 2px;
+/* --- Log Entries --- */
+.step-content {
+    padding: var(--space-s) var(--space-m);
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.8);
 }
 
 .log-entry {
-
-    padding:
-            10px 12px;
-
+    padding: 10px 12px;
     border-radius: 10px;
-
     font-size: 13px;
-
     line-height: 1.5;
-
-    animation:
-            fadeLog 0.25s ease;
-
+    animation: fadeLog 0.25s ease;
     flex-shrink: 0;
-
     word-break: break-word;
 }
 
-@keyframes fadeLog {
-
-    from {
-
-        opacity: 0;
-        transform: translateY(10px);
-    }
-
-    to {
-
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
+/* --- Entry Variants --- */
 .log-hit {
-
-    background:
-            rgba(249,115,22,0.12);
-
-    border:
-            1px solid rgba(249,115,22,0.2);
-
-    color:
-            #fb923c;
+    background: rgba(249, 115, 22, 0.12);
+    border: 1px solid rgba(249, 115, 22, 0.2);
+    color: var(--accent-orange);
 }
 
 .log-miss {
-
-    background:
-            rgba(148,163,184,0.08);
-
-    border:
-            1px solid rgba(148,163,184,0.15);
-
-    color:
-            #94a3b8;
+    background: rgba(148, 163, 184, 0.08);
+    border: 1px solid rgba(148, 163, 184, 0.15);
+    color: var(--text-muted);
 }
 
 .log-sunk {
-
-    background:
-            rgba(239,68,68,0.14);
-
-    border:
-            1px solid rgba(239,68,68,0.2);
-
-    color:
-            #f87171;
+    background: rgba(239, 68, 68, 0.14);
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    color: var(--accent-crimson);
 }
 
 .log-turn {
-
-    background:
-            rgba(56,189,248,0.12);
-
-    border:
-            1px solid rgba(56,189,248,0.2);
-
-    color:
-            #38bdf8;
-
+    background: rgba(56, 189, 248, 0.12);
+    border: 1px solid rgba(56, 189, 248, 0.2);
+    color: var(--accent-cyan);
     text-align: center;
-
     font-weight: 700;
+}
+
+@keyframes fadeLog {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
 }

@@ -1,38 +1,47 @@
-/* Lưới danh sách nút chọn chế độ đấu của PvP Hub */
-.pvp-menu-grid {
+/* --- Structural Control Chains (DRY Flex-Column Grouped) --- */
+.pvp-menu-grid,
+.tactical-form,
+.form-group,
+.combat-zone,
+.manual-section {
     display: flex;
     flex-direction: column;
+}
+
+.pvp-menu-grid {
     gap: var(--space-m);
     margin-bottom: var(--space-xl);
 }
 
-/* Định hình form nhập liệu chiến thuật */
 .tactical-form {
-    display: flex;
-    flex-direction: column;
     gap: var(--space-m);
     text-align: left;
 }
 
 .form-group {
-    display: flex;
-    flex-direction: column;
     gap: var(--space-xs);
 }
 
-/* Thanh điều hướng phụ trong Form rẽ nhánh */
-.back-telemetry-zone {
-    display: flex;
+.combat-zone {
+    height: 100%;
     justify-content: center;
-    margin-top: var(--space-l);
-    border-top: 1px dashed rgba(56, 189, 248, 0.1);
-    padding-top: var(--space-m);
 }
 
+.manual-section {
+    gap: var(--space-s);
+}
+
+/* --- Navigation & Telemetry Zones --- */
+.back-telemetry-zone,
 .back-navigation-zone {
     display: flex;
     justify-content: center;
     margin-top: var(--space-l);
+}
+
+.back-telemetry-zone {
+    border-top: 1px dashed rgba(56, 189, 248, 0.1);
+    padding-top: var(--space-m);
 }
 
 /* Thanh điều hướng/chọn tàu cánh trái (Deployment) */
@@ -48,14 +57,17 @@
     overflow-y: auto;
 }
 
-/* Phân khu hiển thị lưới bản đồ cánh phải (Deployment) */
+/* --- Hợp nhất toàn vẹn lớp xử lý Main Board Sector --- */
 .tactical-main-board-sector {
+    flex: 1;
     display: flex;
     flex-direction: column;
     padding: var(--space-l);
     height: 100vh;
     justify-content: space-between;
     align-items: center;
+    min-width: 0;
+    gap: var(--space-m);
 }
 
 /* Cấu trúc chia vùng bàn cờ địch lớn và bàn cờ ta nhỏ (Arena) */
@@ -66,20 +78,6 @@
     gap: var(--space-l);
     align-items: center;
     min-height: 0;
-}
-
-.combat-zone {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    justify-content: center;
-}
-
-/* Khung phân chia các phân đoạn tài liệu của Sổ tay */
-.manual-section {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-s);
 }
 
 /* Chia lưới 2 cột cho các quy tắc hỏa lực */

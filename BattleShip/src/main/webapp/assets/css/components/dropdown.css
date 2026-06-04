@@ -1,12 +1,12 @@
-/* Khung bọc menu điều hướng dạng thả xuống */
+/* --- Dropdown Wrappers --- */
 .navigation-dropdown-wrapper {
     position: relative;
 }
 
-/* Nút kích hoạt menu Hamburger */
+/* --- Trigger Button --- */
 .hamburger-menu-trigger {
     color: var(--accent-cyan);
-    font-family: var(--font-mono), serif;
+    font-family: var(--font-mono), monospace;
     font-size: 14px;
     cursor: pointer;
     padding: var(--space-s) var(--space-m);
@@ -20,9 +20,9 @@
     border-color: var(--accent-cyan);
 }
 
-/* Bảng nội dung chứa danh sách thả xuống */
+/* --- Dropdown Content --- */
 .dropdown-content-panel {
-    display: none; /* Điều khiển trạng thái đóng/mở qua JavaScript */
+    display: none;
     position: absolute;
     top: calc(100% + var(--space-s));
     right: 0;
@@ -33,13 +33,12 @@
     z-index: 1100;
 }
 
-/* Kích hoạt hiển thị Panel thông qua class điều khiển từ file JS */
 .dropdown-content-panel.show,
 .dropdown-content-panel[style*="display: block"] {
     display: block !important;
 }
 
-/* Phần tử nút bấm chức năng bên trong dropdown */
+/* --- Dropdown Items --- */
 .btn-dropdown-item {
     width: 100% !important;
     background: transparent !important;
@@ -58,35 +57,26 @@
     box-shadow: none !important;
 }
 
-.quick-join-form{
+/* --- Quick Join Form (Inside Dropdown context) --- */
+.quick-join-form {
     margin-top: 16px;
-
     display: flex;
     flex-direction: column;
-
     gap: 10px;
 }
 
-.quick-join-input{
+.quick-join-input {
     width: 100%;
-
     padding: 10px 12px;
-
     border-radius: 10px;
-
-    border: 1px solid rgba(0,255,255,0.18);
-
-    background: rgba(255,255,255,0.04);
-
+    border: 1px solid rgba(0, 255, 255, 0.18);
+    background: rgba(255, 255, 255, 0.04);
     color: white;
-
     outline: none;
-
-    font-family: monospace;
+    font-family: var(--font-mono), monospace;
 }
 
-.quick-join-input:focus{
-    border-color: rgba(0,255,255,0.45);
-
-    box-shadow: 0 0 12px rgba(0,255,255,0.12);
+.quick-join-input:focus {
+    border-color: rgba(0, 255, 255, 0.45);
+    box-shadow: 0 0 12px rgba(0, 255, 255, 0.12);
 }

@@ -1,63 +1,55 @@
+/* --- Base Input Layout (Text & Selects) --- */
 input[type="text"],
 input[type="password"],
-input[type="email"] {
-    width: 100%;
-    background: rgba(2, 6, 23, 0.8);
-    border: 1px solid rgba(56, 189, 248, 0.3);
-    padding: var(--space-m);
-    color: var(--accent-cyan);
-    font-family: var(--font-mono), serif;
-    border-radius: 4px;
-    margin-bottom: var(--space-m);
-    transition: all 0.3s ease;
-}
-
-input[type="text"]:focus,
-input[type="password"]:focus,
-input[type="email"]:focus {
-    outline: none;
-    border-color: var(--accent-cyan);
-    box-shadow: 0 0 10px rgba(6, 182, 212, 0.3);
-}
-
-/* Hộp bọc ngoài của Select Box tùy biến */
-.custom-select-wrapper {
-    position: relative;
-    width: 100%;
-}
-
-/* Hộp lựa chọn Select Box phong cách chiến thuật */
+input[type="email"],
 .tactical-select {
     width: 100%;
     background: rgba(2, 6, 23, 0.8);
     border: 1px solid rgba(56, 189, 248, 0.3);
     padding: var(--space-m);
     color: var(--accent-cyan);
-    font-family: var(--font-mono), serif;
-    font-size: 13px;
+    font-family: var(--font-mono), monospace;
     border-radius: 4px;
-    appearance: none; /* Xóa bỏ mũi tên mặc định của hệ điều hành */
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    cursor: pointer;
     transition: all 0.3s ease;
 }
 
+input[type="text"],
+input[type="password"],
+input[type="email"] {
+    margin-bottom: var(--space-m);
+}
+
+/* Focus States */
+input[type="text"]:focus,
+input[type="password"]:focus,
+input[type="email"]:focus,
 .tactical-select:focus {
     outline: none;
     border-color: var(--accent-cyan);
     box-shadow: 0 0 10px rgba(6, 182, 212, 0.3);
 }
 
-/* Kiểu dáng cho các hàng option bên trong danh sách thả xuống */
+/* --- Tactical Select Specifics --- */
+.custom-select-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.tactical-select {
+    font-size: 13px;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    cursor: pointer;
+}
+
 .tactical-select option {
     background: var(--color-bg-surface);
     color: var(--accent-cyan);
-    font-family: var(--font-mono), serif;
+    font-family: var(--font-mono), monospace;
     padding: var(--space-s);
 }
 
-/* Biểu tượng mũi tên neon thay thế tinh tế */
 .select-arrow {
     position: absolute;
     right: var(--space-m);

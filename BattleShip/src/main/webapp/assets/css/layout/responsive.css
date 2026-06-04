@@ -2,17 +2,17 @@
    HỆ THỐNG MEDIA QUERIES KIỂM SOÁT THIẾT BỊ ĐẦU CUỐI DI ĐỘNG & MÁY TÍNH BẢNG
    ========================================================================= */
 
-/* Mobile Phản hồi: Dưới 600px (Thu nhỏ hệ lưới quy tắc hỏa lực) */
+/* Mobile Phản hồi: Dưới 600px */
 @media (max-width: 600px) {
     .grid-rules-two-columns {
-        grid-template-columns: 1fr; /* Chuyển về bố cục 1 cột dọc thẳng đứng */
+        grid-template-columns: 1fr;
     }
 }
 
-/* Tablet & Low-res Phản hồi: Dưới 1024px (Tái cấu trúc sidebar bọc ứng dụng) */
+/* Tablet & Low-res Phản hồi: Dưới 1024px */
 @media (max-width: 1024px) {
     .app-container {
         grid-template-columns: 1fr;
-        grid-template-rows: auto 1fr; /* Chuyển đổi linh hoạt từ hàng dọc sang luồng hàng ngang */
+        grid-template-rows: auto 1fr;
     }
 }

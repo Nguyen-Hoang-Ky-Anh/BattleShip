@@ -1,32 +1,19 @@
-/* ==========================================================================
-   UTILITY SPACING SYSTEM (HỆ THỐNG LỚP TIỆN ÍCH KHOẢNG CÁCH)
-   ========================================================================== */
-
-/* --- MARGIN UTILITIES (KHOẢNG CÁCH BÊN NGOÀI KHỐI) --- */
-
-/* Margin Top - Medium: Khoảng cách phía trên mức trung bình (Thường dùng giãn cách giữa các phân đoạn HUD) */
+/* --- Margin Utilities --- */
 .mt-m {
-    margin-top: var(--space-m) !important; /* Dùng !important để đảm bảo tính ghi đè của lớp tiện ích */
+    margin-top: var(--space-m) !important;
 }
 
-/* Margin Bottom - Large: Khoảng cách phía dưới mức lớn (Thường dùng ở đáy các panel chính) */
 .mb-l {
     margin-bottom: var(--space-l) !important;
 }
 
-
-/* --- PADDING UTILITIES (KHOẢNG CÁCH ĐỆM BÊN TRONG KHỐI) --- */
-
-/* Padding Horizontal - Extra Large: Khoảng cách đệm hai bên hông mức cực đại (Thường dùng cho thanh trạng thái ngang, header bảng dữ liệu) */
+/* --- Padding Utilities --- */
 .px-xl {
     padding-left: var(--space-xl) !important;
     padding-right: var(--space-xl) !important;
 }
 
-
-/* --- FLEX / GRID GAP UTILITIES (KHOẢNG CÁCH GIỮA CÁC PHẦN TỬ CON) --- */
-
-/* Gap - Medium: Khoảng cách giữa các phần tử trong luồng bố trưng Flexbox hoặc Grid Matrix (Ví dụ: khoảng cách giữa các nút điều hướng) */
+/* --- Gap Utilities --- */
 .gap-m {
     gap: var(--space-m) !important;
 }

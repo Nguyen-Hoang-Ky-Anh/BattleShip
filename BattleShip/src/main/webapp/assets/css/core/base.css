@@ -1,6 +1,7 @@
 body {
     background-color: var(--color-bg-deep);
     color: var(--accent-water);
-    font-family: var(--font-sans), serif;
+    font-family: var(--font-sans), sans-serif;
+    line-height: 1.5;
     overflow-x: hidden;
 }

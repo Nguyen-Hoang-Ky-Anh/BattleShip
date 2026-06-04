@@ -1,79 +1,71 @@
-/* Huy hiệu nhận diện vai trò / tổng đài viên */
-.operator-badge {
-    font-size: 12px;
-    color: var(--accent-water);
-}
-
-/* Base style chung cho các khối nhãn trạng thái */
-.badge {
+/* --- Base Badge Layout --- */
+.badge,
+.room-status {
     display: inline-block;
-    padding: 2px 8px;
-    font-size: 10px;
     font-weight: bold;
     border-radius: 3px;
+}
+
+.badge {
+    padding: 2px 8px;
+    font-size: 10px;
     letter-spacing: 0.5px;
 }
 
-/* Nhãn Trận Thắng */
+/* --- Badge Color Variants --- */
 .badge-win {
     background: rgba(0, 255, 153, 0.1);
     color: var(--accent-mint);
     border: 1px solid rgba(0, 255, 153, 0.3);
 }
 
-/* Nhãn Trận Thua */
 .badge-loss {
     background: rgba(239, 68, 68, 0.1);
-    color: #ef4444;
+    color: var(--accent-crimson);
     border: 1px solid rgba(239, 68, 68, 0.3);
 }
 
-/* Nhãn Thắng trung lập (Giải đấu / AI) */
 .badge-neutral-win {
     background: rgba(6, 182, 212, 0.1);
     color: var(--accent-cyan);
     border: 1px solid rgba(6, 182, 212, 0.3);
 }
 
-/* Định dạng số thứ tự hạng thông thường (ngoài Top 3) */
+/* --- Room Status Badge --- */
+.room-status {
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 0.72rem;
+}
+
+.room-status.waiting {
+    background: rgba(0, 255, 170, 0.15);
+    color: #4dffbd;
+    border: 1px solid rgba(0, 255, 170, 0.25);
+}
+
+/* --- Role & Meta Badges --- */
+.operator-badge {
+    font-size: 12px;
+    color: var(--accent-water);
+}
+
+.room-meta {
+    color: rgba(255, 255, 255, 0.82);
+    font-size: 0.92rem;
+    margin-bottom: var(--space-s);
+    font-family: var(--font-mono), monospace;
+}
+
 .rank-number {
-    font-family: var(--font-mono), serif;
+    font-family: var(--font-mono), monospace;
     color: var(--accent-radar-gray);
     font-size: 12px;
     font-weight: bold;
 }
 
-/* Biểu tượng hoặc kích thước emoji huy chương cho Top 3 */
 .rank-badge {
     font-size: 1.2rem;
     display: inline-block;
     line-height: 1;
-}
-
-.room-status{
-    padding: 4px 10px;
-
-    border-radius: 999px;
-
-    font-size: 0.72rem;
-
-    font-weight: 700;
-}
-
-.room-status.waiting{
-    background: rgba(0,255,170,0.15);
-
-    color: #4dffbd;
-
-    border: 1px solid rgba(0,255,170,0.25);
-}
-
-.room-meta{
-    color: rgba(255,255,255,0.82);
-
-    font-size: 0.92rem;
-
-    margin-bottom: 8px;
-
-    font-family: monospace;
 }

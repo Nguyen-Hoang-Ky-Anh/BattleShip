@@ -1,4 +1,4 @@
-/* Thanh điều hướng bên cạnh */
+/* --- Navigation Sidebar --- */
 .sidebar {
     background: var(--panel-bg);
     backdrop-filter: var(--blur-intensity);
@@ -10,7 +10,7 @@
     z-index: 100;
 }
 
-/* Thẻ đại diện người chơi / thực thể tương tác trong danh sách navigation */
+/* --- Player/Entity Card --- */
 .player {
     background: var(--panel-bg-alt);
     border: var(--border-tech);
