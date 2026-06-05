@@ -12,7 +12,7 @@ public class PreGameController extends HttpServlet {
     // SELECT DIFFICULTY PAGE
     // =========================
     @Override
-    protected void doGet(
+    public void doGet(
             HttpServletRequest request,
             HttpServletResponse response
     ) throws ServletException, IOException {
@@ -46,7 +46,7 @@ public class PreGameController extends HttpServlet {
     }
 
     @Override
-    protected void doPost(
+    public void doPost(
             HttpServletRequest request,
             HttpServletResponse response
     ) throws IOException {

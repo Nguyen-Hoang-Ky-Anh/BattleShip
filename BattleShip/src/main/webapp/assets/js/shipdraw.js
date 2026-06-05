@@ -467,3 +467,7 @@ function allShipsPlaced() {
 document.addEventListener("DOMContentLoaded", () => {
     initFleetPanel();
 });
+
+if (typeof module !== "undefined") {
+    module.exports = { getCells, isValidPlacement, allShipsPlaced, getPlacementData, resetBoard };
+}
