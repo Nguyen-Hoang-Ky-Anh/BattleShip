@@ -20,7 +20,9 @@ public class ProbabilityAI implements AIStrategy {
 
     private final Set<String> attackedPositions = new HashSet<>();
     private final List<Position> hitPositions = new ArrayList<>();
-
+    /**
+     * Chọn nước đi tiếp theo cho AI.
+     */
     @Override
     public Position nextMove(Board enemyBoard) {
 
@@ -51,7 +53,12 @@ public class ProbabilityAI implements AIStrategy {
             hitPositions.clear();
         }
     }
-
+    /**
+     * Probability Mode.
+     *
+     * Duyệt toàn bộ bàn cờ và tìm ô
+     * có số lượng ô lân cận khả dụng lớn nhất.
+     */
     private Position chooseProbabilityMove(Board board) {
 
         int bestScore = -1;
@@ -76,6 +83,12 @@ public class ProbabilityAI implements AIStrategy {
 
         return bestPos;
     }
+    /**
+     * Target Mode.
+     *
+     * Sau khi có HIT sẽ ưu tiên
+     * các ô xung quanh vị trí trúng đạn.
+     */
 
     private Position chooseTargetMode(Board board) {
 
