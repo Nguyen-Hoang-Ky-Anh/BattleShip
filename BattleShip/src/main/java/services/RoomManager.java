@@ -436,16 +436,16 @@ public class RoomManager {
         return rooms.containsKey(roomId);
     }
 
+    // =========================================================================
+    // [KIỂM TRA ĐIỀU KIỆN CHO UC-15 & UC-08] - XÁC ĐỊNH PHÒNG CÓ THỂ THAM GIA KHÔNG
+    // =========================================================================
     public static boolean canJoin(String roomId){
-
         Room room = rooms.get(roomId);
-
         if(room == null){
             return false;
         }
-
-        return room.getPhase() == GamePhase.WAITING
-                && room.getPlayers().size() < 2;
+        // [UC-08.BR / UC-15.BR] Phòng hợp lệ phải ở trạng thái chờ và < 2 người chơi
+        return room.getPhase() == GamePhase.WAITING && room.getPlayers().size() < 2;
     }
 
     public static Room getRoom(String roomId) {
@@ -453,11 +453,14 @@ public class RoomManager {
         return rooms.get(roomId);
     }
 
+    // =========================================================================
+    // [TIỀN ĐỀ CHO UC-15 - QUICK JOIN] - LẤY DANH SÁCH PHÒNG ĐANG CHỜ CÒN TRỐNG
+    // =========================================================================
     public static List<RoomPreview> getAvailableRooms() {
         List<RoomPreview> availableRooms = new ArrayList<>();
         for(Room room : rooms.values()) {
-            if(room.getPhase() == GamePhase.WAITING
-                    && room.getPlayers().size() < 2) {
+            // [UC-15.BusinessRule] Chỉ quét phòng ở trạng thái WAITING và chưa đủ 2 người
+            if(room.getPhase() == GamePhase.WAITING && room.getPlayers().size() < 2) {
                 RoomPreview roomPreview = new RoomPreview();
                 roomPreview.setHost(room.getHostName());
                 roomPreview.setCurrentPlayers(room.getPlayers().size());
