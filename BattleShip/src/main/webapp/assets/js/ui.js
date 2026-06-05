@@ -181,8 +181,8 @@ function leaveRoom() {
 // [UC-07.3 - SHARE ROOM] - CHIA SẺ ĐƯỜNG DẪN MỜI ĐỒNG ĐỘI THAM GIA PHÒNG CHƠI
 // =========================================================================
 function shareRoomCode() {
-    // [UC-07.3][Step 1] Khởi tạo URL tham gia dựa trên contextPath hệ thống và roomId hiện tại
-    const joinUrl = `${window.location.origin}${contextPath}/join?room=${roomId}`;
+    const joinUrl =
+        `${window.location.origin}${contextPath}/join-room?roomId=${encodeURIComponent(roomId)}`;
 
     const shareData = {
         title: 'Battleship Tactical Command',
@@ -190,18 +190,17 @@ function shareRoomCode() {
         url: joinUrl
     };
 
-    // [UC-07.3][Branch 1] Nếu thiết bị hỗ trợ Web Share API (Mobile/Trình duyệt hiện đại)
     if (navigator.share) {
         navigator.share(shareData)
             .then(() => console.log('Mission shared successfully!'))
             .catch((error) => console.log('Error sharing mission', error));
-    }
-    // [UC-07.3][Branch 2 - Fallback] Thiết bị không hỗ trợ API -> Ghi trực tiếp vào Clipboard
-    else {
-        navigator.clipboard.writeText(joinUrl).then(() => {
-            alert("🔗 Invite Link copied to clipboard! Send it to your backup operator.");
-        }).catch(err => {
-            console.error('Failed to copy: ', err);
-        });
+    } else {
+        navigator.clipboard.writeText(joinUrl)
+            .then(() => {
+                alert("🔗 Invite Link copied to clipboard!");
+            })
+            .catch(err => {
+                console.error('Failed to copy: ', err);
+            });
     }
 }
