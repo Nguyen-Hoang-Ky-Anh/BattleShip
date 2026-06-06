@@ -1,0 +1,6 @@
+| Version | Date       | Authors / Contributors | Description of Changes                                                                                                                                     |
+| ------- | ---------- | ---------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1.0     | 2026-05-11 | Project Team           | Báo cáo cuối kỳ bài tập 2 - Lần 1.                                                                                                                         |
+| 2.0     | 2026-06-05 | Nguyen Hoang Ky Anh    | Thêm ảnh Node.js, test trên IDE, `npm init -y`, `npm install --save-dev jest`, cập nhật `package.json`, test trên 1 file chỉ định và test toàn bộ file JS. |
+| 2.0     | 2026-06-05 | Nguyen Hoang Ky Anh    | Thêm mục 12. HƯỚNG DẪN CẤU HÌNH VÀ CHẠY KIỂM THỬ cùng các mục con 12.1 và 12.2.                                                                            |
+| 2.0     | 2026-06-06 | Nguyen Hoang Ky Anh    | Bổ sung nội dung cho phần 2 (Yêu cầu hệ thống), thêm Node.js và npm.                                                                                       |

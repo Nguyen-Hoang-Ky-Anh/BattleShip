@@ -177,8 +177,13 @@ function leaveRoom() {
     window.location.href = `${contextPath}/pvp`;
 }
 
+// =========================================================================
+// [UC-07.3 - SHARE ROOM] - CHIA SẺ ĐƯỜNG DẪN MỜI ĐỒNG ĐỘI THAM GIA PHÒNG CHƠI
+// =========================================================================
 function shareRoomCode() {
-    const joinUrl = `${window.location.origin}${contextPath}/join?room=${roomId}`;
+    const joinUrl =
+        `${window.location.origin}${contextPath}/join-room?roomId=${encodeURIComponent(roomId)}`;
+
     const shareData = {
         title: 'Battleship Tactical Command',
         text: `Commander, I need backup! Join my Battleship room [${roomId}]`,
@@ -190,10 +195,12 @@ function shareRoomCode() {
             .then(() => console.log('Mission shared successfully!'))
             .catch((error) => console.log('Error sharing mission', error));
     } else {
-        navigator.clipboard.writeText(joinUrl).then(() => {
-            alert("🔗 Invite Link copied to clipboard! Send it to your backup operator.");
-        }).catch(err => {
-            console.error('Failed to copy: ', err);
-        });
+        navigator.clipboard.writeText(joinUrl)
+            .then(() => {
+                alert("🔗 Invite Link copied to clipboard!");
+            })
+            .catch(err => {
+                console.error('Failed to copy: ', err);
+            });
     }
 }

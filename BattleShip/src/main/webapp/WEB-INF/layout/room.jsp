@@ -98,6 +98,7 @@
         <!-- =========================================================
              ROOM ACTIONS
         ========================================================== -->
+<%--        [UC-07.3 - SHARE ROOM] - CHIA SẺ ĐƯỜNG DẪN MỜI ĐỒNG ĐỘI THAM GIA PHÒNG CHƠI--%>
         <div class="room-action-panel">
             <button id="shareBtn"
                     class="lobby-action-btn btn-share"
