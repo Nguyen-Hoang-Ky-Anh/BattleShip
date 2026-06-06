@@ -190,7 +190,7 @@
 
                         </div>
 
-                        <!-- QUICK JOIN -->
+                        <!-- UC-15 QUICK JOIN -->
                         <form action="${pageContext.request.contextPath}/join-room"
                               method="post"
                               class="quick-join-form">
