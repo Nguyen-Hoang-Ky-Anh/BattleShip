@@ -469,5 +469,14 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 if (typeof module !== "undefined") {
-    module.exports = { getCells, isValidPlacement, allShipsPlaced, getPlacementData, resetBoard };
+    module.exports = {
+        getCells,
+        isValidPlacement,
+        allShipsPlaced,
+        getPlacementData,
+        resetBoard,
+        occupiedCells,
+        placedShips,
+        SHIP_CATALOG
+    };
 }

@@ -1,4 +1,16 @@
-const { getCells, isValidPlacement, allShipsPlaced, getPlacementData } = require("../../main/webapp/assets/js/shipdraw");
+/**
+ * @jest-environment jsdom
+ */
+
+const {
+    getCells,
+    isValidPlacement,
+    allShipsPlaced,
+    getPlacementData,
+    occupiedCells,
+    placedShips,
+    SHIP_CATALOG
+} = require("../../main/webapp/assets/js/shipdraw");
 
 // Mock DOM
 beforeEach(() => {
